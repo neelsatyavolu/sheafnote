@@ -19,6 +19,11 @@ public enum RecordMapper {
         operations.first { $0.recordType == recordType }
     }
 
+    /// Every field name this app version knows for a record type (domain plus common fields).
+    public static func fieldNames(for recordType: String) -> [String] {
+        operations(for: recordType)?.fieldNames ?? []
+    }
+
     /// The current local snapshot of a row, or nil if the row no longer exists.
     public static func encode(_ key: RecordKey, in context: ModelContext) throws -> SyncRecord? {
         try operations(for: key.recordType)?.encode(id: key.id, in: context)
@@ -47,21 +52,31 @@ public enum RecordMapper {
     }
 
     /// Applies a record fetched from the server. Never throws for bad records (they are reported as ignored).
+    /// With `save: false` the caller saves once after a whole batch.
     public static func applyServer(_ record: SyncRecord, in context: ModelContext, ink: any InkMerging,
-                                   now: Date = .now) throws -> ApplyOutcome {
+                                   now: Date = .now, save: Bool = true) throws -> ApplyOutcome {
         guard let ops = operations(for: record.recordType) else { return .ignored(.unknownRecordType) }
-        return try ops.applyServer(record, in: context, ink: ink, now: now)
+        return try ops.applyServer(record, in: context, ink: ink, now: now, save: save)
     }
 
     /// The server deleted a record (another device purged it for good).
-    public static func applyServerDeletion(_ key: RecordKey, in context: ModelContext) throws -> ApplyOutcome {
+    public static func applyServerDeletion(_ key: RecordKey, in context: ModelContext, save: Bool = true) throws -> ApplyOutcome {
         guard let ops = operations(for: key.recordType) else { return .ignored(.unknownRecordType) }
-        return try ops.applyServerDeletion(id: key.id, in: context)
+        return try ops.applyServerDeletion(id: key.id, in: context, save: save)
     }
 
     /// The server accepted our record. Clears the dirty flag unless the row changed again while the send was in flight.
     public static func confirmSent(sent: SyncRecord, saved: SyncRecord, in context: ModelContext) throws {
         try operations(for: sent.recordType)?.confirmSent(sent: sent, saved: saved, in: context)
+    }
+
+    public static func exists(_ key: RecordKey, in context: ModelContext) throws -> Bool {
+        try operations(for: key.recordType)?.exists(id: key.id, in: context) ?? false
+    }
+
+    /// The server no longer has the record we last saw: drop its system fields so the row is saved as new.
+    public static func forgetServerVersion(_ key: RecordKey, in context: ModelContext) throws {
+        try operations(for: key.recordType)?.forgetServerVersion(id: key.id, in: context)
     }
 
     /// Row is waiting for an app update (written by a newer format version): never upload edits over it.

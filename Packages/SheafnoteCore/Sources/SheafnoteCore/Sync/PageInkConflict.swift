@@ -37,6 +37,10 @@ enum PageInkConflict {
             page.baseStrokeIDs = theirs.strokeIDs
             return Result(outcome: nil, inkStillDirty: false)
         }
+        if theirs.strokeIDs == page.baseStrokeIDs && theirs.data == page.baseInkData {
+            // The server still has the version we last synced (for example an echo of our own save): nothing to merge.
+            return Result(outcome: nil, inkStillDirty: true)
+        }
         let ours = InkState(data: page.inkData, strokeIDs: page.strokeIDs)
         try RevisionStore(context: context).snapshot(page: page, reason: .conflict, note: mergedNote, now: now)
         let baseIDs = page.baseStrokeIDs

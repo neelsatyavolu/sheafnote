@@ -12,7 +12,7 @@ public enum SyncValue: Hashable, Sendable {
 }
 
 /// Identifies a record across devices: type plus record name (`id.uuidString`).
-public struct RecordKey: Hashable, Sendable {
+public struct RecordKey: Hashable, Sendable, Codable {
     public let recordType: String
     public let id: UUID
 
@@ -57,8 +57,22 @@ public enum CommonField {
 public extension SyncRecord {
     func string(_ name: String) -> String? { if case .string(let v) = fields[name] { v } else { nil } }
     func int(_ name: String) -> Int? { if case .int(let v) = fields[name] { Int(v) } else { nil } }
-    func double(_ name: String) -> Double? { if case .double(let v) = fields[name] { v } else { nil } }
-    func bool(_ name: String) -> Bool? { if case .bool(let v) = fields[name] { v } else { nil } }
+    func double(_ name: String) -> Double? {
+        switch fields[name] {
+        case .double(let v): v
+        case .int(let v): Double(v)
+        default: nil
+        }
+    }
+
+    /// CloudKit has no Bool type, so a Bool arrives as Int64 0/1.
+    func bool(_ name: String) -> Bool? {
+        switch fields[name] {
+        case .bool(let v): v
+        case .int(let v): v != 0
+        default: nil
+        }
+    }
     func date(_ name: String) -> Date? { if case .date(let v) = fields[name] { v } else { nil } }
     func bytes(_ name: String) -> Data? { if case .bytes(let v) = fields[name] { v } else { nil } }
     func strings(_ name: String) -> [String]? { if case .strings(let v) = fields[name] { v } else { nil } }

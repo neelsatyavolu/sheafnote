@@ -5,18 +5,22 @@ import SwiftData
 @MainActor
 protocol RecordOperations {
     var recordType: String { get }
+    var fieldNames: [String] { get }
     func encode(id: UUID, in context: ModelContext) throws -> SyncRecord?
     func dirtyIDs(in context: ModelContext) throws -> [UUID]
     func allIDs(in context: ModelContext) throws -> [UUID]
     func markAllDirty(in context: ModelContext) throws -> Int
-    func applyServer(_ r: SyncRecord, in context: ModelContext, ink: any InkMerging, now: Date) throws -> ApplyOutcome
-    func applyServerDeletion(id: UUID, in context: ModelContext) throws -> ApplyOutcome
+    func applyServer(_ r: SyncRecord, in context: ModelContext, ink: any InkMerging, now: Date, save: Bool) throws -> ApplyOutcome
+    func applyServerDeletion(id: UUID, in context: ModelContext, save: Bool) throws -> ApplyOutcome
     func confirmSent(sent: SyncRecord, saved: SyncRecord, in context: ModelContext) throws
+    func exists(id: UUID, in context: ModelContext) throws -> Bool
+    func forgetServerVersion(id: UUID, in context: ModelContext) throws
 }
 
 @MainActor
 struct TypedOperations<T: SyncCodable>: RecordOperations {
     var recordType: String { T.recordType }
+    var fieldNames: [String] { T.domainFields + CommonField.all.sorted() }
 
     func find(_ id: UUID, in context: ModelContext) throws -> T? {
         var descriptor = FetchDescriptor<T>(predicate: #Predicate { $0.id == id })
@@ -59,22 +63,24 @@ struct TypedOperations<T: SyncCodable>: RecordOperations {
         return rows.count
     }
 
-    func applyServer(_ r: SyncRecord, in context: ModelContext, ink: any InkMerging, now: Date) throws -> ApplyOutcome {
+    func applyServer(_ r: SyncRecord, in context: ModelContext, ink: any InkMerging, now: Date,
+                     save: Bool) throws -> ApplyOutcome {
         for field in T.requiredFields where r.string(field) == nil { return .ignored(.malformed(field: field)) }
-        guard let row = try find(r.id, in: context) else {
+        let outcome: ApplyOutcome
+        if let row = try find(r.id, in: context) {
+            if row.syncDirty {
+                outcome = try mergeDirty(row, with: r, ink: ink, in: context, now: now)
+            } else {
+                adopt(r, into: row, fields: Set(T.domainFields))
+                outcome = .updated
+            }
+        } else {
             let created = T.blank(id: r.id)
             context.insert(created)
             adopt(r, into: created, fields: Set(T.domainFields))
-            try context.save()
-            return .created
+            outcome = .created
         }
-        guard row.syncDirty else {
-            adopt(r, into: row, fields: Set(T.domainFields))
-            try context.save()
-            return .updated
-        }
-        let outcome = try mergeDirty(row, with: r, ink: ink, in: context, now: now)
-        try context.save()
+        if save { try context.save() }
         return outcome
     }
 
@@ -106,28 +112,30 @@ struct TypedOperations<T: SyncCodable>: RecordOperations {
         var remaining = resolution.remainingDirtyFields
         var outcome = ApplyOutcome.merged
         if let page = row as? Page {
-            let ink = try PageInkConflict.resolve(page, server: r, ink: ink, in: context, now: now)
-            if ink.inkStillDirty { remaining.formUnion(Page.inkFields) } else { remaining.subtract(Page.inkFields) }
-            if let special = ink.outcome { outcome = special }
+            let inkResult = try PageInkConflict.resolve(page, server: r, ink: ink, in: context, now: now)
+            if inkResult.inkStillDirty { remaining.formUnion(Page.inkFields) } else { remaining.subtract(Page.inkFields) }
+            if let special = inkResult.outcome { outcome = special }
         }
         row.dirtyFields = remaining.sorted()
         row.syncDirty = !remaining.isEmpty
         return outcome
     }
 
-    func applyServerDeletion(id: UUID, in context: ModelContext) throws -> ApplyOutcome {
+    func applyServerDeletion(id: UUID, in context: ModelContext, save: Bool) throws -> ApplyOutcome {
         guard let row = try find(id, in: context) else { return .deleted }
+        let outcome: ApplyOutcome
         if row.deletedAt != nil {
             // Already in Recently Deleted here, and the other device removed it for good.
             context.delete(row)
-            try context.save()
-            return .deleted
+            outcome = .deleted
+        } else {
+            // Alive here: never delete a user's live data because the server lost the record. Upload it again.
+            row.ckSystemFields = nil
+            row.syncDirty = true
+            outcome = .resurrected
         }
-        // Alive here: never delete a user's live data because the server lost the record. Upload it again.
-        row.ckSystemFields = nil
-        row.syncDirty = true
-        try context.save()
-        return .resurrected
+        if save { try context.save() }
+        return outcome
     }
 
     func confirmSent(sent: SyncRecord, saved: SyncRecord, in context: ModelContext) throws {
@@ -142,6 +150,16 @@ struct TypedOperations<T: SyncCodable>: RecordOperations {
             page.baseStrokeIDs = sent.strings("strokeIDs") ?? []
         }
         try context.save()
+    }
+}
+
+extension TypedOperations {
+    func exists(id: UUID, in context: ModelContext) throws -> Bool { try find(id, in: context) != nil }
+
+    func forgetServerVersion(id: UUID, in context: ModelContext) throws {
+        guard let row = try find(id, in: context) else { return }
+        row.ckSystemFields = nil
+        row.syncDirty = true
     }
 }
 
