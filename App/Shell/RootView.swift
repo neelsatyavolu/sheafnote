@@ -11,6 +11,7 @@ struct RootView: View {
                 .environment(host)
                 .environment(host.services)
                 .modelContainer(host.services.container)
+                .handlesNotebookWindowActivity(host: host)
                 .task { await runBackgroundTasks(host) }
                 .onChange(of: scenePhase) { _, phase in
                     if phase == .active { Task { await runBackgroundTasks(host) } }
