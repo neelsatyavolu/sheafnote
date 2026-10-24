@@ -21,10 +21,10 @@ struct LassoOptionsRow: View {
                 filterButton(.images, symbol: "photo", title: "Images", on: filters)
                 filterButton(.text, symbol: "textformat", title: "Text", on: filters)
                 OptionsDivider()
-                Button { selectAll() } label: { Image(systemName: "selection.pin.in.out").frame(minWidth: 44, minHeight: 44) }
+                Button { selectAll() } label: { Image(systemName: "selection.pin.in.out").foregroundStyle(Theme.inkMuted).frame(minWidth: 44, minHeight: 44) }
                     .accessibilityLabel(Text("Select all on page", tableName: "InkTools"))
                     .accessibilityIdentifier("inktools.lasso.selectAll")
-                Button { paste() } label: { Image(systemName: "doc.on.clipboard").frame(minWidth: 44, minHeight: 44) }
+                Button { paste() } label: { Image(systemName: "doc.on.clipboard").foregroundStyle(Theme.inkMuted).frame(minWidth: 44, minHeight: 44) }
                     .disabled(!canPaste)
                     .accessibilityLabel(Text("Paste", tableName: "InkTools"))
                     .accessibilityIdentifier("inktools.lasso.paste")
@@ -46,9 +46,9 @@ struct LassoOptionsRow: View {
         let selected = filters.contains(filter)
         return Button { settings.toggleLassoFilter(filter) } label: {
             Image(systemName: symbol)
-                .foregroundStyle(selected ? Color.accentColor : Color.secondary)
+                .foregroundStyle(selected ? Theme.accent : Theme.inkMuted)
                 .frame(minWidth: 44, minHeight: 44)
-                .background { if selected { Circle().fill(Color.accentColor.opacity(0.15)).frame(width: 38, height: 38) } }
+                .background { if selected { Circle().fill(Theme.accent.opacity(0.15)).frame(width: 38, height: 38) } }
                 .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
@@ -69,7 +69,7 @@ struct LassoOptionsRow: View {
                 Button { insert(item) } label: { Text(item.name) }
             }
         } label: {
-            Image(systemName: "star.square.on.square").frame(minWidth: 44, minHeight: 44)
+            Image(systemName: "star.square.on.square").foregroundStyle(Theme.inkMuted).frame(minWidth: 44, minHeight: 44)
         }
         .accessibilityLabel(Text("Insert saved element", tableName: "InkTools"))
         .accessibilityIdentifier("inktools.lasso.saved")

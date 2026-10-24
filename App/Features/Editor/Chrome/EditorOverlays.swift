@@ -27,6 +27,7 @@ struct EditorOverlays: View {
         .padding(.top, 8)
         .padding(.bottom, 12)
         .allowsHitTesting(true)
+        .onChange(of: session.pageIDs.count) { old, new in if new > old { Haptics.light() } }
     }
 
     @ViewBuilder
@@ -34,9 +35,12 @@ struct EditorOverlays: View {
         if session.pageIDs.count > 1 {
             Button { showGoTo = true } label: {
                 Text("\(session.currentPageNumber) / \(session.pageIDs.count)", tableName: "Editor")
-                    .font(.footnote.monospacedDigit().weight(.medium))
+                    .font(.system(.footnote, design: .rounded).monospacedDigit().weight(.semibold))
+                    .foregroundStyle(Theme.ink)
                     .padding(.horizontal, 14).padding(.vertical, 8)
-                    .glassEffect(.regular, in: Capsule())
+                    .background(Theme.paperRaised, in: Capsule())
+                    .overlay(Capsule().strokeBorder(Theme.rule, lineWidth: 1))
+                    .shadow(color: Theme.shadowColor, radius: 6, y: 2)
             }
             .buttonStyle(.plain)
             .accessibilityLabel(Text("Page \(session.currentPageNumber) of \(session.pageIDs.count)", tableName: "Editor"))

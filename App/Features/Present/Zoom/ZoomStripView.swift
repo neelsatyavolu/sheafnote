@@ -21,8 +21,8 @@ struct ZoomStripView: View {
             )
         }
         .frame(maxWidth: .infinity, minHeight: 110, maxHeight: 110)
-        .clipShape(RoundedRectangle(cornerRadius: 12))
-        .overlay(RoundedRectangle(cornerRadius: 12).strokeBorder(Color.accentColor.opacity(0.6), lineWidth: 1.5))
+        .clipShape(RoundedRectangle(cornerRadius: Theme.Radius.control, style: .continuous))
+        .overlay(RoundedRectangle(cornerRadius: Theme.Radius.control, style: .continuous).strokeBorder(Theme.accent.opacity(0.6), lineWidth: 1.5))
         .background(GeometryReader { proxy in
             Color.clear
                 .onAppear { controller.stripLayoutChanged(size: proxy.size, displayScale: displayScale) }

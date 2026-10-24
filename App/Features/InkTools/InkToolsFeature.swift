@@ -42,9 +42,9 @@ struct StraightLineToggle: View {
         let on = settings.straightHighlighter
         Button { settings.setStraightHighlighter(!on) } label: {
             Image(systemName: "line.diagonal")
-                .foregroundStyle(on ? Color.accentColor : Color.secondary)
+                .foregroundStyle(on ? Theme.accent : Theme.inkMuted)
                 .frame(minWidth: 44, minHeight: 44)
-                .background { if on { Circle().fill(Color.accentColor.opacity(0.15)).frame(width: 38, height: 38) } }
+                .background { if on { Circle().fill(Theme.accent.opacity(0.15)).frame(width: 38, height: 38) } }
                 .contentShape(Rectangle())
         }
         .buttonStyle(.plain)

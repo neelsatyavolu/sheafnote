@@ -71,6 +71,7 @@ final class LassoTool: EditorTool {
 
     private func apply(_ pick: LassoSelector.Pick?, page: any PageContext, editor: EditorContext) {
         guard let pick else { return editor.selection.clear() }
+        Haptics.light()
         editor.selection.select(pageID: page.pageID, strokeIDs: pick.strokeIDs, elementIDs: pick.elementIDs,
                                 bounds: pick.bounds.insetBy(dx: -3, dy: -3))
     }

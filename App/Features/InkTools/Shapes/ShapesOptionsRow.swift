@@ -41,7 +41,7 @@ struct ShapesOptionsRow: View {
                 }
             } label: { Text("Shape", tableName: "InkTools") }
         } label: {
-            Image(systemName: ShapeNames.symbol(for: mode)).frame(minWidth: 44, minHeight: 44)
+            Image(systemName: ShapeNames.symbol(for: mode)).foregroundStyle(Theme.ink).frame(minWidth: 44, minHeight: 44)
         }
         .accessibilityLabel(Text("Shape type, \(String(localized: ShapeNames.title(for: mode)))", tableName: "InkTools"))
         .accessibilityIdentifier("inktools.shapes.mode")
@@ -51,9 +51,7 @@ struct ShapesOptionsRow: View {
 
     private func swatch(_ color: InkPalette.Entry, selected: Bool) -> some View {
         Button { settings.updateShape { $0.strokeHex = color.hex } } label: {
-            Circle().fill(Color(hex: color.hex)).frame(width: 26, height: 26)
-                .overlay(Circle().strokeBorder(.primary.opacity(0.25), lineWidth: 1))
-                .overlay { if selected { Circle().strokeBorder(Color.accentColor, lineWidth: 3).padding(-4) } }
+            PresetDot(color: Color(hex: color.hex), selected: selected)
                 .frame(minWidth: 44, minHeight: 44)
                 .contentShape(Rectangle())
         }
@@ -68,8 +66,7 @@ struct ShapesOptionsRow: View {
             ForEach(Array(InkPalette.lineWidths.enumerated()), id: \.offset) { index, width in
                 let selected = abs(current - width) < 0.01
                 Button { settings.updateShape { $0.lineWidth = width } } label: {
-                    Circle().fill(selected ? Color.accentColor : Color.primary.opacity(0.7))
-                        .frame(width: 6 + CGFloat(width) * 2, height: 6 + CGFloat(width) * 2)
+                    WidthStroke(width: width * 2, tint: selected ? Theme.accent : Theme.inkMuted)
                         .frame(minWidth: 44, minHeight: 44)
                         .contentShape(Rectangle())
                 }
@@ -87,7 +84,7 @@ struct ShapesOptionsRow: View {
     private func fillButton(_ shape: ShapeToolSettings) -> some View {
         Button { showFill = true } label: {
             ZStack {
-                Image(systemName: "drop.fill").opacity(shape.fillHex == nil ? 1 : 0.35)
+                Image(systemName: "drop.fill").foregroundStyle(Theme.inkMuted).opacity(shape.fillHex == nil ? 1 : 0.35)
                 if let fill = shape.fillHex { Circle().fill(Color(hex: fill)).frame(width: 18, height: 18) }
             }
             .frame(minWidth: 44, minHeight: 44)
@@ -116,9 +113,7 @@ struct ShapeFillPicker: View {
                 LazyVGrid(columns: Array(repeating: GridItem(.fixed(44)), count: 4), spacing: 4) {
                     ForEach(InkPalette.colors) { color in
                         Button { settings.updateShape { $0.fillHex = color.hex } } label: {
-                            Circle().fill(Color(hex: color.hex)).frame(width: 28, height: 28)
-                                .overlay(Circle().strokeBorder(.primary.opacity(0.25), lineWidth: 1))
-                                .overlay { if color.hex == fill { Circle().strokeBorder(Color.accentColor, lineWidth: 3).padding(-4) } }
+                            PresetDot(color: Color(hex: color.hex), selected: color.hex == fill, diameter: 28)
                                 .frame(width: 44, height: 44)
                         }
                         .buttonStyle(.plain)

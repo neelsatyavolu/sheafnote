@@ -107,8 +107,8 @@ final class EditorPresetStore: ToolPresetStore {
         let ink = defaultInk(for: tool)
         let colors: [String]
         switch tool {
-        case .highlighter: colors = ["#FFE066", "#8CE99A", "#FFA8D1", "#74C0FC"]
-        default: colors = ["#1B1B1F", "#2F5BEA", "#D6336C", "#2B8A3E"]
+        case .highlighter: colors = ["#FFC93C", "#3CC9A0", "#FF6FA8", "#3D9BFF"]  // sunflower, mint, bubblegum, sky
+        default: colors = ["#2B2420", "#F2542D", "#3D9BFF", "#3CC9A0"]  // ink, tangerine, sky, mint
         }
         let width = defaultWidths(for: tool).selected
         return colors.enumerated().map { i, hex in

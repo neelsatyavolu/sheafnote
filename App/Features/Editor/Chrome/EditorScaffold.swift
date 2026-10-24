@@ -17,6 +17,7 @@ struct EditorScaffold: View {
     @State private var showGoTo = false
     @State private var goToText = ""
     @Environment(\.horizontalSizeClass) private var sizeClass
+    @Environment(\.colorScheme) private var colorScheme
     @Environment(\.dismiss) private var dismiss
     @Environment(\.scenePhase) private var scenePhase
 
@@ -35,7 +36,7 @@ struct EditorScaffold: View {
     var body: some View {
         NavigationStack {
             ZStack {
-                Color(.systemGray5).ignoresSafeArea()
+                Theme.backdrop(colorScheme).ignoresSafeArea()
                 if claimed == true {
                     NotebookCanvasHost(session: session).ignoresSafeArea()
                     EditorOverlays(session: session, showGoTo: $showGoTo)
@@ -51,6 +52,7 @@ struct EditorScaffold: View {
                 OptionsRowHost(session: session).padding(.vertical, 6)
             }
             .toolbar { toolbarContent }
+            .toolbarBackground(Theme.paper.opacity(0.55), for: .navigationBar, .bottomBar)
             .navigationBarTitleDisplayMode(.inline)
             .navigationBarBackButtonHidden()
             .accessibilityElement(children: .contain)
@@ -93,6 +95,11 @@ struct EditorScaffold: View {
         }
         if !compact {
             ToolbarItem(placement: .principal) { ToolRow(session: session) }
+        } else {
+            ToolbarItem(placement: .principal) {
+                Text(notebook.title).font(Theme.notebookTitle()).foregroundStyle(Theme.ink).lineLimit(1)
+                    .accessibilityAddTraits(.isHeader)
+            }
         }
         ToolbarItemGroup(placement: .topBarTrailing) {
             if !compact { barItems(leading: false) }
