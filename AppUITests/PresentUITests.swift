@@ -21,17 +21,30 @@ final class PresentUITests: XCTestCase {
         item.tap()
     }
 
+    /// Waits until an element stops moving (the options row slides in when a tool is chosen), so a tap lands where it was aimed.
+    @MainActor private func waitUntilStill(_ element: XCUIElement) {
+        var last = element.frame
+        for _ in 0..<20 {
+            Thread.sleep(forTimeInterval: 0.3)
+            let now = element.frame
+            if now == last { return }
+            last = now
+        }
+    }
+
     @MainActor func testLaserToolIsSelectableAndShowsItsOptions() {
         let app = openNotebook()
         let laser = app.buttons["editor.tool.laser"]
         XCTAssertTrue(laser.waitForExistence(timeout: 5))
         laser.tap()
         XCTAssertTrue(laser.isSelected)
-        XCTAssertTrue(app.buttons["present.laser.color.green"].waitForExistence(timeout: 5))
-        app.buttons["present.laser.color.green"].tap()
+        let green = app.buttons["present.laser.color.green"]
+        XCTAssertTrue(green.waitForExistence(timeout: 5))
+        waitUntilStill(green)
+        green.tap()
         let selected = NSPredicate(format: "value == %@", "Selected")
-        XCTAssertEqual(XCTWaiter().wait(for: [XCTNSPredicateExpectation(predicate: selected, object: app.buttons["present.laser.color.green"])],
-                                        timeout: 5), .completed, "the tapped colour should become selected")
+        XCTAssertEqual(XCTWaiter().wait(for: [XCTNSPredicateExpectation(predicate: selected, object: green)], timeout: 5), .completed,
+                       "the tapped colour should become selected")
     }
 
     @MainActor func testLaserDragDoesNotWriteInk() {

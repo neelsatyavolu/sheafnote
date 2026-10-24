@@ -45,6 +45,22 @@ import SheafnoteCore
         #expect(!controller.isAnimating)
     }
 
+    @Test func colorStyleAndSizeChangesAreApplied() {
+        let defaults = UserDefaults.standard
+        let keys = ["present.laser.color", "present.laser.diameter", "present.laser.style"]
+        let saved = keys.map { defaults.object(forKey: $0) }
+        defer { for (key, value) in zip(keys, saved) { defaults.set(value, forKey: key) } }
+
+        let controller = LaserController()
+        controller.setColor("green")
+        controller.setStyle(.dot)
+        controller.setDiameter(30)
+        #expect(controller.colorID == "green")
+        #expect(controller.model.style == .dot)
+        #expect(controller.diameter == 30)
+        #expect(LaserController().colorID == "green", "the choice is remembered")
+    }
+
     @Test func movingToAnotherPageStartsANewTrail() {
         let controller = LaserController()
         let first = UUID(), second = UUID()
