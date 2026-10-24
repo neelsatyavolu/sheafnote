@@ -1,11 +1,14 @@
 import SwiftUI
 import UIKit
 
-/// A window that only reacts to touches that land on its content, so the notebook underneath stays usable.
+/// A window that only reacts to touches inside `interactiveFrame` (the floating panel), so the notebook underneath
+/// stays usable. SwiftUI hosting views report themselves as the hit view, so the panel's frame is tracked explicitly.
 final class PassthroughWindow: UIWindow {
+    var interactiveFrame: CGRect = .zero
+
     override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
-        let hit = super.hitTest(point, with: event)
-        return hit === rootViewController?.view ? nil : hit
+        guard interactiveFrame.contains(point) else { return nil }
+        return super.hitTest(point, with: event)
     }
 }
 
@@ -24,10 +27,12 @@ final class ZoomPanelPresenter {
         if shownFor == notebookID, window != nil { return }
         hide()
         guard let scene = Self.activeWindowScene() else { return }
-        let content = ZoomPanelHost(controller: controller) { [weak self] in self?.close(notebookID: notebookID) }
+        let panel = PassthroughWindow(windowScene: scene)
+        let content = ZoomPanelHost(controller: controller,
+                                    onFrame: { [weak panel] in panel?.interactiveFrame = $0 },
+                                    onClose: { [weak self] in self?.close(notebookID: notebookID) })
         let host = UIHostingController(rootView: content)
         host.view.backgroundColor = .clear
-        let panel = PassthroughWindow(windowScene: scene)
         panel.windowLevel = .normal + 1
         panel.backgroundColor = .clear
         panel.rootViewController = host
@@ -57,12 +62,14 @@ final class ZoomPanelPresenter {
 
 private struct ZoomPanelHost: View {
     let controller: ZoomWindowController
+    let onFrame: (CGRect) -> Void
     let onClose: () -> Void
 
     var body: some View {
         VStack {
             Spacer()
             ZoomPanelView(controller: controller, onClose: onClose)
+                .onGeometryChange(for: CGRect.self) { $0.frame(in: .global) } action: { onFrame($0) }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
     }

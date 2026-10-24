@@ -22,14 +22,9 @@ final class LaserController {
     /// Page points per screen point at the last touch, so the dot looks the same size at any zoom.
     private(set) var pageUnitsPerPoint: CGFloat = 1
     private(set) var isAnimating = false
-    var colorID: String { didSet { Self.save(colorID, key: Keys.color) } }
-    var diameter: Double { didSet { Self.save(diameter, key: Keys.diameter) } }
-    var style: LaserTrailModel.Style {
-        didSet {
-            model.style = style
-            Self.save(style.rawValue, key: Keys.style)
-        }
-    }
+    private(set) var colorID: String
+    private(set) var diameter: Double
+    private(set) var style: LaserTrailModel.Style
 
     @ObservationIgnored private var fadeTask: Task<Void, Never>?
 
@@ -47,6 +42,22 @@ final class LaserController {
     }
 
     var color: Color { LaserColor.color(for: colorID) }
+
+    func setColor(_ id: String) {
+        colorID = id
+        Self.save(id, key: Keys.color)
+    }
+
+    func setDiameter(_ value: Double) {
+        diameter = value
+        Self.save(value, key: Keys.diameter)
+    }
+
+    func setStyle(_ value: LaserTrailModel.Style) {
+        style = value
+        model.style = value
+        Self.save(value.rawValue, key: Keys.style)
+    }
 
     static func now() -> TimeInterval { ProcessInfo.processInfo.systemUptime }
 

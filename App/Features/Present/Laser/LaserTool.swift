@@ -26,11 +26,11 @@ final class LaserTool: EditorTool {
 }
 
 struct LaserOptionsView: View {
-    @Bindable var controller: LaserController
+    let controller: LaserController
 
     var body: some View {
         HStack(spacing: 14) {
-            Picker(selection: $controller.style) {
+            Picker(selection: Binding(get: { controller.style }, set: { controller.setStyle($0) })) {
                 Text("Trail", tableName: "Present").tag(LaserTrailModel.Style.trail)
                 Text("Dot", tableName: "Present").tag(LaserTrailModel.Style.dot)
             } label: { Text("Laser style", tableName: "Present") }
@@ -40,19 +40,20 @@ struct LaserOptionsView: View {
             HStack(spacing: 8) {
                 ForEach(LaserController.palette) { swatch in
                     let selected = controller.colorID == swatch.id
-                    Button { controller.colorID = swatch.id } label: {
+                    Button { controller.setColor(swatch.id) } label: {
                         Circle().fill(swatch.color).frame(width: 26, height: 26)
                             .overlay(Circle().strokeBorder(Color.primary, lineWidth: selected ? 2.5 : 0).padding(-3))
                     }
                     .buttonStyle(.plain)
                     .accessibilityLabel(Text(swatch.name))
+                    .accessibilityValue(selected ? Text("Selected", tableName: "Present") : Text(verbatim: ""))
                     .accessibilityAddTraits(selected ? .isSelected : [])
                     .accessibilityIdentifier("present.laser.color.\(swatch.id)")
                 }
             }
             HStack(spacing: 6) {
                 Image(systemName: "circle.fill").imageScale(.small).accessibilityHidden(true)
-                Slider(value: $controller.diameter, in: 8...40) { Text("Laser size", tableName: "Present") }
+                Slider(value: Binding(get: { controller.diameter }, set: { controller.setDiameter($0) }), in: 8...40) { Text("Laser size", tableName: "Present") }
                     .frame(width: 120)
                     .accessibilityIdentifier("present.laser.size")
                 Image(systemName: "circle.fill").imageScale(.large).accessibilityHidden(true)

@@ -6,6 +6,7 @@ struct PresentationOptionsSheet: View {
     let editor: EditorContext
     @Bindable var controller: PresentationController
     @Environment(\.dismiss) private var dismiss
+    @State private var startRequested = false
 
     var body: some View {
         NavigationStack {
@@ -36,6 +37,7 @@ struct PresentationOptionsSheet: View {
                     Section { Text(notice).foregroundStyle(.orange) }
                 }
             }
+            .onDisappear { if startRequested { startRequested = false; controller.start(editor: editor) } }
             .navigationTitle(Text("Present", tableName: "Present"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -51,9 +53,10 @@ struct PresentationOptionsSheet: View {
         }
     }
 
+    /// Starts once the sheet is fully gone, so the presenter is never presented from a sheet that is closing.
     private func start() {
+        startRequested = true
         dismiss()
-        controller.start(editor: editor)
     }
 }
 
