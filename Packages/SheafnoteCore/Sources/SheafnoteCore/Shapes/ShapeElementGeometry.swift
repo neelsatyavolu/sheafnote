@@ -13,6 +13,27 @@ public enum ShapeElementGeometry {
                             zIndex: zIndex, payload: PayloadCodec.encode(payload))
     }
 
+    /// The element with a new outline colour and/or line width. A damaged payload is returned unchanged.
+    public static func restyled(_ element: ElementValue, strokeHex: String? = nil, lineWidth: Double? = nil) -> ElementValue {
+        guard element.kind == .shape, var payload = PayloadCodec.decode(ShapePayload.self, from: element.payload) else { return element }
+        if let strokeHex { payload.strokeHex = strokeHex }
+        if let lineWidth { payload.lineWidth = lineWidth }
+        var copy = element
+        copy.payload = PayloadCodec.encode(payload)
+        return copy
+    }
+
+    /// The element with its fill set (`nil` removes the fill). Open shapes (line, arrow, arc) cannot be filled and a
+    /// damaged payload is returned unchanged.
+    public static func refilled(_ element: ElementValue, fillHex: String?) -> ElementValue {
+        guard element.kind == .shape, var payload = PayloadCodec.decode(ShapePayload.self, from: element.payload) else { return element }
+        let closed: Set<ShapeKind> = [.rectangle, .ellipse, .triangle, .polygon]
+        payload.fillHex = closed.contains(payload.shapeKind) ? fillHex : nil
+        var copy = element
+        copy.payload = PayloadCodec.encode(payload)
+        return copy
+    }
+
     /// The figure a shape element draws, in page coordinates (rotation applied). Nil for a damaged payload.
     public static func figure(of element: ElementValue) -> ShapeFigure? {
         guard element.kind == .shape, let payload = PayloadCodec.decode(ShapePayload.self, from: element.payload) else { return nil }

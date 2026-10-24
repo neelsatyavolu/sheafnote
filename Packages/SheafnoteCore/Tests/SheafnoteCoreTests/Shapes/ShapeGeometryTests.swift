@@ -212,6 +212,33 @@ import Testing
         #expect(PolygonMath.bounds(of: local).origin == .zero || abs(PolygonMath.bounds(of: local).minX) < 0.01)
     }
 
+    @Test func restyleChangesOnlyWhatIsAskedFor() throws {
+        let e = element(.rectangle(center: .zero, size: CGSize(width: 40, height: 40), rotation: 0), fill: "#FFFF00", width: 3)
+        let recolored = ShapeElementGeometry.restyled(e, strokeHex: "#FF0000")
+        let payload = try #require(PayloadCodec.decode(ShapePayload.self, from: recolored.payload))
+        #expect(payload.strokeHex == "#FF0000" && payload.lineWidth == 3 && payload.fillHex == "#FFFF00")
+        #expect(recolored.id == e.id && recolored.frame == e.frame)
+        let thicker = try #require(PayloadCodec.decode(ShapePayload.self, from: ShapeElementGeometry.restyled(e, lineWidth: 9).payload))
+        #expect(thicker.lineWidth == 9 && thicker.strokeHex == "#112233")
+        let text = ElementValue(pageID: page, kind: .text, frame: .zero)
+        #expect(ShapeElementGeometry.restyled(text, strokeHex: "#FF0000") == text)
+        let broken = ElementValue(pageID: page, kind: .shape, frame: .zero, payload: Data([1]))
+        #expect(ShapeElementGeometry.restyled(broken, strokeHex: "#FF0000") == broken)
+    }
+
+    @Test func refillSetsAndClearsTheFillOfClosedShapesOnly() throws {
+        let box = element(.rectangle(center: .zero, size: CGSize(width: 40, height: 40), rotation: 0))
+        let filled = ShapeElementGeometry.refilled(box, fillHex: "#00FF00")
+        #expect(try #require(PayloadCodec.decode(ShapePayload.self, from: filled.payload)).fillHex == "#00FF00")
+        let cleared = ShapeElementGeometry.refilled(filled, fillHex: nil)
+        #expect(try #require(PayloadCodec.decode(ShapePayload.self, from: cleared.payload)).fillHex == nil)
+        let line = element(.line(from: .zero, to: CGPoint(x: 50, y: 0)))
+        let attempt = ShapeElementGeometry.refilled(line, fillHex: "#00FF00")
+        #expect(try #require(PayloadCodec.decode(ShapePayload.self, from: attempt.payload)).fillHex == nil)
+        let broken = ElementValue(pageID: page, kind: .shape, frame: .zero, payload: Data([1]))
+        #expect(ShapeElementGeometry.refilled(broken, fillHex: "#00FF00") == broken)
+    }
+
     @Test func foreignAndBrokenPayloadsGiveNoFigure() {
         let text = ElementValue(pageID: page, kind: .text, frame: CGRect(x: 0, y: 0, width: 10, height: 10))
         #expect(ShapeElementGeometry.figure(of: text) == nil)
