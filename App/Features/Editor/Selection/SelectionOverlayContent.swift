@@ -11,6 +11,9 @@ struct SelectionOverlayContent: View {
     @State private var lift: (image: UIImage, rect: CGRect)?
     @State private var dragActive = false
 
+    /// Beyond this width (in screen points) the floating menu scrolls, so many actions still fit on an iPhone.
+    private static let maxMenuWidth: CGFloat = 300
+
     private var selection: SelectionModel { session.selection }
 
     var body: some View {
@@ -89,16 +92,19 @@ struct SelectionOverlayContent: View {
         if !actions.isEmpty, selection.livePreviewTransform == .identity {
             let top = corners.map(\.y).min() ?? 0
             let centerX = ((corners.map(\.x).min() ?? 0) + (corners.map(\.x).max() ?? 0)) / 2
-            HStack(spacing: 2) {
-                ForEach(actions, id: \.id) { action in
-                    Button { run(action) } label: {
-                        Label { Text(action.title) } icon: { Image(systemName: action.symbolName) }
-                            .labelStyle(.iconOnly).frame(width: 40, height: 40)
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 2) {
+                    ForEach(actions, id: \.id) { action in
+                        Button { run(action) } label: {
+                            Label { Text(action.title) } icon: { Image(systemName: action.symbolName) }
+                                .labelStyle(.iconOnly).frame(width: 40, height: 40)
+                        }
+                        .accessibilityLabel(Text(action.title))
+                        .accessibilityIdentifier("editor.selection.\(action.id)")
                     }
-                    .accessibilityLabel(Text(action.title))
-                    .accessibilityIdentifier("editor.selection.\(action.id)")
                 }
             }
+            .frame(width: min(CGFloat(actions.count) * 42, Self.maxMenuWidth), height: 44)
             .padding(.horizontal, 6)
             .glassEffect(.regular, in: Capsule())
             .scaleEffect(1 / zoom)
