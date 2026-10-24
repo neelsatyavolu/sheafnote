@@ -26,16 +26,15 @@ struct LockPanel: View {
 
     var body: some View {
         ZStack {
-            Rectangle().fill(.background).ignoresSafeArea()
+            Theme.paper.ignoresSafeArea()
             VStack(spacing: 18) {
-                Image(systemName: "lock.fill")
-                    .font(.system(size: 44, weight: .regular))
-                    .foregroundStyle(.tint)
-                    .accessibilityHidden(true)
-                title.font(.title2.weight(.semibold)).multilineTextAlignment(.center)
+                Doodle(kind: .lock, size: 88)
+                title.font(Theme.title(.title)).foregroundStyle(Theme.ink).multilineTextAlignment(.center)
+                Text("Your notes are tucked away. Unlock to pick up where you left off.", tableName: "DocTypes")
+                    .font(.callout).foregroundStyle(Theme.inkMuted).multilineTextAlignment(.center)
                 if let message = controller.message {
                     Text(message)
-                        .font(.callout).foregroundStyle(.secondary).multilineTextAlignment(.center)
+                        .font(.callout).foregroundStyle(Theme.inkMuted).multilineTextAlignment(.center)
                         .accessibilityIdentifier("lock.message")
                 }
                 Button(action: unlock) {
@@ -43,6 +42,7 @@ struct LockPanel: View {
                         .frame(minWidth: 160)
                 }
                 .buttonStyle(.borderedProminent)
+                .tint(Theme.accent)
                 .controlSize(.large)
                 .disabled(controller.isAuthenticating)
                 .accessibilityLabel(Text("Unlock with Face ID, Touch ID or passcode", tableName: "DocTypes"))
@@ -50,6 +50,7 @@ struct LockPanel: View {
                 if controller.canContinueWithoutAuthentication {
                     Button(action: continueAnyway) { Text("Continue Without Lock", tableName: "DocTypes") }
                         .buttonStyle(.bordered)
+                        .tint(Theme.inkMuted)
                         .accessibilityIdentifier("lock.continue")
                 }
                 if let secondary { secondary }
@@ -66,7 +67,7 @@ struct PrivacyCover: View {
     var body: some View {
         ZStack {
             Rectangle().fill(.regularMaterial)
-            Color(.systemBackground).opacity(0.55)
+            Theme.paper.opacity(0.55)
             Image(systemName: "lock.fill")
                 .font(.system(size: 40)).foregroundStyle(.secondary)
                 .accessibilityHidden(true)
@@ -92,7 +93,7 @@ struct LockOverlayRoot: View {
 /// Stand-in drawn inside the view tree so a locked app never shows content, even before the overlay window exists.
 private struct LockedBackdrop: View {
     var body: some View {
-        Rectangle().fill(.background).ignoresSafeArea()
+        Theme.paper.ignoresSafeArea()
     }
 }
 

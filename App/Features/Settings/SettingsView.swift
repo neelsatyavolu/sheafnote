@@ -9,14 +9,17 @@ struct SettingsView: View {
         NavigationStack {
             List(host.settings.sections) { section in
                 NavigationLink {
-                    Form { section.makeView(host.services) }
+                    Form { section.makeView(host.services).paperRows() }
+                        .paperList()
                         .navigationTitle(Text(section.title))
                         .navigationBarTitleDisplayMode(.inline)
                 } label: {
                     Label { Text(section.title) } icon: { Image(systemName: section.symbolName) }
                 }
+                .paperRows()
                 .accessibilityIdentifier("settings.\(section.id)")
             }
+            .paperList()
             .navigationTitle("Settings")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -24,5 +27,6 @@ struct SettingsView: View {
             }
         }
         .presentationDetents([.large])
+        .presentationBackground(Theme.paper)
     }
 }

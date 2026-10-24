@@ -20,7 +20,7 @@ private struct GeneralSettingsContent: View {
     }
 
     var body: some View {
-        Section("Default Paper") {
+        Section {
             TemplatePickerView(template: $defaults.template, paperColor: $defaults.color,
                                pageSize: defaults.size.size(orientation: defaults.orientation))
             Picker("Size", selection: $defaults.size) {
@@ -30,6 +30,8 @@ private struct GeneralSettingsContent: View {
                 ForEach(PageOrientation.allCases, id: \.self) { Text($0.title).tag($0) }
             }
             .disabled(!defaults.size.supportsOrientation)
+        } header: {
+            Text("Default Paper").paperHeader()
         }
         Section {
             Picker("Units", selection: $units) {
@@ -71,7 +73,7 @@ private struct AboutContent: View {
             Label("No tracking. No analytics. No accounts.", systemImage: "hand.raised")
             Label("Your notes stay on your devices and in your own iCloud.", systemImage: "icloud")
         } header: {
-            Text("Privacy")
+            Text("Privacy").paperHeader()
         } footer: {
             Text("Sheafnote is free and open source software. It only talks to the network to sync with your iCloud, and only when you leave sync on.")
         }

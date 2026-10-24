@@ -26,10 +26,14 @@ struct NotebookSearchSheet: View {
                     Button { go(to: result.pageID) } label: {
                         PageHitRow(result: result, showsNotebookTitle: false, services: service.services, highlighter: highlighter)
                     }
-                    .foregroundStyle(.primary)
+                    .foregroundStyle(Theme.ink)
+                    .searchCardRow(padded: false)
                     .accessibilityIdentifier("search.notebook.result.\(result.pageNumber)")
                 }
             }
+            .listStyle(.plain)
+            .scrollContentBackground(.hidden)
+            .background(Theme.paper)
             .overlay { placeholder }
             .searchable(text: $query, placement: .navigationBarDrawer(displayMode: .always),
                         prompt: Text("Search this notebook", tableName: "Search"))
@@ -48,18 +52,19 @@ struct NotebookSearchSheet: View {
             }
             .task { await service.refreshIndex() }
         }
+        .presentationBackground(Theme.paper)
         .accessibilityIdentifier("search.notebook")
     }
 
     @ViewBuilder private var placeholder: some View {
         if !model.hasQuery {
-            ContentUnavailableView {
-                Label { Text("Search This Notebook", tableName: "Search") } icon: { Image(systemName: "magnifyingglass") }
-            } description: {
-                Text("Find words in handwriting, typed text and PDF pages.", tableName: "Search")
-            }
+            DoodleEmptyState(kind: .search,
+                             title: Text("Search This Notebook", tableName: "Search"),
+                             message: Text("Find words in handwriting, typed text and PDF pages.", tableName: "Search"))
         } else if model.isEmpty {
-            ContentUnavailableView.search(text: query)
+            DoodleEmptyState(kind: .search,
+                             title: Text("No Results", tableName: "Search"),
+                             message: Text("Nothing matches \u{201C}\(query)\u{201D}. Try another word or a shorter one.", tableName: "Search"))
         }
     }
 

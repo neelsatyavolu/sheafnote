@@ -40,8 +40,11 @@ struct TemplatePickerView: View {
                     } label: {
                         Text(cat.title).font(.subheadline.weight(.medium))
                             .padding(.horizontal, 14).padding(.vertical, 7)
-                            .background(Capsule().fill(category == cat ? Color.accentColor : Color(.secondarySystemFill)))
-                            .foregroundStyle(category == cat ? Color.white : Color.primary)
+                            .background(RoundedRectangle(cornerRadius: Theme.Radius.control, style: .continuous)
+                                .fill(category == cat ? Theme.accent : Theme.paperRaised))
+                            .overlay(RoundedRectangle(cornerRadius: Theme.Radius.control, style: .continuous)
+                                .stroke(Theme.rule, lineWidth: category == cat ? 0 : 1))
+                            .foregroundStyle(category == cat ? Theme.paper : Theme.ink)
                     }
                     .buttonStyle(.plain)
                     .accessibilityAddTraits(category == cat ? .isSelected : [])
@@ -59,11 +62,13 @@ struct TemplatePickerView: View {
                         VStack(spacing: 6) {
                             PaperPreviewView(template: TemplateSpec(kind: kind), color: paperColor, pageSize: pageSize)
                                 .frame(width: previewWidth)
+                                .shadow(color: Theme.shadowColor, radius: 6, y: 3)
                                 .padding(3)
                                 .overlay(RoundedRectangle(cornerRadius: 4)
-                                    .stroke(Color.accentColor, lineWidth: template.kind == kind ? 3 : 0))
+                                    .stroke(Theme.accent, lineWidth: template.kind == kind ? 3 : 0))
                             Text(kind.title).font(.caption).multilineTextAlignment(.center)
-                                .foregroundStyle(template.kind == kind ? Color.accentColor : .secondary)
+                                .foregroundStyle(template.kind == kind ? Theme.ink : Theme.inkMuted)
+                                .fontWeight(template.kind == kind ? .semibold : .regular)
                                 .frame(width: previewWidth)
                         }
                     }
@@ -75,5 +80,6 @@ struct TemplatePickerView: View {
             }
             .padding(.vertical, 4)
         }
+        .scrollClipDisabled()
     }
 }

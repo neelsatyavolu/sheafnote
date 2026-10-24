@@ -12,11 +12,11 @@ struct PageThumbnailView: View {
     var body: some View {
         let size = services.pages.page(id: pageID)?.size ?? CGSize(width: 595, height: 842)
         ZStack {
-            Rectangle().fill(Color(.secondarySystemBackground))
+            Rectangle().fill(Theme.paper)
             if let image { Image(decorative: image, scale: 2).resizable().scaledToFit() }
         }
         .aspectRatio(size.width / max(size.height, 1), contentMode: .fit)
-        .shadow(color: .black.opacity(0.18), radius: 3, y: 1)
+        .shadow(color: Theme.shadowColor, radius: 4, y: 2)
         .task(id: pageID) { image = await services.pageRenderer.thumbnail(pageID: pageID, width: width) }
     }
 }

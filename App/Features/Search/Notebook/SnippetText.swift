@@ -10,7 +10,7 @@ enum SnippetText {
             let lower = text.index(text.startIndex, offsetByCharacters: range.lowerBound)
             let upper = text.index(lower, offsetByCharacters: range.count)
             text[lower..<upper].inlinePresentationIntent = .stronglyEmphasized
-            text[lower..<upper].backgroundColor = Color.yellow.opacity(0.35)
+            text[lower..<upper].backgroundColor = Theme.sunflower.opacity(0.4)
         }
         return text
     }

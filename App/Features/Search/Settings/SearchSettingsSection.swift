@@ -32,7 +32,7 @@ private struct SearchSettingsContent: View {
             } label: { Text("Handwriting Language", tableName: "Search") }
             .accessibilityIdentifier("settings.search.language")
         } header: {
-            Text("Search", tableName: "Search")
+            Text("Search", tableName: "Search").paperHeader()
         } footer: {
             Text("Sheafnote reads your handwriting on this device so you can search it. Automatic tries English first. A new language applies to pages read from now on; rebuild the index to apply it to everything.", tableName: "Search")
         }

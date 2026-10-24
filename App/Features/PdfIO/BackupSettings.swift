@@ -67,7 +67,7 @@ private struct BackupSettingsContent: View {
                     .foregroundStyle(.red).accessibilityIdentifier("backup.error")
             }
         } header: {
-            Text("Backup", tableName: "PdfIO")
+            Text("Backup", tableName: "PdfIO").paperHeader()
         } footer: {
             Text("Once a day, when something changed, Sheafnote saves a backup file to the folder you choose. It only removes older backup files it made itself, beyond the number you keep.", tableName: "PdfIO")
         }
@@ -95,7 +95,7 @@ private struct BackupSettingsContent: View {
             .disabled(isRestoring)
             .accessibilityIdentifier("backup.import")
         } header: {
-            Text("Backup files", tableName: "PdfIO")
+            Text("Backup files", tableName: "PdfIO").paperHeader()
         } footer: {
             Text("A .sheafnote file holds your notebooks, writing and attachments. Importing adds them as new copies and never changes what you already have.", tableName: "PdfIO")
         }
@@ -152,6 +152,7 @@ struct LibraryExportSheet: View {
                     Label { Text(message) } icon: { Image(systemName: "exclamationmark.triangle") }.foregroundStyle(.red)
                 }
             }
+            .paperList()
             .navigationTitle(Text("Export Library", tableName: "PdfIO"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar { ToolbarItem(placement: .cancellationAction) { Button { dismiss() } label: { Text("Done", tableName: "PdfIO") } } }

@@ -18,13 +18,12 @@ struct BookmarksTabView: View {
         List {
             ForEach(items) { item in row(item) }
         }
+        .paperList()
         .overlay {
             if items.isEmpty {
-                ContentUnavailableView {
-                    Label { Text("No Bookmarks", tableName: "Search") } icon: { Image(systemName: "bookmark") }
-                } description: {
-                    Text("Tap the bookmark button in the toolbar to mark a page.", tableName: "Search")
-                }
+                DoodleEmptyState(kind: .cards,
+                                 title: Text("No Bookmarks", tableName: "Search"),
+                                 message: Text("Tap the bookmark button in the toolbar to mark a page.", tableName: "Search"))
             }
         }
         .task { reload() }
@@ -50,8 +49,8 @@ struct BookmarksTabView: View {
                 PageThumbnailView(pageID: item.pageID, services: editor.services, width: 160)
                     .frame(width: 56).accessibilityHidden(true)
                 VStack(alignment: .leading, spacing: 2) {
-                    Text(item.title ?? pageName(number)).font(.headline)
-                    if item.title != nil { Text(pageName(number)).font(.subheadline).foregroundStyle(.secondary) }
+                    Text(item.title ?? pageName(number)).font(.headline).foregroundStyle(Theme.ink)
+                    if item.title != nil { Text(pageName(number)).font(.subheadline).foregroundStyle(Theme.inkMuted) }
                 }
                 Spacer(minLength: 0)
             }

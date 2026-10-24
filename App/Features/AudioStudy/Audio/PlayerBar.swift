@@ -56,7 +56,7 @@ struct PlayerBar: View {
                 .accessibilityIdentifier("audio.player.scrubber")
             Text(AudioTimeFormat.clock(player.duration)).font(.caption.monospacedDigit())
         }
-        .foregroundStyle(.secondary)
+        .foregroundStyle(Theme.inkMuted)
     }
 
     private var speedMenu: some View {

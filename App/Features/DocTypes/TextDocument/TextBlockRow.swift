@@ -36,7 +36,7 @@ struct TextBlockRow: View {
         .italic(block.italic)
         .underline(block.underline)
         .strikethrough(block.kind == .checklist && block.checked)
-        .foregroundStyle(block.kind == .checklist && block.checked ? .secondary : .primary)
+        .foregroundStyle(block.kind == .checklist && block.checked ? Theme.inkMuted : Theme.ink)
         .focused(focus, equals: block.id)
         .disabled(!model.isEditable)
         .accessibilityLabel(Text(accessibilityName))
@@ -52,7 +52,7 @@ struct TextBlockRow: View {
         case .checklist:
             Button { model.change { $0.togglingChecked(for: block.id) } } label: {
                 Image(systemName: block.checked ? "checkmark.circle.fill" : "circle")
-                    .font(font).foregroundStyle(block.checked ? Color.accentColor : .secondary)
+                    .font(font).foregroundStyle(block.checked ? Theme.accent : Theme.inkMuted)
             }
             .buttonStyle(.plain)
             .accessibilityLabel(Text("Checkbox", tableName: "DocTypes"))
