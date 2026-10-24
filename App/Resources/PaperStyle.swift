@@ -29,13 +29,6 @@ extension View {
     }
 }
 
-/// Light haptics for primary actions.
-enum Haptics {
-    @MainActor static func light() {
-        UIImpactFeedbackGenerator(style: .light).impactOccurred()
-    }
-}
-
 /// A few hand-drawn ink strokes for empty states.
 enum DoodleKind {
     case search, cards, tray, lock

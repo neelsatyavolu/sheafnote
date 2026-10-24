@@ -139,14 +139,14 @@ enum InkPalette {
     }
 
     static let colors: [Entry] = [
-        Entry(hex: "#1B1B1F", name: LocalizedStringResource("Black", table: "InkTools")),
-        Entry(hex: "#2F5BEA", name: LocalizedStringResource("Blue", table: "InkTools")),
-        Entry(hex: "#D6336C", name: LocalizedStringResource("Pink", table: "InkTools")),
-        Entry(hex: "#2B8A3E", name: LocalizedStringResource("Green", table: "InkTools")),
-        Entry(hex: "#E8590C", name: LocalizedStringResource("Orange", table: "InkTools")),
-        Entry(hex: "#F0A500", name: LocalizedStringResource("Yellow", table: "InkTools")),
-        Entry(hex: "#7048E8", name: LocalizedStringResource("Purple", table: "InkTools")),
-        Entry(hex: "#868E96", name: LocalizedStringResource("Gray", table: "InkTools")),
+        Entry(hex: "#2B2420", name: LocalizedStringResource("Ink", table: "InkTools")),
+        Entry(hex: "#3D9BFF", name: LocalizedStringResource("Sky", table: "InkTools")),
+        Entry(hex: "#FF6FA8", name: LocalizedStringResource("Bubblegum", table: "InkTools")),
+        Entry(hex: "#3CC9A0", name: LocalizedStringResource("Mint", table: "InkTools")),
+        Entry(hex: "#F2542D", name: LocalizedStringResource("Tangerine", table: "InkTools")),
+        Entry(hex: "#FFC93C", name: LocalizedStringResource("Sunflower", table: "InkTools")),
+        Entry(hex: "#A77BFF", name: LocalizedStringResource("Lilac", table: "InkTools")),
+        Entry(hex: "#7A6E64", name: LocalizedStringResource("Gray", table: "InkTools")),
     ]
 
     static let lineWidths: [Double] = [1.5, 3, 6]

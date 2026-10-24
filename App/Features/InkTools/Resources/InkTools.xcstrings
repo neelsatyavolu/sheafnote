@@ -67,24 +67,13 @@
         }
       }
     },
-    "Black": {
+    "Bubblegum": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Black"
-          }
-        }
-      }
-    },
-    "Blue": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Blue"
+            "value": "Bubblegum"
           }
         }
       }
@@ -386,17 +375,6 @@
         }
       }
     },
-    "Green": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Green"
-          }
-        }
-      }
-    },
     "Handwriting": {
       "extractionState": "manual",
       "localizations": {
@@ -426,6 +404,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Images"
+          }
+        }
+      }
+    },
+    "Ink": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ink"
           }
         }
       }
@@ -474,6 +463,17 @@
         }
       }
     },
+    "Lilac": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lilac"
+          }
+        }
+      }
+    },
     "Line": {
       "extractionState": "manual",
       "localizations": {
@@ -492,6 +492,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Medium"
+          }
+        }
+      }
+    },
+    "Mint": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mint"
           }
         }
       }
@@ -606,17 +617,6 @@
         }
       }
     },
-    "Orange": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Orange"
-          }
-        }
-      }
-    },
     "Outline %@": {
       "extractionState": "manual",
       "localizations": {
@@ -661,17 +661,6 @@
         }
       }
     },
-    "Pink": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Pink"
-          }
-        }
-      }
-    },
     "Polygon": {
       "extractionState": "manual",
       "localizations": {
@@ -679,17 +668,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Polygon"
-          }
-        }
-      }
-    },
-    "Purple": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Purple"
           }
         }
       }
@@ -947,6 +925,17 @@
         }
       }
     },
+    "Sky": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sky"
+          }
+        }
+      }
+    },
     "Snap to Shape": {
       "extractionState": "manual",
       "localizations": {
@@ -976,6 +965,28 @@
           "stringUnit": {
             "state": "translated",
             "value": "Style"
+          }
+        }
+      }
+    },
+    "Sunflower": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sunflower"
+          }
+        }
+      }
+    },
+    "Tangerine": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tangerine"
           }
         }
       }
@@ -1086,17 +1097,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "With Draw and Hold, pause the Pencil at the end of a stroke and it snaps to the line, circle, rectangle or other shape you drew. Undo brings your own stroke back."
-          }
-        }
-      }
-    },
-    "Yellow": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Yellow"
           }
         }
       }

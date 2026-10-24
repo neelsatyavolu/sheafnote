@@ -71,7 +71,7 @@ public struct ShapeToolSettings: Codable, Equatable, Sendable {
     public var fillHex: String?
     public var lineWidth: Double
 
-    public init(mode: ShapeMode = .auto, strokeHex: String = "#1B1B1F", fillHex: String? = nil, lineWidth: Double = 3) {
+    public init(mode: ShapeMode = .auto, strokeHex: String = "#2B2420", fillHex: String? = nil, lineWidth: Double = 3) {
         self.mode = mode; self.strokeHex = strokeHex; self.fillHex = fillHex; self.lineWidth = lineWidth
     }
 }
