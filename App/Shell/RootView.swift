@@ -8,6 +8,7 @@ struct RootView: View {
         switch bootstrap.state {
         case .ready(let host):
             LibraryRootView()
+                .appLockCover()
                 .environment(host)
                 .environment(host.services)
                 .modelContainer(host.services.container)
