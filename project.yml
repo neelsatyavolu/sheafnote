@@ -1,0 +1,141 @@
+name: Sheafnote
+options:
+  bundleIdPrefix: co.xanom
+  developmentLanguage: en
+  createIntermediateGroups: true
+  generateEmptyDirectories: true
+  deploymentTarget:
+    iOS: "26.0"
+settings:
+  base:
+    SWIFT_VERSION: "6.0"
+    IPHONEOS_DEPLOYMENT_TARGET: "26.0"
+    DEVELOPMENT_TEAM: VTQW687WBQ
+    MARKETING_VERSION: "0.1.0"
+    CURRENT_PROJECT_VERSION: "1"
+    CODE_SIGN_STYLE: Automatic
+    LOCALIZATION_PREFERS_STRING_CATALOGS: YES
+    SWIFT_EMIT_LOC_STRINGS: YES
+    ENABLE_USER_SCRIPT_SANDBOXING: YES
+packages:
+  SheafnoteCore:
+    path: Packages/SheafnoteCore
+targets:
+  Sheafnote:
+    type: application
+    platform: iOS
+    deploymentTarget: "26.0"
+    sources:
+      - path: App
+        excludes:
+          - Info.plist
+          - Sheafnote.entitlements
+    dependencies:
+      - package: SheafnoteCore
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: co.xanom.sheafnote
+        TARGETED_DEVICE_FAMILY: "1,2"
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
+        CODE_SIGN_ENTITLEMENTS: App/Sheafnote.entitlements
+        GENERATE_INFOPLIST_FILE: NO
+        INFOPLIST_FILE: App/Info.plist
+    info:
+      path: App/Info.plist
+      properties:
+        CFBundleDisplayName: Sheafnote
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        UILaunchScreen: {}
+        UIApplicationSupportsIndirectInputEvents: true
+        UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationPortrait
+          - UIInterfaceOrientationLandscapeLeft
+          - UIInterfaceOrientationLandscapeRight
+        UISupportedInterfaceOrientations~ipad:
+          - UIInterfaceOrientationPortrait
+          - UIInterfaceOrientationPortraitUpsideDown
+          - UIInterfaceOrientationLandscapeLeft
+          - UIInterfaceOrientationLandscapeRight
+        UIBackgroundModes:
+          - remote-notification
+        NSCameraUsageDescription: Sheafnote uses the camera when you choose to insert a photo or scan a page into a notebook.
+        NSMicrophoneUsageDescription: Sheafnote records audio while you write when you turn on audio recording in a notebook.
+        NSPhotoLibraryAddUsageDescription: Sheafnote saves exported pages and images to your photo library when you ask it to.
+        NSFaceIDUsageDescription: Sheafnote uses Face ID to unlock the app and locked notebooks.
+        LSSupportsOpeningDocumentsInPlace: true
+        UIApplicationSceneManifest:
+          UIApplicationSupportsMultipleScenes: true
+          UISceneConfigurations:
+            UIWindowSceneSessionRoleExternalDisplayNonInteractive:
+              - UISceneConfigurationName: External Display
+                UISceneDelegateClassName: $(PRODUCT_MODULE_NAME).PresentationSceneDelegate
+        CFBundleDocumentTypes:
+          - CFBundleTypeName: PDF Document
+            CFBundleTypeRole: Editor
+            LSHandlerRank: Alternate
+            LSItemContentTypes: [com.adobe.pdf]
+          - CFBundleTypeName: Image
+            CFBundleTypeRole: Viewer
+            LSHandlerRank: Alternate
+            LSItemContentTypes: [public.image]
+          - CFBundleTypeName: Sheafnote Archive
+            CFBundleTypeRole: Editor
+            LSHandlerRank: Owner
+            LSItemContentTypes: [co.xanom.sheafnote.archive]
+        UTExportedTypeDeclarations:
+          - UTTypeIdentifier: co.xanom.sheafnote.archive
+            UTTypeDescription: Sheafnote Archive
+            UTTypeConformsTo: [public.data, public.archive]
+            UTTypeTagSpecification:
+              public.filename-extension: [sheafnote]
+              public.mime-type: [application/x-sheafnote]
+    entitlements:
+      path: App/Sheafnote.entitlements
+      properties:
+        com.apple.developer.icloud-container-identifiers:
+          - iCloud.co.xanom.sheafnote
+        com.apple.developer.icloud-services:
+          - CloudKit
+        aps-environment: development
+  SheafnoteTests:
+    type: bundle.unit-test
+    platform: iOS
+    deploymentTarget: "26.0"
+    sources:
+      - AppTests
+    dependencies:
+      - target: Sheafnote
+      - package: SheafnoteCore
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: co.xanom.sheafnote.tests
+        GENERATE_INFOPLIST_FILE: YES
+  SheafnoteUITests:
+    type: bundle.ui-testing
+    platform: iOS
+    deploymentTarget: "26.0"
+    sources:
+      - AppUITests
+    dependencies:
+      - target: Sheafnote
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: co.xanom.sheafnote.uitests
+        GENERATE_INFOPLIST_FILE: YES
+schemes:
+  Sheafnote:
+    build:
+      targets:
+        Sheafnote: all
+    run:
+      config: Debug
+    test:
+      config: Debug
+      gatherCoverageData: true
+      targets:
+        - SheafnoteTests
+        - SheafnoteUITests
+    profile:
+      config: Release

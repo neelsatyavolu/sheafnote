@@ -1,0 +1,531 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    " copy" : {
+
+    },
+    "%@ × %@ in" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ × %2$@ in"
+          }
+        }
+      }
+    },
+    "%@, %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@, %2$@"
+          }
+        }
+      }
+    },
+    "%lld days left" : {
+
+    },
+    "%lld items" : {
+
+    },
+    "%lld pages" : {
+
+    },
+    "%lld × %lld mm" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lld × %2$lld mm"
+          }
+        }
+      }
+    },
+    ", favorite" : {
+
+    },
+    "A4" : {
+
+    },
+    "A5" : {
+
+    },
+    "About" : {
+
+    },
+    "Add to Favorites" : {
+
+    },
+    "Ascending" : {
+
+    },
+    "Automatic" : {
+
+    },
+    "Back to Library" : {
+
+    },
+    "Back to library" : {
+
+    },
+    "Blank" : {
+
+    },
+    "Blueprint" : {
+
+    },
+    "Blush" : {
+
+    },
+    "Can't Import" : {
+
+    },
+    "Cancel" : {
+
+    },
+    "Change Cover" : {
+
+    },
+    "College Ruled" : {
+
+    },
+    "Confetti" : {
+
+    },
+    "Cornell" : {
+
+    },
+    "Couldn't Create Folder" : {
+
+    },
+    "Couldn't Create Notebook" : {
+
+    },
+    "Couldn't Save Settings" : {
+
+    },
+    "Cover" : {
+
+    },
+    "Create" : {
+
+    },
+    "Daily Planner" : {
+
+    },
+    "Dark" : {
+
+    },
+    "Date" : {
+
+    },
+    "Date Created" : {
+
+    },
+    "Date Modified" : {
+
+    },
+    "Daybreak" : {
+
+    },
+    "Default Paper" : {
+
+    },
+    "Delete" : {
+
+    },
+    "Delete All Permanently" : {
+
+    },
+    "Delete Permanently" : {
+
+    },
+    "Delete permanently?" : {
+
+    },
+    "Deleted notebooks stay here for 30 days before they are removed." : {
+
+    },
+    "Descending" : {
+
+    },
+    "Documents" : {
+
+    },
+    "Done" : {
+
+    },
+    "Dotted" : {
+
+    },
+    "Duplicate" : {
+
+    },
+    "Ember" : {
+
+    },
+    "Empty" : {
+
+    },
+    "Empty Recently Deleted?" : {
+
+    },
+    "Favorite" : {
+
+    },
+    "Favorites" : {
+
+    },
+    "Folder" : {
+
+    },
+    "Folder name" : {
+
+    },
+    "Folders" : {
+
+    },
+    "Fri" : {
+
+    },
+    "General" : {
+
+    },
+    "Graphite" : {
+
+    },
+    "Grid" : {
+
+    },
+    "Harbor" : {
+
+    },
+    "Herringbone" : {
+
+    },
+    "Imperial" : {
+
+    },
+    "Import…" : {
+
+    },
+    "Insert Element" : {
+
+    },
+    "It may have been deleted on another device." : {
+
+    },
+    "Landscape" : {
+
+    },
+    "Large Grid" : {
+
+    },
+    "Ledger" : {
+
+    },
+    "Library" : {
+
+    },
+    "License" : {
+
+    },
+    "Meadow" : {
+
+    },
+    "Medium Grid" : {
+
+    },
+    "Metric" : {
+
+    },
+    "Mon" : {
+
+    },
+    "Month" : {
+
+    },
+    "Monthly Planner" : {
+
+    },
+    "More" : {
+
+    },
+    "Moss" : {
+
+    },
+    "Move" : {
+
+    },
+    "Move To" : {
+
+    },
+    "Music" : {
+
+    },
+    "Music Staff" : {
+
+    },
+    "Name" : {
+
+    },
+    "Narrow Ruled" : {
+
+    },
+    "New" : {
+
+    },
+    "New Folder" : {
+
+    },
+    "New Notebook" : {
+
+    },
+    "No Favorites" : {
+
+    },
+    "No Notebooks Yet" : {
+
+    },
+    "No tracking. No analytics. No accounts." : {
+
+    },
+    "Notebook" : {
+
+    },
+    "Notebook Not Found" : {
+
+    },
+    "Notebook title" : {
+
+    },
+    "Notebooks and folders" : {
+
+    },
+    "Notes" : {
+
+    },
+    "Nothing Deleted" : {
+
+    },
+    "OK" : {
+
+    },
+    "Orbit" : {
+
+    },
+    "Order" : {
+
+    },
+    "Orientation" : {
+
+    },
+    "Paper" : {
+
+    },
+    "Paper Color" : {
+
+    },
+    "Parquet" : {
+
+    },
+    "Peaks" : {
+
+    },
+    "Planner" : {
+
+    },
+    "Plum" : {
+
+    },
+    "Portrait" : {
+
+    },
+    "Priorities" : {
+
+    },
+    "Privacy" : {
+
+    },
+    "Recently Deleted" : {
+
+    },
+    "Remove from Favorites" : {
+
+    },
+    "Rename" : {
+
+    },
+    "Restore" : {
+
+    },
+    "Ruled" : {
+
+    },
+    "Saffron" : {
+
+    },
+    "Sat" : {
+
+    },
+    "Scallop" : {
+
+    },
+    "Search" : {
+
+    },
+    "Search Your Library" : {
+
+    },
+    "Select" : {
+
+    },
+    "Select All" : {
+
+    },
+    "Select None" : {
+
+    },
+    "Settings" : {
+
+    },
+    "Sheafnote" : {
+
+    },
+    "Sheafnote can't import this kind of file." : {
+
+    },
+    "Sheafnote did not change or delete anything. Restart the app; if this keeps happening, update Sheafnote or free up storage on this device.\n\n%@" : {
+
+    },
+    "Sheafnote is free and open source software. It only talks to the network to sync with your iCloud, and only when you leave sync on." : {
+
+    },
+    "Show as Grid" : {
+
+    },
+    "Show as List" : {
+
+    },
+    "Size" : {
+
+    },
+    "Slate" : {
+
+    },
+    "Small Grid" : {
+
+    },
+    "Something went wrong" : {
+
+    },
+    "Sort By" : {
+
+    },
+    "Square" : {
+
+    },
+    "Sun" : {
+
+    },
+    "Tap the plus button to add a notebook here." : {
+
+    },
+    "Tap the plus button to create a notebook." : {
+
+    },
+    "Terrace" : {
+
+    },
+    "That page no longer exists." : {
+
+    },
+    "That saved element no longer exists." : {
+
+    },
+    "The page could not be drawn." : {
+
+    },
+    "The page editor is not available in this build yet." : {
+
+    },
+    "The saved drawing could not be read." : {
+
+    },
+    "The selected items will be deleted forever. This can't be undone." : {
+
+    },
+    "These items will be deleted forever. This can't be undone." : {
+
+    },
+    "This Folder Is Empty" : {
+
+    },
+    "Thu" : {
+
+    },
+    "Tide" : {
+
+    },
+    "To Do" : {
+
+    },
+    "To-Do List" : {
+
+    },
+    "Touch and hold a notebook and choose Add to Favorites." : {
+
+    },
+    "Tue" : {
+
+    },
+    "Type to find notebooks and folders by name." : {
+
+    },
+    "US Letter" : {
+
+    },
+    "Units" : {
+
+    },
+    "Untitled Notebook" : {
+
+    },
+    "Used for paper sizes, such as 210 × 297 mm or 8.3 × 11.7 in." : {
+
+    },
+    "Version" : {
+
+    },
+    "View Options" : {
+
+    },
+    "Wed" : {
+
+    },
+    "Week of" : {
+
+    },
+    "Weekly Planner" : {
+
+    },
+    "White" : {
+
+    },
+    "Wide Ruled" : {
+
+    },
+    "Yellow" : {
+
+    },
+    "Your library can't be opened" : {
+
+    },
+    "Your notes stay on your devices and in your own iCloud." : {
+
+    }
+  },
+  "version" : "1.0"
+}
