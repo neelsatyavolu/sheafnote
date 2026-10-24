@@ -43,6 +43,7 @@ struct TextElementView: View {
                 .accessibilityElement(children: .ignore)
                 .accessibilityLabel(Text(payload.text.isEmpty ? String(localized: "Empty text box", table: "Elements") : payload.text))
                 .accessibilityAddTraits(.isStaticText)
+                .accessibilityIdentifier("elements.text")
         } else {
             Color.clear
         }

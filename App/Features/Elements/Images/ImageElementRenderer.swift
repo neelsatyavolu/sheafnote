@@ -71,5 +71,6 @@ struct ImageElementView: View {
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(Text("Image", tableName: "Elements"))
         .accessibilityAddTraits(.isImage)
+        .accessibilityIdentifier("elements.image")
     }
 }

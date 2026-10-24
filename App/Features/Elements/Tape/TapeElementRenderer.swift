@@ -64,6 +64,7 @@ struct TapeElementView: View {
         .accessibilityHint(covering ? Text("Double tap to reveal what is underneath", tableName: "Elements")
                                     : Text("Double tap to cover again", tableName: "Elements"))
         .accessibilityAddTraits(.isButton)
+        .accessibilityIdentifier("elements.tape")
         .accessibilityAction { TapeToggling.toggle(element, on: page, editor: nil) }
     }
 }

@@ -26,6 +26,7 @@ struct StickerElementView: View {
                 .accessibilityElement(children: .ignore)
                 .accessibilityLabel(Text(String(localized: String.LocalizationValue(sticker.name), table: "Elements")))
                 .accessibilityHint(Text("Sticker", tableName: "Elements"))
+                .accessibilityIdentifier("elements.sticker")
         } else {
             ZStack {
                 RoundedRectangle(cornerRadius: 6).fill(.quaternary)
