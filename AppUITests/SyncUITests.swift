@@ -30,7 +30,7 @@ final class SyncUITests: XCTestCase {
         toggle.switches.firstMatch.tap()
         XCTAssertEqual(toggle.value as? String, "1")
         XCTAssertTrue(app.buttons["sync.syncNow"].waitForExistence(timeout: 5))
-        let status = app.otherElements["sync.status"]
+        let status = app.descendants(matching: .any)["sync.status"]
         XCTAssertTrue(status.waitForExistence(timeout: 5))
     }
 

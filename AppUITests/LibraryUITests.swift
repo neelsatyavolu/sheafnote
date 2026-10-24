@@ -13,9 +13,9 @@ final class LibraryUITests: XCTestCase {
         title.typeText("Chemistry")
         app.buttons["paper.category.grid"].tap()
         app.buttons["newNotebook.create"].tap()
-        XCTAssertTrue(app.staticTexts["placeholderEditor.title"].waitForExistence(timeout: 5))
-        XCTAssertEqual(app.staticTexts["placeholderEditor.title"].label, "Chemistry")
-        app.buttons["placeholderEditor.close"].tap()
+        let back = app.buttons["editor.back"]
+        XCTAssertTrue(back.waitForExistence(timeout: 10), "creating a notebook opens the editor")
+        back.tap()
         XCTAssertTrue(app.buttons["item.Chemistry"].waitForExistence(timeout: 5))
     }
 
@@ -37,7 +37,7 @@ final class LibraryUITests: XCTestCase {
         XCTAssertTrue(recipes.waitForExistence(timeout: 5))
         recipes.press(forDuration: 1.0)
         app.buttons["Add to Favorites"].tap()
-        app.buttons["sidebar.favorites"].tap()
+        app.staticTexts["sidebar.favorites"].tap()
         XCTAssertTrue(app.buttons["item.Recipes"].waitForExistence(timeout: 5))
         XCTAssertFalse(app.buttons["item.Physics 101"].exists)
     }
@@ -49,12 +49,12 @@ final class LibraryUITests: XCTestCase {
         recipes.press(forDuration: 1.0)
         app.buttons["Delete"].tap()
         XCTAssertFalse(app.buttons["item.Recipes"].waitForExistence(timeout: 2))
-        app.buttons["sidebar.recentlyDeleted"].tap()
+        app.staticTexts["sidebar.recentlyDeleted"].tap()
         let trashed = app.buttons["item.Recipes"]
         XCTAssertTrue(trashed.waitForExistence(timeout: 5))
         trashed.tap()
         app.buttons["library.restore"].tap()
-        app.buttons["sidebar.documents"].tap()
+        app.staticTexts["sidebar.documents"].tap()
         XCTAssertTrue(app.buttons["item.Recipes"].waitForExistence(timeout: 5))
     }
 
