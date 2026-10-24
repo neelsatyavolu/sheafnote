@@ -9,6 +9,8 @@ struct ChangeCoverSheet: View {
     @State private var selected: String
     @ScaledMetric private var cellWidth: CGFloat = 100
 
+    private var previewTitle: String? { session.services.library.notebook(id: notebookID)?.title }
+
     init(notebookID: UUID) {
         self.notebookID = notebookID
         _selected = State(initialValue: "")
@@ -17,9 +19,10 @@ struct ChangeCoverSheet: View {
     var body: some View {
         NavigationStack {
             ScrollView {
-                CoverGrid(selectedID: $selected, cellWidth: cellWidth)
+                CoverGrid(selectedID: $selected, cellWidth: cellWidth, previewTitle: previewTitle)
                     .padding()
             }
+            .background(Theme.paper)
             .navigationTitle("Change Cover")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -44,11 +47,12 @@ struct ChangeCoverSheet: View {
 struct CoverGrid: View {
     @Binding var selectedID: String
     let cellWidth: CGFloat
+    var previewTitle: String?
 
     var body: some View {
         LazyVGrid(columns: [GridItem(.adaptive(minimum: cellWidth), spacing: 16)], spacing: 16) {
             ForEach(CoverCatalog.all) { cover in
-                Button { selectedID = cover.id } label: { CoverChoice(definition: cover, isSelected: selectedID == cover.id) }
+                Button { selectedID = cover.id } label: { CoverChoice(definition: cover, title: previewTitle, isSelected: selectedID == cover.id) }
                     .buttonStyle(.plain)
                     .accessibilityLabel(Text(cover.title))
                     .accessibilityAddTraits(selectedID == cover.id ? [.isButton, .isSelected] : .isButton)
@@ -60,14 +64,16 @@ struct CoverGrid: View {
 
 struct CoverChoice: View {
     let definition: CoverDefinition
+    var title: String?
     let isSelected: Bool
 
     var body: some View {
         VStack(spacing: 6) {
-            NotebookCoverView(cover: CoverSpec(coverID: definition.id))
+            NotebookCoverView(cover: CoverSpec(coverID: definition.id), title: title)
                 .padding(4)
-                .overlay(RoundedRectangle(cornerRadius: 6).stroke(Color.accentColor, lineWidth: isSelected ? 3 : 0))
-            Text(definition.title).font(.caption).foregroundStyle(isSelected ? Color.accentColor : .secondary)
+                .overlay(RoundedRectangle(cornerRadius: Theme.Radius.control, style: .continuous)
+                    .stroke(Theme.accent, lineWidth: isSelected ? 3 : 0))
+            Text(definition.title).font(.caption).foregroundStyle(isSelected ? Theme.accent : Theme.inkMuted)
         }
     }
 }

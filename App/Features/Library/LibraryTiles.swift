@@ -14,8 +14,9 @@ struct LibraryTile: View {
             art.overlay(alignment: .bottomTrailing) { if isSelecting { SelectionBadge(isSelected: isSelected) } }
                 .overlay(alignment: .topTrailing) { if entry.isFavorite && deletedDaysLeft == nil { FavoriteBadge() } }
             VStack(spacing: 2) {
-                Text(entry.title).font(.subheadline.weight(.medium)).lineLimit(2).multilineTextAlignment(.center)
-                Text(subtitle).font(.caption).foregroundStyle(.secondary).lineLimit(1)
+                Text(entry.title).font(.subheadline.weight(.medium)).foregroundStyle(Theme.ink)
+                    .lineLimit(2).multilineTextAlignment(.center)
+                Text(subtitle).font(.caption).foregroundStyle(Theme.inkMuted).lineLimit(1)
             }
         }
         .contentShape(Rectangle())
@@ -28,9 +29,9 @@ struct LibraryTile: View {
     @ViewBuilder private var art: some View {
         switch entry {
         case .notebook(let n):
-            NotebookCoverView(cover: n.cover)
+            NotebookCoverView(cover: n.cover, title: n.title)
         case .folder:
-            FolderArt().aspectRatio(3.0 / 4.0, contentMode: .fit)
+            FolderArt(tint: FolderTint.color(for: entry.id), count: childCount).aspectRatio(1.25, contentMode: .fit)
         }
     }
 
@@ -49,16 +50,6 @@ struct LibraryTile: View {
     }
 }
 
-struct FolderArt: View {
-    var body: some View {
-        Image(systemName: "folder.fill")
-            .resizable().scaledToFit()
-            .foregroundStyle(.tint.opacity(0.85))
-            .padding(.horizontal, 6)
-            .accessibilityHidden(true)
-    }
-}
-
 struct SelectionBadge: View {
     let isSelected: Bool
 
@@ -66,7 +57,7 @@ struct SelectionBadge: View {
         Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
             .font(.title2)
             .symbolRenderingMode(.palette)
-            .foregroundStyle(isSelected ? Color.white : Color.secondary, isSelected ? Color.accentColor : Color.clear)
+            .foregroundStyle(isSelected ? Theme.paperRaised : Theme.inkMuted, isSelected ? Theme.accent : Color.clear)
             .background(Circle().fill(.thinMaterial))
             .padding(6)
             .accessibilityHidden(true)
@@ -77,7 +68,7 @@ struct FavoriteBadge: View {
     var body: some View {
         Image(systemName: "star.fill")
             .font(.caption.bold())
-            .foregroundStyle(.yellow)
+            .foregroundStyle(Theme.sunflower)
             .padding(5)
             .background(Circle().fill(.thinMaterial))
             .padding(4)
@@ -98,12 +89,12 @@ struct LibraryRow: View {
             if isSelecting { SelectionBadge(isSelected: isSelected).padding(0) }
             thumbnail.frame(width: 44, height: 58)
             VStack(alignment: .leading, spacing: 2) {
-                Text(entry.title).font(.body).lineLimit(2)
-                Text(subtitle).font(.caption).foregroundStyle(.secondary)
+                Text(entry.title).font(.body).foregroundStyle(Theme.ink).lineLimit(2)
+                Text(subtitle).font(.caption).foregroundStyle(Theme.inkMuted)
             }
             Spacer()
             if entry.isFavorite && deletedDaysLeft == nil {
-                Image(systemName: "star.fill").foregroundStyle(.yellow).accessibilityHidden(true)
+                Image(systemName: "star.fill").foregroundStyle(Theme.sunflower).accessibilityHidden(true)
             }
         }
         .contentShape(Rectangle())
@@ -115,8 +106,8 @@ struct LibraryRow: View {
 
     @ViewBuilder private var thumbnail: some View {
         switch entry {
-        case .notebook(let n): CoverArtView(definition: n.cover.definition).clipShape(RoundedRectangle(cornerRadius: 3))
-        case .folder: FolderArt()
+        case .notebook(let n): NotebookCoverView(cover: n.cover, title: n.title)
+        case .folder: FolderArt(tint: FolderTint.color(for: entry.id), count: childCount)
         }
     }
 

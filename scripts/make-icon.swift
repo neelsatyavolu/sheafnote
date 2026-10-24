@@ -1,6 +1,6 @@
 #!/usr/bin/env swift
-// Generates the original Sheafnote app icon: a fanned sheaf of paper tied with a band, with a pen stroke.
-// Usage: swift scripts/make-icon.swift   (writes into App/Resources/Assets.xcassets)
+// Generates the Sheafnote app icon (DESIGN.md): a cream folded sheet on a tangerine background with one ink swoosh.
+// Usage: swift scripts/make-icon.swift   (writes App/Resources/Assets.xcassets/AppIcon.appiconset/AppIcon.png)
 import CoreGraphics
 import Foundation
 import ImageIO
@@ -8,11 +8,8 @@ import UniformTypeIdentifiers
 
 let size = 1024
 let root = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
-let catalog = root.appending(path: "App/Resources/Assets.xcassets")
-let iconSet = catalog.appending(path: "AppIcon.appiconset")
-let accentSet = catalog.appending(path: "AccentColor.colorset")
+let iconSet = root.appending(path: "App/Resources/Assets.xcassets/AppIcon.appiconset")
 try FileManager.default.createDirectory(at: iconSet, withIntermediateDirectories: true)
-try FileManager.default.createDirectory(at: accentSet, withIntermediateDirectories: true)
 
 func color(_ hex: UInt32, _ a: CGFloat = 1) -> CGColor {
     CGColor(srgbRed: CGFloat((hex >> 16) & 0xFF) / 255, green: CGFloat((hex >> 8) & 0xFF) / 255,
@@ -22,107 +19,81 @@ func color(_ hex: UInt32, _ a: CGFloat = 1) -> CGColor {
 let cs = CGColorSpace(name: CGColorSpace.sRGB)!
 let ctx = CGContext(data: nil, width: size, height: size, bitsPerComponent: 8, bytesPerRow: 0, space: cs,
                     bitmapInfo: CGImageAlphaInfo.noneSkipLast.rawValue)!
-// Top-left origin.
-ctx.translateBy(x: 0, y: CGFloat(size))
+ctx.translateBy(x: 0, y: CGFloat(size))   // top-left origin
 ctx.scaleBy(x: 1, y: -1)
 
-// Background: deep teal gradient.
-let gradient = CGGradient(colorsSpace: cs, colors: [color(0x0A4A52), color(0x15838A)] as CFArray, locations: [0, 1])!
-ctx.drawLinearGradient(gradient, start: CGPoint(x: 0, y: 0), end: CGPoint(x: 0, y: CGFloat(size)), options: [])
+// Tangerine background with a gentle lift toward the top.
+let bg = CGGradient(colorsSpace: cs, colors: [color(0xFF6A3F), color(0xF2542D)] as CFArray, locations: [0, 1])!
+ctx.drawLinearGradient(bg, start: .zero, end: CGPoint(x: 0, y: CGFloat(size)), options: [])
 
-func roundedRect(_ r: CGRect, _ radius: CGFloat) -> CGPath {
-    CGPath(roundedRect: r, cornerWidth: radius, cornerHeight: radius, transform: nil)
-}
+// The cream sheet, tilted a little, with its top-right corner folded over.
+let sheet = CGRect(x: 262, y: 176, width: 500, height: 672)
+let fold: CGFloat = 170
+let radius: CGFloat = 44
+let sheetPath = CGMutablePath()
+sheetPath.move(to: CGPoint(x: sheet.minX + radius, y: sheet.minY))
+sheetPath.addLine(to: CGPoint(x: sheet.maxX - fold, y: sheet.minY))
+sheetPath.addLine(to: CGPoint(x: sheet.maxX, y: sheet.minY + fold))
+sheetPath.addLine(to: CGPoint(x: sheet.maxX, y: sheet.maxY - radius))
+sheetPath.addArc(tangent1End: CGPoint(x: sheet.maxX, y: sheet.maxY), tangent2End: CGPoint(x: sheet.maxX - radius, y: sheet.maxY), radius: radius)
+sheetPath.addLine(to: CGPoint(x: sheet.minX + radius, y: sheet.maxY))
+sheetPath.addArc(tangent1End: CGPoint(x: sheet.minX, y: sheet.maxY), tangent2End: CGPoint(x: sheet.minX, y: sheet.maxY - radius), radius: radius)
+sheetPath.addLine(to: CGPoint(x: sheet.minX, y: sheet.minY + radius))
+sheetPath.addArc(tangent1End: CGPoint(x: sheet.minX, y: sheet.minY), tangent2End: CGPoint(x: sheet.minX + radius, y: sheet.minY), radius: radius)
+sheetPath.closeSubpath()
 
-// Fanned sheets pivoting about the bottom centre.
-let pivot = CGPoint(x: 512, y: 900)
-let sheets: [(angle: CGFloat, fill: UInt32)] = [(-11, 0xE3DCC4), (11, 0xEFE9D6), (0, 0xFFFFFF)]
-for sheet in sheets {
-    ctx.saveGState()
-    ctx.translateBy(x: pivot.x, y: pivot.y)
-    ctx.rotate(by: sheet.angle * .pi / 180)
-    let rect = CGRect(x: -215, y: -640, width: 430, height: 640)
-    ctx.setShadow(offset: CGSize(width: 0, height: 10), blur: 24, color: color(0x000000, 0.35))
-    ctx.addPath(roundedRect(rect, 26))
-    ctx.setFillColor(color(sheet.fill))
-    ctx.fillPath()
-    ctx.setShadow(offset: .zero, blur: 0, color: nil)
-    if sheet.angle == 0 {
-        ctx.setStrokeColor(color(0xB9D3DA))
-        ctx.setLineWidth(5)
-        for i in 0..<7 {
-            let y = rect.minY + 150 + CGFloat(i) * 62
-            ctx.move(to: CGPoint(x: rect.minX + 36, y: y))
-            ctx.addLine(to: CGPoint(x: rect.maxX - 36, y: y))
-        }
-        ctx.strokePath()
-    }
-    ctx.restoreGState()
-}
+let flap = CGMutablePath()
+flap.move(to: CGPoint(x: sheet.maxX - fold, y: sheet.minY))
+flap.addLine(to: CGPoint(x: sheet.maxX, y: sheet.minY + fold))
+flap.addLine(to: CGPoint(x: sheet.maxX - fold, y: sheet.minY + fold))
+flap.closeSubpath()
 
-// Pen stroke on the front sheet.
 ctx.saveGState()
-ctx.setLineCap(.round)
-ctx.setLineJoin(.round)
-ctx.setLineWidth(26)
-ctx.setStrokeColor(color(0x0A4A52))
-let stroke = CGMutablePath()
-stroke.move(to: CGPoint(x: 360, y: 440))
-stroke.addCurve(to: CGPoint(x: 470, y: 400), control1: CGPoint(x: 390, y: 330), control2: CGPoint(x: 440, y: 330))
-stroke.addCurve(to: CGPoint(x: 560, y: 470), control1: CGPoint(x: 510, y: 460), control2: CGPoint(x: 520, y: 500))
-stroke.addCurve(to: CGPoint(x: 670, y: 380), control1: CGPoint(x: 600, y: 440), control2: CGPoint(x: 620, y: 360))
-ctx.addPath(stroke)
-ctx.strokePath()
-ctx.restoreGState()
-
-// Band tying the sheaf.
-ctx.saveGState()
-ctx.setShadow(offset: CGSize(width: 0, height: 8), blur: 16, color: color(0x000000, 0.3))
-let band = CGRect(x: 282, y: 640, width: 460, height: 96)
-ctx.addPath(roundedRect(band, 20))
-ctx.setFillColor(color(0xF2A93B))
+ctx.translateBy(x: sheet.midX, y: sheet.midY)
+ctx.rotate(by: -5 * .pi / 180)
+ctx.translateBy(x: -sheet.midX, y: -sheet.midY)
+ctx.setShadow(offset: CGSize(width: 0, height: -22), blur: 46, color: color(0x6B1D08, 0.38))
+ctx.addPath(sheetPath)
+ctx.setFillColor(color(0xFFF6E4))
+ctx.fillPath()
+ctx.setShadow(offset: .zero, blur: 0, color: nil)
+ctx.addPath(flap)
+ctx.setFillColor(color(0xEBDBBB))
 ctx.fillPath()
 ctx.restoreGState()
-ctx.setStrokeColor(color(0xC97F14, 0.6))
-ctx.setLineWidth(5)
-ctx.move(to: CGPoint(x: 300, y: 688))
-ctx.addLine(to: CGPoint(x: 724, y: 688))
-ctx.strokePath()
 
-let image = ctx.makeImage()!
+// One bold ink swoosh, tapered at both ends, across the sheet.
+func bezier(_ t: CGFloat, _ p: [CGPoint]) -> CGPoint {
+    let u = 1 - t
+    return CGPoint(x: u*u*u*p[0].x + 3*u*u*t*p[1].x + 3*u*t*t*p[2].x + t*t*t*p[3].x,
+                   y: u*u*u*p[0].y + 3*u*u*t*p[1].y + 3*u*t*t*p[2].y + t*t*t*p[3].y)
+}
+let spine = [CGPoint(x: 150, y: 700), CGPoint(x: 380, y: 470), CGPoint(x: 560, y: 860), CGPoint(x: 880, y: 380)]
+let steps = 120
+var upper: [CGPoint] = [], lower: [CGPoint] = []
+for i in 0...steps {
+    let t = CGFloat(i) / CGFloat(steps)
+    let p = bezier(t, spine)
+    let a = bezier(min(1, t + 0.002), spine), b = bezier(max(0, t - 0.002), spine)
+    let len = hypot(a.x - b.x, a.y - b.y)
+    let nx = -(a.y - b.y) / len, ny = (a.x - b.x) / len
+    let half = 8 + 44 * pow(sin(.pi * t), 0.8)
+    upper.append(CGPoint(x: p.x + nx * half, y: p.y + ny * half))
+    lower.append(CGPoint(x: p.x - nx * half, y: p.y - ny * half))
+}
+let swoosh = CGMutablePath()
+swoosh.move(to: upper[0])
+for p in upper.dropFirst() + lower.reversed() { swoosh.addLine(to: p) }
+swoosh.closeSubpath()
+ctx.saveGState()
+ctx.setShadow(offset: CGSize(width: 0, height: -10), blur: 18, color: color(0x2B2420, 0.35))
+ctx.addPath(swoosh)
+ctx.setFillColor(color(0x2B2420))
+ctx.fillPath()
+ctx.restoreGState()
+
 let png = iconSet.appending(path: "AppIcon.png")
 let dest = CGImageDestinationCreateWithURL(png as CFURL, UTType.png.identifier as CFString, 1, nil)!
-CGImageDestinationAddImage(dest, image, nil)
+CGImageDestinationAddImage(dest, ctx.makeImage()!, nil)
 guard CGImageDestinationFinalize(dest) else { fatalError("could not write icon") }
-
-let iconJSON = """
-{
-  "images" : [
-    { "filename" : "AppIcon.png", "idiom" : "universal", "platform" : "ios", "size" : "1024x1024" }
-  ],
-  "info" : { "author" : "xcode", "version" : 1 }
-}
-"""
-try iconJSON.write(to: iconSet.appending(path: "Contents.json"), atomically: true, encoding: .utf8)
-
-let accentJSON = """
-{
-  "colors" : [
-    {
-      "color" : { "color-space" : "srgb", "components" : { "alpha" : "1.000", "blue" : "0.502", "green" : "0.486", "red" : "0.059" } },
-      "idiom" : "universal"
-    },
-    {
-      "appearances" : [ { "appearance" : "luminosity", "value" : "dark" } ],
-      "color" : { "color-space" : "srgb", "components" : { "alpha" : "1.000", "blue" : "0.745", "green" : "0.722", "red" : "0.239" } },
-      "idiom" : "universal"
-    }
-  ],
-  "info" : { "author" : "xcode", "version" : 1 }
-}
-"""
-try accentJSON.write(to: accentSet.appending(path: "Contents.json"), atomically: true, encoding: .utf8)
-try """
-{ "info" : { "author" : "xcode", "version" : 1 } }
-""".write(to: catalog.appending(path: "Contents.json"), atomically: true, encoding: .utf8)
-print("Wrote app icon and accent color to \(catalog.path)")
+print("Wrote \(png.path)")

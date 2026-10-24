@@ -39,6 +39,7 @@ struct LibrarySplitView: View {
             }
             .id(selection)
         }
+        .containerBackground(Theme.paper, for: .navigationSplitView)
     }
 
     private var sidebar: some View {
@@ -55,14 +56,23 @@ struct LibrarySplitView: View {
             }
             let tree = FolderNode.tree(folders)
             if !tree.isEmpty {
-                Section("Folders") {
+                Section {
                     OutlineGroup(tree, children: \.children) { node in
-                        Label(node.folder.name, systemImage: "folder").tag(SidebarItem.folder(node.id))
+                        Label {
+                            Text(node.folder.name)
+                        } icon: {
+                            Image(systemName: "folder.fill").foregroundStyle(FolderTint.color(for: node.id))
+                        }
+                        .tag(SidebarItem.folder(node.id))
                             .accessibilityIdentifier("sidebar.folder.\(node.folder.name)")
                     }
+                } header: {
+                    Text("Folders").font(Theme.title(.footnote))
                 }
             }
         }
+        .scrollContentBackground(.hidden)
+        .background(Theme.paper)
         .navigationTitle("Sheafnote")
         .toolbar {
             ToolbarItem(placement: .bottomBar) {

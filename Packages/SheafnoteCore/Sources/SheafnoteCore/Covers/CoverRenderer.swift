@@ -11,6 +11,7 @@ public enum CoverRenderer {
         drawPattern(cover, rect, ctx)
         drawFrame(cover, rect, ctx)
         drawSpine(rect, ctx)
+        drawGrain(rect, ctx)
         ctx.restoreGState()
     }
 
@@ -46,12 +47,30 @@ public enum CoverRenderer {
         ctx.stroke(r.insetBy(dx: inset, dy: inset))
     }
 
+    /// Darker stripe along the binding edge, with a thin highlight on its inner side.
     private static func drawSpine(_ r: CGRect, _ ctx: CGContext) {
-        let w = r.width * 0.06
-        ctx.setFillColor(CGColor(gray: 0, alpha: 0.18))
+        let w = r.width * 0.075
+        ctx.setFillColor(CGColor(srgbRed: 0.17, green: 0.14, blue: 0.12, alpha: 0.34))
         ctx.fill(CGRect(x: 0, y: 0, width: w, height: r.height))
-        ctx.setFillColor(CGColor(gray: 1, alpha: 0.12))
+        ctx.setFillColor(CGColor(gray: 1, alpha: 0.16))
         ctx.fill(CGRect(x: w, y: 0, width: max(1, r.width * 0.008), height: r.height))
+    }
+
+    /// Faint, deterministic paper grain: tiny warm specks at very low opacity.
+    private static func drawGrain(_ r: CGRect, _ ctx: CGContext) {
+        let speck = max(0.5, r.width / 220)
+        let count = min(4000, Int(r.width * r.height / 90))
+        var state: UInt64 = 0x9E37_79B9_7F4A_7C15
+        func next() -> CGFloat {
+            state = state &* 6_364_136_223_846_793_005 &+ 1_442_695_040_888_963_407
+            return CGFloat(state >> 40) / CGFloat(1 << 24)
+        }
+        for i in 0..<count {
+            let x = next() * r.width, y = next() * r.height
+            let light = i % 2 == 0
+            ctx.setFillColor(light ? CGColor(gray: 1, alpha: 0.07) : CGColor(srgbRed: 0.17, green: 0.14, blue: 0.12, alpha: 0.06))
+            ctx.fill(CGRect(x: x, y: y, width: speck, height: speck))
+        }
     }
 
     private static func drawPattern(_ c: CoverDefinition, _ r: CGRect, _ ctx: CGContext) {

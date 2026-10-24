@@ -16,6 +16,7 @@ struct LibraryContentView: View {
     @State var renameText = ""
     @State var confirmEmptyTrash = false
     @State var confirmDeleteForever = false
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @ScaledMetric private var tileMinWidth: CGFloat = 150
 
     var actions: LibraryActions { LibraryActions(session: session) }
@@ -44,6 +45,8 @@ struct LibraryContentView: View {
         content
             .navigationTitle(title)
             .navigationBarTitleDisplayMode(.large)
+            .background(Theme.paper.ignoresSafeArea())
+            .sensoryFeedback(trigger: entries.count) { old, new in new > old ? .impact(weight: .light) : nil }
             .toolbar { libraryToolbar }
             .alert("Rename", isPresented: renameBinding) { renameAlertContent }
             .confirmationDialog("Empty Recently Deleted?", isPresented: $confirmEmptyTrash, titleVisibility: .visible) {
@@ -63,12 +66,18 @@ struct LibraryContentView: View {
         } else if session.layout == .grid {
             ScrollView {
                 LazyVGrid(columns: [GridItem(.adaptive(minimum: tileMinWidth), spacing: 20, alignment: .top)], spacing: 24) {
-                    ForEach(entries) { entry in cell(entry) }
+                    ForEach(entries) { entry in
+                        cell(entry).transition(reduceMotion ? .opacity : .scale(scale: 0.6).combined(with: .opacity))
+                    }
                 }
+                .animation(reduceMotion ? nil : .spring(response: 0.45, dampingFraction: 0.68), value: entries.map(\.id))
                 .padding(.horizontal, 20).padding(.vertical, 12)
             }
         } else {
-            List(entries) { entry in cell(entry) }.listStyle(.plain)
+            List(entries) { entry in
+                cell(entry).listRowBackground(Theme.paperRaised).listRowSeparatorTint(Theme.rule)
+            }
+            .listStyle(.plain).scrollContentBackground(.hidden)
         }
     }
 
@@ -92,24 +101,24 @@ struct LibraryContentView: View {
                 Button { session.open(n) } label: { label }
             }
         }
-        .buttonStyle(.plain)
+        .buttonStyle(CoverPressStyle())
         .contextMenu { LibraryContextMenu(entry: entry, scope: scope, folderID: currentFolderID, onRename: startRename) }
     }
 
     @ViewBuilder private var emptyState: some View {
         switch scope {
         case .documents:
-            ContentUnavailableView("No Notebooks Yet", systemImage: "books.vertical",
-                                   description: Text("Tap the plus button to create a notebook."))
+            LibraryEmptyState(doodle: .notebook, title: "No Notebooks Yet",
+                              line: "Tap the plus button to start your first notebook.")
         case .folder:
-            ContentUnavailableView("This Folder Is Empty", systemImage: "folder",
-                                   description: Text("Tap the plus button to add a notebook here."))
+            LibraryEmptyState(doodle: .folder, title: "This Folder Is Empty",
+                              line: "Tap the plus button to add a notebook here.")
         case .favorites:
-            ContentUnavailableView("No Favorites", systemImage: "star",
-                                   description: Text("Touch and hold a notebook and choose Add to Favorites."))
+            LibraryEmptyState(doodle: .star, title: "No Favorites",
+                              line: "Touch and hold a notebook and choose Add to Favorites.")
         case .recentlyDeleted:
-            ContentUnavailableView("Nothing Deleted", systemImage: "trash",
-                                   description: Text("Deleted notebooks stay here for 30 days before they are removed."))
+            LibraryEmptyState(doodle: .trash, title: "Nothing Deleted",
+                              line: "Deleted notebooks rest here for 30 days before they go.")
         }
     }
 

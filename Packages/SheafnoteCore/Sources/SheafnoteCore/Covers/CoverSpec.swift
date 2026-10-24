@@ -42,29 +42,35 @@ public struct CoverDefinition: Hashable, Sendable, Identifiable {
 /// The built-in covers. All artwork is original and drawn in code by `CoverRenderer`.
 public enum CoverCatalog {
     public static let all: [CoverDefinition] = [
-        CoverDefinition("slate", "Slate", .solid, bg: "3E4A5C", ink: "566379", accent: "C9D3E3"),
-        CoverDefinition("moss", "Moss", .solid, bg: "4F6B4A", ink: "63845D", accent: "D5E2C9"),
-        CoverDefinition("ember", "Ember", .solid, bg: "C4562F", ink: "D9704A", accent: "FBE3D2"),
-        CoverDefinition("plum", "Plum", .solid, bg: "6B3A5B", ink: "84506F", accent: "F0D6E6"),
-        CoverDefinition("saffron", "Saffron", .solid, bg: "E3A72F", ink: "F0BC55", accent: "5A3E08"),
-        CoverDefinition("harbor", "Harbor", .solid, bg: "2F6F8F", ink: "4488AA", accent: "D2ECF7"),
-        CoverDefinition("blush", "Blush", .solid, bg: "E7A9A0", ink: "F0BDB5", accent: "6B2E2A"),
-        CoverDefinition("graphite", "Graphite", .solid, bg: "2B2D31", ink: "43464D", accent: "A9AEB8"),
-        CoverDefinition("ledger", "Ledger", .stripes, bg: "F1E8D2", ink: "24344D", accent: "B3453A"),
-        CoverDefinition("meadow", "Meadow", .diagonal, bg: "7DA867", ink: "5E8C4B", accent: "F4F0D8"),
-        CoverDefinition("confetti", "Confetti", .dots, bg: "1F7A78", ink: "F6EBD0", accent: "F2B544"),
-        CoverDefinition("blueprint", "Blueprint", .grid, bg: "1D4E89", ink: "7FB0E8", accent: "DDEBFA"),
-        CoverDefinition("tide", "Tide", .waves, bg: "3B8EA5", ink: "BFE3EC", accent: "13536A"),
-        CoverDefinition("orbit", "Orbit", .rings, bg: "3A3A8C", ink: "8F8FE6", accent: "F4D35E"),
-        CoverDefinition("parquet", "Parquet", .checker, bg: "8A5A3C", ink: "A97550", accent: "EBD3B8"),
-        CoverDefinition("peaks", "Peaks", .triangles, bg: "493A6B", end: "E07B6A", ink: "2E2447", accent: "FBD9A8"),
-        CoverDefinition("herringbone", "Herringbone", .chevrons, bg: "B24A32", ink: "D26A4E", accent: "F7E1CF"),
-        CoverDefinition("daybreak", "Daybreak", .sunburst, bg: "F28A5B", end: "F5C26B", ink: "FFE9B8", accent: "8C3B2A"),
-        CoverDefinition("scallop", "Scallop", .scales, bg: "8CCFB5", ink: "5FAE93", accent: "1F5A48"),
-        CoverDefinition("terrace", "Terrace", .bands, bg: "E6D3A8", ink: "2E7F78", accent: "B8553B"),
+        CoverDefinition("slate", "Slate", .solid, bg: "4B4F6B", ink: "62668A", accent: "D9DBF0"),
+        CoverDefinition("moss", "Moss", .solid, bg: "4E7A58", ink: "639070", accent: "DCEBD2"),
+        CoverDefinition("ember", "Ember", .solid, bg: "F2542D", ink: "F7704C", accent: "FFE6D8"),
+        CoverDefinition("plum", "Plum", .solid, bg: "7A3F66", ink: "92557D", accent: "F5DAEA"),
+        CoverDefinition("saffron", "Saffron", .solid, bg: "FFC93C", ink: "FFD768", accent: "5A3E08"),
+        CoverDefinition("harbor", "Harbor", .solid, bg: "3D9BFF", ink: "65B0FF", accent: "E8F3FF"),
+        CoverDefinition("blush", "Blush", .solid, bg: "FF6FA8", ink: "FF8EB9", accent: "FFE3EF"),
+        CoverDefinition("graphite", "Graphite", .solid, bg: "3A322C", ink: "50463E", accent: "D8CBBB"),
+        CoverDefinition("ledger", "Ledger", .stripes, bg: "F6EBD3", ink: "2F2D52", accent: "F2542D"),
+        CoverDefinition("meadow", "Meadow", .diagonal, bg: "3CC9A0", ink: "2FB08A", accent: "FFF6DC"),
+        CoverDefinition("confetti", "Confetti", .dots, bg: "A77BFF", ink: "FFF1D6", accent: "FFC93C"),
+        CoverDefinition("blueprint", "Blueprint", .grid, bg: "2E6FD8", ink: "8EBBFF", accent: "EAF3FF"),
+        CoverDefinition("tide", "Tide", .waves, bg: "2FB5B0", ink: "CFF5EE", accent: "14615D"),
+        CoverDefinition("orbit", "Orbit", .rings, bg: "7A56E0", ink: "B79CFF", accent: "FFC93C"),
+        CoverDefinition("parquet", "Parquet", .checker, bg: "9A5B3A", ink: "B8714B", accent: "F0D9BC"),
+        CoverDefinition("peaks", "Peaks", .triangles, bg: "6B4A9E", end: "FF6FA8", ink: "3E2A66", accent: "FFE3A3"),
+        CoverDefinition("herringbone", "Herringbone", .chevrons, bg: "C2412A", ink: "E0654A", accent: "FBE5D2"),
+        CoverDefinition("daybreak", "Daybreak", .sunburst, bg: "FF8A5B", end: "FFC93C", ink: "FFF0C2", accent: "9A3A22"),
+        CoverDefinition("scallop", "Scallop", .scales, bg: "7ADBC0", ink: "4FBFA0", accent: "1F6B55"),
+        CoverDefinition("terrace", "Terrace", .bands, bg: "F3DFB0", ink: "2E8F86", accent: "F2542D"),
     ]
 
     public static func definition(for id: String) -> CoverDefinition {
         all.first { $0.id == id } ?? all[0]
     }
+}
+
+/// Colors of the cream label plate the app draws over a cover (fixed in light and dark; a plate is paper).
+public enum CoverPlateStyle {
+    public static let fill = RGBAColor(hex: "FFFDF8")!
+    public static let ink = RGBAColor(hex: "2B2420")!
 }

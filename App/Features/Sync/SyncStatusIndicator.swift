@@ -23,7 +23,7 @@ private struct IndicatorBody: View {
         Button { isShowingDetail = true } label: {
             Image(systemName: presentation.symbolName)
                 .symbolEffect(.pulse, isActive: controller.status == .syncing)
-                .foregroundStyle(presentation.needsAttention ? Color.orange : Color.secondary)
+                .foregroundStyle(presentation.needsAttention ? Theme.accent : Theme.inkMuted)
         }
         .accessibilityLabel(Text("iCloud sync status", tableName: "Sync"))
         .accessibilityValue(Text(presentation.title))
@@ -42,11 +42,11 @@ private struct IndicatorBody: View {
 
     private var detail: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Label(presentation.title, systemImage: presentation.symbolName).font(.headline)
-            Text(presentation.detail).font(.subheadline).foregroundStyle(.secondary)
+            Label(presentation.title, systemImage: presentation.symbolName).font(Theme.title(.headline)).foregroundStyle(Theme.ink)
+            Text(presentation.detail).font(.subheadline).foregroundStyle(Theme.inkMuted)
             if let last = controller.lastSyncDate {
                 Text("Last synced \(last.formatted(.relative(presentation: .named)))", tableName: "Sync")
-                    .font(.footnote).foregroundStyle(.secondary)
+                    .font(.footnote).foregroundStyle(Theme.inkMuted)
             }
             if controller.isEnabled {
                 Button(String(localized: "Sync Now", table: "Sync")) { Task { await controller.syncNow() } }
@@ -57,5 +57,6 @@ private struct IndicatorBody: View {
         }
         .padding()
         .frame(minWidth: 260, maxWidth: 360, alignment: .leading)
+        .background(Theme.paperRaised)
     }
 }

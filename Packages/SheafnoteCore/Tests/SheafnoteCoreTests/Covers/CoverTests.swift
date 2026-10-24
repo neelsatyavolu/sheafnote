@@ -54,4 +54,17 @@ enum ImageHash {
     @Test func tinySizesDoNotCrash() {
         for c in CoverCatalog.all { _ = CoverRenderer.renderImage(c, size: CGSize(width: 1, height: 1)) }
     }
+
+    @Test func storedCoverIDsStayStable() {
+        let ids = ["slate", "moss", "ember", "plum", "saffron", "harbor", "blush", "graphite", "ledger", "meadow",
+                   "confetti", "blueprint", "tide", "orbit", "parquet", "peaks", "herringbone", "daybreak", "scallop", "terrace"]
+        #expect(CoverCatalog.all.map(\.id) == ids)
+    }
+
+    @Test func grainIsFaintAndDeterministicAtLargeSizes() throws {
+        let c = CoverCatalog.all[2]
+        let a = try #require(CoverRenderer.renderImage(c, size: CGSize(width: 300, height: 400), scale: 2))
+        let b = try #require(CoverRenderer.renderImage(c, size: CGSize(width: 300, height: 400), scale: 2))
+        #expect(ImageHash.pixels(a) == ImageHash.pixels(b))
+    }
 }

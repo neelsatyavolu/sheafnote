@@ -8,6 +8,7 @@ struct RootView: View {
         switch bootstrap.state {
         case .ready(let host):
             LibraryRootView()
+                .background(Theme.paper.ignoresSafeArea())
                 .appLockCover()
                 .environment(host)
                 .environment(host.services)
@@ -37,6 +38,7 @@ struct StoreFailureView: View {
         } description: {
             Text("Sheafnote did not change or delete anything. Restart the app; if this keeps happening, update Sheafnote or free up storage on this device.\n\n\(message)")
         }
+        .background(Theme.paper)
         .accessibilityIdentifier("storeFailure")
     }
 }

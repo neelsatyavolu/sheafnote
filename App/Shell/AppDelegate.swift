@@ -8,6 +8,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
     @MainActor static var remoteNotificationHandler: (@MainActor ([AnyHashable: Any]) async -> UIBackgroundFetchResult)?
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
+        NavigationTitleStyle.apply()
         if !UserDefaults.standard.bool(forKey: "UITestMode") { application.registerForRemoteNotifications() }
         return true
     }
