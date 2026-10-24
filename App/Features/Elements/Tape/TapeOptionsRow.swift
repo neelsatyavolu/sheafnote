@@ -15,9 +15,8 @@ struct TapeOptionsRow: View {
     var body: some View {
         let allCovering = StudyTape.allCovering(in: pages.flatMap(\.elements.all))
         let hasTape = pages.contains { $0.elements.all.contains { $0.kind == .tape } }
+        // The switch leads so it stays on screen on iPhone, where the swatches scroll.
         HStack(spacing: 12) {
-            ForEach(StudyTape.swatches) { swatch in swatchButton(swatch) }
-            OptionsDivider()
             Button { setAll(revealed: allCovering) } label: {
                 Label {
                     allCovering ? Text("Show all", tableName: "Elements") : Text("Hide all", tableName: "Elements")
@@ -28,6 +27,8 @@ struct TapeOptionsRow: View {
             .disabled(!hasTape)
             .accessibilityIdentifier("elements.tape.toggleAll")
             .accessibilityHint(Text("Applies to the pages on screen", tableName: "Elements"))
+            OptionsDivider()
+            ForEach(StudyTape.swatches) { swatch in swatchButton(swatch) }
             if !hasTape {
                 Text("Drag on the page to lay down tape", tableName: "Elements")
                     .font(.footnote).foregroundStyle(Theme.inkMuted).lineLimit(1)

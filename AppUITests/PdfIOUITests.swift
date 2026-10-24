@@ -36,9 +36,7 @@ final class PdfIOUITests: XCTestCase {
     }
 
     @MainActor private func runPDFExport(in app: XCUIApplication) -> XCUIElement {
-        let export = app.buttons["editor.export"]
-        XCTAssertTrue(export.waitForExistence(timeout: 10), "the editor bar has an Export button")
-        export.tap()
+        app.editorBarButton("editor.export").tap()
         let start = app.buttons["export.start"]
         XCTAssertTrue(start.waitForExistence(timeout: 10))
         start.tap()
@@ -71,7 +69,7 @@ final class PdfIOUITests: XCTestCase {
     @MainActor func testExportSheetOffersFormatsAndPageRange() {
         let app = launch(scenario: .notebookWith3Pages)
         openNotebook("Three Pages", in: app)
-        app.buttons["editor.export"].tap()
+        app.editorBarButton("editor.export").tap()
         XCTAssertTrue(app.buttons["export.format"].waitForExistence(timeout: 10))
         app.buttons["export.pages"].tap()
         app.buttons["Page range"].tap()
@@ -84,9 +82,7 @@ final class PdfIOUITests: XCTestCase {
 
     @MainActor func testSettingsHasImportAndBackupSection() {
         let app = launch()
-        let settings = app.buttons["library.settings"]
-        XCTAssertTrue(settings.waitForExistence(timeout: 10))
-        settings.tap()
+        app.openLibrarySection("library.settings")
         let row = app.buttons["settings.pdfio.backup"]
         XCTAssertTrue(row.waitForExistence(timeout: 5))
         row.tap()

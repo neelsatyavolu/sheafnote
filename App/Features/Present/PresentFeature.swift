@@ -31,7 +31,7 @@ enum PresentFeature: FeatureModule {
     }
 
     private static var stopBarItem: EditorBarItem {
-        EditorBarItem(id: "present.stop", slot: .trailing(order: 5), kinds: drawingKinds,
+        EditorBarItem(id: "present.stop", slot: .trailing(order: 5), kinds: drawingKinds, staysInCompactBar: true,
                       makeView: { _ in AnyView(StopPresentingBarButton(controller: PresentationController.shared)) })
     }
 

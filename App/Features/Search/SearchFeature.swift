@@ -64,10 +64,10 @@ private struct NotebookSearchButton: View {
         Button {
             editor.present(EditorSheet(detents: [.large]) { AnyView(NotebookSearchSheet(editor: editor, service: service)) })
         } label: {
-            Image(systemName: "magnifyingglass")
+            // A Label, not a bare Image: on iPhone this button sits in the editor's "more" menu and needs a title.
+            Label { Text("Search in notebook", tableName: "Search") } icon: { Image(systemName: "magnifyingglass") }
         }
         .keyboardShortcut("f", modifiers: .command)
-        .accessibilityLabel(Text("Search in notebook", tableName: "Search"))
         .accessibilityIdentifier("search.notebook.button")
     }
 }

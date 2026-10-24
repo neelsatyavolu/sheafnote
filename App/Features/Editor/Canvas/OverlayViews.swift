@@ -33,7 +33,7 @@ final class ToolOverlayView: HostedSwiftUIView<ToolOverlayContent> {
     }
 }
 
-/// Hosts the selection handles and floating menu. Touches are taken only near the current selection.
+/// Hosts the selection handles and floating menu. Touches are taken only near the current selection or on the menu.
 final class SelectionOverlayView: HostedSwiftUIView<SelectionOverlayContent> {
     private let page: PageSession
     private let session: NotebookSession
@@ -45,9 +45,19 @@ final class SelectionOverlayView: HostedSwiftUIView<SelectionOverlayContent> {
     }
 
     override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
-        guard session.selection.pageID == page.pageID, let bounds = session.selection.bounds else { return nil }
-        let region = bounds.applying(session.selection.livePreviewTransform).insetBy(dx: -48, dy: -88)
-        guard region.contains(point) else { return nil }
+        let selection = session.selection
+        guard selection.pageID == page.pageID, let bounds = selection.bounds else { return nil }
+        let region = bounds.applying(selection.livePreviewTransform).insetBy(dx: -48, dy: -88)
+        guard region.contains(point) || menuFrame(bounds: bounds).contains(point) else { return nil }
         return super.hitTest(point, with: event)
+    }
+
+    private func menuFrame(bounds: CGRect) -> CGRect {
+        let selection = session.selection
+        let count = session.host.selectionActions.actions.filter { $0.isEnabled(for: selection, editor: session) }.count
+        guard count > 0 else { return .null }
+        return SelectionOverlayContent.menuFrame(corners: SelectionGeometry.corners(of: bounds, under: selection.livePreviewTransform),
+                                                 actionCount: count, zoom: max(session.zoomScale, 0.05),
+                                                 pageWidth: page.pageSize.width)
     }
 }

@@ -16,7 +16,9 @@ struct AudioBarButton: View {
                 }
                 .font(.subheadline.monospacedDigit())
             } else {
-                Image(systemName: session.player.isLoaded ? "waveform.circle.fill" : "waveform.circle")
+                Label { Text("Audio", tableName: "AudioStudy") } icon: {
+                    Image(systemName: session.player.isLoaded ? "waveform.circle.fill" : "waveform.circle")
+                }
             }
         }
         .accessibilityLabel(session.recorder.isRecording

@@ -102,4 +102,17 @@ enum PageLayoutEngine {
     static func snapTarget(in layout: PageLayout, projectedCenterX: CGFloat) -> UUID? {
         layout.entries.min { abs($0.frame.midX - projectedCenterX) < abs($1.frame.midX - projectedCenterX) }?.id
     }
+
+    /// Scroll velocity (points per millisecond) above which a release counts as a flick.
+    static let flickVelocity: CGFloat = 0.3
+
+    /// Like a paged scroll view: a flick moves one page from `current` in its direction (positive velocity is toward
+    /// later pages); a slow release settles on the page nearest the projected center.
+    static func snapTarget(in layout: PageLayout, projectedCenterX: CGFloat, from current: UUID?, velocity: CGFloat) -> UUID? {
+        guard abs(velocity) > flickVelocity, let current, let index = layout.index(of: current) else {
+            return snapTarget(in: layout, projectedCenterX: projectedCenterX)
+        }
+        let next = min(max(index + (velocity > 0 ? 1 : -1), 0), layout.entries.count - 1)
+        return layout.entries[next].id
+    }
 }

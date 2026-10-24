@@ -4,9 +4,7 @@ final class SyncUITests: XCTestCase {
     override func setUp() { continueAfterFailure = false }
 
     @MainActor private func openSyncSettings(_ app: XCUIApplication) {
-        let settings = app.buttons["library.settings"]
-        XCTAssertTrue(settings.waitForExistence(timeout: 5))
-        settings.tap()
+        app.openLibrarySection("library.settings")
         let row = app.buttons["settings.sync"]
         XCTAssertTrue(row.waitForExistence(timeout: 5))
         row.tap()

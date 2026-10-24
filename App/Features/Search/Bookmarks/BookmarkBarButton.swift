@@ -10,11 +10,13 @@ struct BookmarkBarButton: View {
     var body: some View {
         let pageID = editor.currentPage?.pageID
         Button { toggle(pageID) } label: {
-            Image(systemName: isMarked ? "bookmark.fill" : "bookmark")
+            Label {
+                isMarked ? Text("Remove bookmark from this page", tableName: "Search") : Text("Bookmark this page", tableName: "Search")
+            } icon: {
+                Image(systemName: isMarked ? "bookmark.fill" : "bookmark")
+            }
         }
         .disabled(pageID == nil)
-        .accessibilityLabel(isMarked ? Text("Remove bookmark from this page", tableName: "Search")
-                                     : Text("Bookmark this page", tableName: "Search"))
         .accessibilityIdentifier("search.bookmark")
         .task(id: pageID) { refresh(pageID) }
         .onReceive(NotificationCenter.default.publisher(for: .sheafnoteModelDidChange)) { _ in refresh(pageID) }

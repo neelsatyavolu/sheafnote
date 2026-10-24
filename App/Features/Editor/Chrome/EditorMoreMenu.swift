@@ -57,7 +57,7 @@ struct EditorMoreMenu: View {
     }
 
     @ViewBuilder private var compactBarItems: some View {
-        let items = session.host.notebookMenu.barItems.filter { $0.kinds.contains(kind) }.sorted { $0.slot.order < $1.slot.order }
+        let items = session.host.notebookMenu.barItems.filter { $0.kinds.contains(kind) && !$0.staysInCompactBar }.sorted { $0.slot.order < $1.slot.order }
         ForEach(items) { $0.makeView(session) }
     }
 

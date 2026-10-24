@@ -21,7 +21,10 @@ struct EditorBarItem: Identifiable {
     let id: String
     let slot: EditorBarSlot
     let kinds: Set<NotebookKind>
-    /// A Button/Menu with label and accessibility already set.
+    /// On iPhone bar items move into the "more" menu; a status control (such as Stop Presenting) stays in the bar.
+    var staysInCompactBar = false
+    /// A Button/Menu with label and accessibility already set. Use a `Label`, not a bare image: on iPhone it is a
+    /// menu row and needs a title.
     let makeView: @MainActor (EditorContext) -> AnyView
 }
 

@@ -16,6 +16,19 @@ struct SelectionOverlayContent: View {
 
     private var selection: SelectionModel { session.selection }
 
+    /// Where the floating menu sits, in page points. `SelectionOverlayView` uses it too, so touches on the menu are
+    /// accepted: on a phone the page is zoomed out and the menu reaches well past the selection.
+    static func menuFrame(corners: [CGPoint], actionCount: Int, zoom: CGFloat, pageWidth: CGFloat) -> CGRect {
+        let width = (min(CGFloat(actionCount) * 42, maxMenuWidth) + 12) / zoom
+        let height = 44 / zoom
+        let top = corners.map(\.y).min() ?? 0
+        let centerX = ((corners.map(\.x).min() ?? 0) + (corners.map(\.x).max() ?? 0)) / 2
+        let half = min(width / 2 + 4 / zoom, pageWidth / 2)   // keep the whole capsule on the page
+        let x = min(max(centerX, half), pageWidth - half)
+        let y = max(top - 40 / zoom, 28 / zoom)
+        return CGRect(x: x - width / 2, y: y - height / 2, width: width, height: height)
+    }
+
     var body: some View {
         ZStack(alignment: .topLeading) {
             if selection.pageID == page.pageID, let bounds = selection.bounds, !selection.isEmpty {
@@ -90,8 +103,8 @@ struct SelectionOverlayContent: View {
     private func floatingMenu(corners: [CGPoint], zoom: CGFloat) -> some View {
         let actions = session.host.selectionActions.actions.filter { $0.isEnabled(for: selection, editor: session) }
         if !actions.isEmpty, selection.livePreviewTransform == .identity {
-            let top = corners.map(\.y).min() ?? 0
-            let centerX = ((corners.map(\.x).min() ?? 0) + (corners.map(\.x).max() ?? 0)) / 2
+            let menuWidth = min(CGFloat(actions.count) * 42, Self.maxMenuWidth)
+            let frame = Self.menuFrame(corners: corners, actionCount: actions.count, zoom: zoom, pageWidth: page.pageSize.width)
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 2) {
                     ForEach(actions, id: \.id) { action in
@@ -104,12 +117,12 @@ struct SelectionOverlayContent: View {
                     }
                 }
             }
-            .frame(width: min(CGFloat(actions.count) * 42, Self.maxMenuWidth), height: 44)
+            .frame(width: menuWidth, height: 44)
             .padding(.horizontal, 6)
             .glassEffect(.regular, in: Capsule())
             .scaleEffect(1 / zoom)
-            .position(x: min(max(centerX, 120 / zoom), page.pageSize.width - 120 / zoom),
-                      y: max(top - 40 / zoom, 28 / zoom))
+            .frame(width: frame.width, height: frame.height)
+            .position(x: frame.midX, y: frame.midY)
         }
     }
 

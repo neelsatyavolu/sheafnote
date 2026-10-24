@@ -40,9 +40,8 @@ final class SearchUITests: XCTestCase {
 
     @MainActor func testLibrarySearchFindsANotebookByTitleAndOpensIt() {
         let app = AppLauncher.launch(.libraryBasic)
-        let search = app.buttons["sidebar.search"].exists ? app.buttons["sidebar.search"] : app.staticTexts["sidebar.search"]
-        XCTAssertTrue(search.waitForExistence(timeout: 10), "sidebar search entry")
-        search.tap()
+        XCTAssertTrue(app.buttons["item.Physics 101"].waitForExistence(timeout: 10))
+        app.openLibrarySection("sidebar.search")
         type("Phys", intoSearchOf: app)
         let result = app.buttons["search.result.title.Physics 101"]
         XCTAssertTrue(result.waitForExistence(timeout: 10), "title result")
@@ -53,9 +52,8 @@ final class SearchUITests: XCTestCase {
 
     @MainActor func testLibrarySearchWithNoMatchShowsAnEmptyState() {
         let app = AppLauncher.launch(.libraryBasic)
-        let search = app.buttons["sidebar.search"].exists ? app.buttons["sidebar.search"] : app.staticTexts["sidebar.search"]
-        XCTAssertTrue(search.waitForExistence(timeout: 10))
-        search.tap()
+        XCTAssertTrue(app.buttons["item.Physics 101"].waitForExistence(timeout: 10))
+        app.openLibrarySection("sidebar.search")
         type("zzzzqq", intoSearchOf: app)
         XCTAssertTrue(app.staticTexts["No Results for “zzzzqq”"].waitForExistence(timeout: 10)
                       || app.staticTexts.matching(NSPredicate(format: "label CONTAINS 'zzzzqq'")).firstMatch.waitForExistence(timeout: 5))
@@ -65,7 +63,7 @@ final class SearchUITests: XCTestCase {
 
     @MainActor func testSearchingPdfTextInsideANotebookJumpsToThePage() {
         let app = openNotebook(.pdfNotebook, title: "Fixture PDF")
-        app.buttons["search.notebook.button"].tap()
+        app.editorBarButton("search.notebook.button").tap()
         type("2", intoSearchOf: app)
         let result = app.buttons["search.notebook.result.2"]
         XCTAssertTrue(result.waitForExistence(timeout: 15), "PDF text of page 2 should be searchable")
@@ -81,9 +79,7 @@ final class SearchUITests: XCTestCase {
     @MainActor func testBookmarkingAPageListsItInTheBookmarksTab() {
         let app = openNotebook(.notebookWith3Pages, title: "Three Pages")
         goToPage(2, in: app)
-        let bookmark = app.buttons["search.bookmark"]
-        XCTAssertTrue(bookmark.waitForExistence(timeout: 5))
-        bookmark.tap()
+        app.editorBarButton("search.bookmark").tap()
         openNavigator(app, tab: "Bookmarks")
         XCTAssertTrue(app.descendants(matching: .any)["search.bookmark.row.2"].waitForExistence(timeout: 5), "page 2 is bookmarked")
     }
@@ -91,7 +87,7 @@ final class SearchUITests: XCTestCase {
     @MainActor func testBookmarkTabJumpsToTheBookmarkedPageAndToggleRemovesIt() {
         let app = openNotebook(.notebookWith3Pages, title: "Three Pages")
         goToPage(3, in: app)
-        app.buttons["search.bookmark"].tap()
+        app.editorBarButton("search.bookmark").tap()
         goToPage(1, in: app)
         openNavigator(app, tab: "Bookmarks")
         let row = app.descendants(matching: .any)["search.bookmark.row.3"]
@@ -101,7 +97,7 @@ final class SearchUITests: XCTestCase {
         XCTAssertTrue(indicator.waitForExistence(timeout: 5))
         XCTAssertEqual(indicator.label, "Page 3 of 3")
 
-        app.buttons["search.bookmark"].tap()          // second tap removes it
+        app.editorBarButton("search.bookmark").tap()          // second tap removes it
         openNavigator(app, tab: "Bookmarks")
         XCTAssertTrue(app.staticTexts["No Bookmarks"].waitForExistence(timeout: 5))
     }

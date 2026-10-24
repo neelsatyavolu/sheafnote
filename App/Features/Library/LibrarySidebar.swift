@@ -130,12 +130,18 @@ struct LibraryPhoneView: View {
 
     private var sectionMenu: some View {
         Menu {
+            // Same identifiers as the iPad sidebar and bottom bar, so UI tests find one control on both devices.
             Button("Documents", systemImage: "books.vertical") { root = .documents }
+                .accessibilityIdentifier("sidebar.documents")
             Button("Favorites", systemImage: "star") { root = .favorites }
+                .accessibilityIdentifier("sidebar.favorites")
             Button("Search", systemImage: "magnifyingglass") { root = .search }
+                .accessibilityIdentifier("sidebar.search")
             Button("Recently Deleted", systemImage: "trash") { root = .recentlyDeleted }
+                .accessibilityIdentifier("sidebar.recentlyDeleted")
             Divider()
             Button("Settings", systemImage: "gearshape") { session.present(AnyView(SettingsView())) }
+                .accessibilityIdentifier("library.settings")
         } label: {
             Label("Library", systemImage: "sidebar.left")
         }

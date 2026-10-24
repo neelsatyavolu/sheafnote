@@ -102,7 +102,7 @@ struct EditorScaffold: View {
             }
         }
         ToolbarItemGroup(placement: .topBarTrailing) {
-            if !compact { barItems(leading: false) }
+            if compact { compactStatusItems } else { barItems(leading: false) }
             Button { session.undo() } label: { Image(systemName: "arrow.uturn.backward") }
                 .disabled(!session.canUndo)
                 .keyboardShortcut("z", modifiers: .command)
@@ -125,6 +125,13 @@ struct EditorScaffold: View {
         let items = host.notebookMenu.barItems
             .filter { $0.kinds.contains(notebook.kind) && $0.slot.isLeading == leading }
             .sorted { $0.slot.order < $1.slot.order }
+        ForEach(items) { $0.makeView(session) }
+    }
+
+    /// Bar items that stay visible on iPhone instead of moving into the "more" menu.
+    @ViewBuilder
+    private var compactStatusItems: some View {
+        let items = host.notebookMenu.barItems.filter { $0.kinds.contains(notebook.kind) && $0.staysInCompactBar }
         ForEach(items) { $0.makeView(session) }
     }
 

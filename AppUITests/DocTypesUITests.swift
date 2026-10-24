@@ -111,9 +111,7 @@ final class DocTypesUITests: XCTestCase {
 
     @MainActor func testAppLockSettingsSectionIsListed() {
         let app = launch(.empty)
-        let settings = app.buttons["library.settings"]
-        XCTAssertTrue(settings.waitForExistence(timeout: 10))
-        settings.tap()
+        app.openLibrarySection("library.settings")
         XCTAssertTrue(app.staticTexts["App Lock"].waitForExistence(timeout: 5))
     }
 }

@@ -37,7 +37,7 @@ final class LibraryUITests: XCTestCase {
         XCTAssertTrue(recipes.waitForExistence(timeout: 5))
         recipes.press(forDuration: 1.0)
         app.buttons["Add to Favorites"].tap()
-        app.staticTexts["sidebar.favorites"].tap()
+        app.openLibrarySection("sidebar.favorites")
         XCTAssertTrue(app.buttons["item.Recipes"].waitForExistence(timeout: 5))
         XCTAssertFalse(app.buttons["item.Physics 101"].exists)
     }
@@ -49,12 +49,12 @@ final class LibraryUITests: XCTestCase {
         recipes.press(forDuration: 1.0)
         app.buttons["Delete"].tap()
         XCTAssertFalse(app.buttons["item.Recipes"].waitForExistence(timeout: 2))
-        app.staticTexts["sidebar.recentlyDeleted"].tap()
+        app.openLibrarySection("sidebar.recentlyDeleted")
         let trashed = app.buttons["item.Recipes"]
         XCTAssertTrue(trashed.waitForExistence(timeout: 5))
         trashed.tap()
         app.buttons["library.restore"].tap()
-        app.staticTexts["sidebar.documents"].tap()
+        app.openLibrarySection("sidebar.documents")
         XCTAssertTrue(app.buttons["item.Recipes"].waitForExistence(timeout: 5))
     }
 

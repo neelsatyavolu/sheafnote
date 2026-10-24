@@ -36,6 +36,8 @@ final class NotebookScrollController: UIViewController, UIScrollViewDelegate, UI
     private var lastConfiguration: ToolConfiguration?
     private var lastViewport = CGSize.zero
     private var isRelayouting = false
+    /// The page under the viewport's center when a horizontal drag began; a flick pages from here.
+    private var dragStartPage: UUID?
     private let maxLivePages = 9
 
     init(session: NotebookSession) {
@@ -322,13 +324,18 @@ final class NotebookScrollController: UIViewController, UIScrollViewDelegate, UI
         updateLivePages()
     }
 
+    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+        dragStartPage = layout.currentPage(visibleRect: visibleContentRect)
+    }
+
     func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint,
                                    targetContentOffset: UnsafeMutablePointer<CGPoint>) {
         guard layout.direction == .horizontal, scrollView.zoomScale <= fitScale * 1.02 else { return }
         let z = scrollView.zoomScale
         let safe = view.safeAreaInsets
         let projectedCenter = (targetContentOffset.pointee.x + safe.left + viewportSize.width / 2) / z
-        guard let id = PageLayoutEngine.snapTarget(in: layout, projectedCenterX: projectedCenter),
+        guard let id = PageLayoutEngine.snapTarget(in: layout, projectedCenterX: projectedCenter, from: dragStartPage,
+                                                   velocity: velocity.x),
               let frame = layout.frame(of: id) else { return }
         targetContentOffset.pointee.x = clamped(CGPoint(x: z * frame.midX - safe.left - viewportSize.width / 2, y: 0)).x
     }
