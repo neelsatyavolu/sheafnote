@@ -9,3 +9,6 @@ xcuserdata/
 *.p8
 *.p12
 *.mobileprovision
+Sheafnote.xcodeproj/
+*.xcresult
+Packages/SheafnoteCore/.build/
