@@ -14,12 +14,12 @@ import SheafnoteCore
 
     // MARK: Creation and routing
 
-    @Test func newItemsAreRegisteredInOrderBetweenNotebookAndFolder() throws {
+    @Test func newItemsAreRegisteredAfterNotebookAndFolder() throws {
         let (services, host) = try make()
         FoundationRegistrations.register(into: host)
         host.library.registerNewItem(DocumentCreation.whiteboardItem)
         host.library.registerNewItem(DocumentCreation.textDocumentItem)
-        #expect(host.library.sortedNewItems.map(\.id) == ["notebook", "whiteboard", "textDocument", "folder"])
+        #expect(host.library.sortedNewItems.map(\.id) == ["notebook", "folder", "whiteboard", "textDocument"])
         _ = services
     }
 

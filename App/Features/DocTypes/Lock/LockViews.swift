@@ -57,6 +57,7 @@ struct LockPanel: View {
             .padding(32)
             .frame(maxWidth: 420)
         }
+        .accessibilityElement(children: .contain)
     }
 }
 

@@ -6,14 +6,14 @@ import SwiftUI
 enum DocumentCreation {
     static let whiteboardItem = LibraryNewItem(
         id: "whiteboard", title: LocalizedStringResource("Whiteboard", table: "DocTypes"),
-        symbolName: "rectangle.and.pencil.and.ellipsis", order: 4
+        symbolName: "rectangle.and.pencil.and.ellipsis", order: 20
     ) { context in
         create(kind: .whiteboard, title: String(localized: "Untitled Whiteboard", table: "DocTypes"), cover: "blueprint", context: context)
     }
 
     static let textDocumentItem = LibraryNewItem(
         id: "textDocument", title: LocalizedStringResource("Text Document", table: "DocTypes"),
-        symbolName: "doc.text", order: 6
+        symbolName: "doc.text", order: 30
     ) { context in
         create(kind: .text, title: String(localized: "Untitled Text Document", table: "DocTypes"), cover: "ledger", context: context)
     }
