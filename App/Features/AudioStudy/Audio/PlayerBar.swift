@@ -63,10 +63,10 @@ struct PlayerBar: View {
         @Bindable var player = player
         return Menu {
             Picker(selection: $player.rate) {
-                ForEach([Float(0.75), 1, 1.25, 1.5, 2], id: \.self) { Text("\($0, format: .number)x").tag($0) }
+                ForEach([Float(0.75), 1, 1.25, 1.5, 2], id: \.self) { Text(verbatim: "\($0.formatted())x").tag($0) }
             } label: { Text("Speed", tableName: "AudioStudy") }
         } label: {
-            Text("\(player.rate, format: .number)x").font(.subheadline.monospacedDigit())
+            Text(verbatim: "\(player.rate.formatted())x").font(.subheadline.monospacedDigit())
         }
         .accessibilityLabel(Text("Playback speed", tableName: "AudioStudy"))
         .accessibilityIdentifier("audio.player.speed")

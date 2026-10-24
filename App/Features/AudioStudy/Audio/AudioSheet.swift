@@ -120,7 +120,7 @@ struct AudioSheet: View {
                     .foregroundStyle(.tint)
                 VStack(alignment: .leading) {
                     Text(recording.title).foregroundStyle(.primary)
-                    Text("\(recording.startedAt, format: .dateTime.day().month().hour().minute()) · \(AudioTimeFormat.clock(recording.duration))")
+                    Text(verbatim: "\(recording.startedAt.formatted(date: .abbreviated, time: .shortened)) · \(AudioTimeFormat.clock(recording.duration))")
                         .font(.caption).foregroundStyle(.secondary)
                 }
             }
