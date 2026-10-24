@@ -101,6 +101,7 @@ struct TypedOperations<T: SyncCodable>: RecordOperations {
                             now: Date) throws -> ApplyOutcome {
         let local = LocalRowState(dirtyFields: Set(row.dirtyFields), modifiedAt: row.modifiedAt, deletedAt: row.deletedAt)
         let special = row is Page ? Page.inkFields : []
+        if let notebook = row as? Notebook { TextConflictCopy.preserveServerText(for: notebook, server: r, in: context, now: now) }
         let resolution = ConflictResolver.resolve(recordType: T.recordType, domainFields: T.domainFields,
                                                   excluding: special, local: local, server: r)
         row.assign(r, fields: resolution.fieldsFromServer)

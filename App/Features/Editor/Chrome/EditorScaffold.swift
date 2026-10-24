@@ -73,7 +73,7 @@ struct EditorScaffold: View {
         .onChange(of: scenePhase) { _, phase in if phase != .active { session.flushAll() } }
         .onAppear { claimed = EditorTabs.shared.claim(notebook.id, token: token) }
         .onDisappear {
-            session.flushAll()
+            UnsavedInkKeeper.shared.settle(session)
             EditorTabs.shared.release(notebook.id, token: token)
         }
     }
@@ -122,7 +122,12 @@ struct EditorScaffold: View {
     }
 
     private func close() {
-        session.flushAll()
+        guard session.flushAll() else {
+            session.alert = EditorAlert(message: String(
+                localized: "Your latest writing could not be saved yet. Stay on this page while Sheafnote keeps trying; the ink is still on screen and nothing has been lost.",
+                table: "Editor"))
+            return
+        }
         if let onClose { onClose() } else { dismiss() }
     }
 

@@ -172,3 +172,40 @@ import Testing
         #expect(nb.syncDirty && nb.ckSystemFields == nil)
     }
 }
+
+@MainActor
+@Suite struct TextDocumentConflictTests {
+    private func text(_ s: String) -> Data { RichTextDocument(blocks: [RichTextBlock(id: UUID(uuidString: "00000000-0000-0000-0000-000000000001")!, text: s)]).encoded() }
+
+    @Test func concurrentTextEditsKeepTheLosingVersionAsACopy() throws {
+        let f = try SyncFixture()
+        let doc = try f.store.notebook("Essay", kind: .text)
+        doc.richText = text("base")
+        doc.dirtyFields = []; doc.syncDirty = false
+        try f.context.save()
+        doc.richText = text("ours")
+        markDirty(doc, fields: ["richText"])
+        var rec = try #require(try RecordMapper.encode(RecordKey(recordType: "SNNotebook", id: doc.id), in: f.context))
+        rec.fields["richText"] = .bytes(text("theirs"))
+        rec.fields["modifiedAt"] = .date(.now.addingTimeInterval(100))
+        rec.systemFields = Data([7])
+
+        _ = try RecordMapper.applyServer(rec, in: f.context, ink: JSONInkMerging())
+
+        #expect(doc.richText == text("ours"))
+        let copies = try f.context.fetch(FetchDescriptor<Notebook>()).filter { $0.title == "Essay" + TextConflictCopy.titleSuffix }
+        #expect(copies.count == 1)
+        #expect(copies.first?.richText == text("theirs") && copies.first?.syncDirty == true)
+    }
+
+    @Test func identicalTextOnBothSidesMakesNoCopy() throws {
+        let f = try SyncFixture()
+        let doc = try f.store.notebook("Essay", kind: .text)
+        doc.richText = text("same")
+        markDirty(doc, fields: ["richText"])
+        var rec = try #require(try RecordMapper.encode(RecordKey(recordType: "SNNotebook", id: doc.id), in: f.context))
+        rec.systemFields = Data([7])
+        _ = try RecordMapper.applyServer(rec, in: f.context, ink: JSONInkMerging())
+        #expect(try f.context.fetch(FetchDescriptor<Notebook>()).count == 1)
+    }
+}

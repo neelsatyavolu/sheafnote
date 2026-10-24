@@ -194,12 +194,37 @@ public final class LibraryStore {
         try context.save()
     }
 
+    /// Live notebooks and folders inside a folder that sits in Recently Deleted would show up nowhere: not at the top
+    /// level, not in the deleted folder's listing, not in Recently Deleted. A sync merge can produce that (one device
+    /// deleted the folder while another added to it), so such items move to the top level. A parent that is merely
+    /// missing is left alone: it may still be on its way from iCloud.
+    @discardableResult
+    public func reparentOrphans(now: Date = .now) throws -> Int {
+        let folders = try allFolders()
+        let deleted = Set(folders.filter { $0.deletedAt != nil }.map(\.id))
+        guard !deleted.isEmpty else { return 0 }
+        var moved = 0
+        for f in folders where f.deletedAt == nil && f.parentID.map(deleted.contains) == true {
+            f.parentID = nil
+            markDirty(f, fields: ["parentID"], now: now)
+            moved += 1
+        }
+        for n in try allNotebooks() where n.deletedAt == nil && n.folderID.map(deleted.contains) == true {
+            n.folderID = nil
+            markDirty(n, fields: ["folderID"], now: now)
+            moved += 1
+        }
+        if moved > 0 { try context.save() }
+        return moved
+    }
+
     // MARK: Permanent removal
 
     /// Removes rows deleted more than 30 days before `now`. Returns the number of folders and notebooks removed.
     @discardableResult
     public func purgeExpired(now: Date = .now) throws -> Int {
         let cutoff = now.addingTimeInterval(-Retention.seconds)
+        try reparentOrphans(now: now)   // never purge a folder out from under live items
         let purger = LibraryPurger(context: context)
         let result = try purger.purge(olderThan: cutoff)
         if !result.records.isEmpty { onPurge?(result.records) }

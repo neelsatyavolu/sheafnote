@@ -59,10 +59,12 @@
 	<string>$(MARKETING_VERSION)</string>
 	<key>CFBundleVersion</key>
 	<string>$(CURRENT_PROJECT_VERSION)</string>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
 	<key>LSSupportsOpeningDocumentsInPlace</key>
 	<true/>
 	<key>NSCameraUsageDescription</key>
-	<string>Sheafnote uses the camera when you choose to insert a photo or scan a page into a notebook.</string>
+	<string>Sheafnote uses the camera when you choose to take a photo to insert into a notebook.</string>
 	<key>NSFaceIDUsageDescription</key>
 	<string>Sheafnote uses Face ID to unlock the app and locked notebooks.</string>
 	<key>NSMicrophoneUsageDescription</key>

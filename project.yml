@@ -60,7 +60,8 @@ targets:
           - UIInterfaceOrientationLandscapeRight
         UIBackgroundModes:
           - remote-notification
-        NSCameraUsageDescription: Sheafnote uses the camera when you choose to insert a photo or scan a page into a notebook.
+        ITSAppUsesNonExemptEncryption: false
+        NSCameraUsageDescription: Sheafnote uses the camera when you choose to take a photo to insert into a notebook.
         NSMicrophoneUsageDescription: Sheafnote records audio while you write when you turn on audio recording in a notebook.
         NSPhotoLibraryAddUsageDescription: Sheafnote saves exported pages and images to your photo library when you ask it to.
         NSFaceIDUsageDescription: Sheafnote uses Face ID to unlock the app and locked notebooks.

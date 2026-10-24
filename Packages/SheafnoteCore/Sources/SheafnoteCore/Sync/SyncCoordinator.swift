@@ -186,6 +186,7 @@ public final class SyncCoordinator {
         for key in changes.deletions {
             report.count(try RecordMapper.applyServerDeletion(key, in: context, save: false))
         }
+        try LibraryStore(context: context).reparentOrphans(now: clock())
         try context.save()
         await transport.commitFetched()
         postServerChangesApplied(changes)

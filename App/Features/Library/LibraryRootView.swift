@@ -22,10 +22,13 @@ struct LibraryRootView: View {
 private struct LibraryShell: View {
     @Bindable var session: LibrarySession
     @Environment(FeatureHost.self) private var host
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     var body: some View {
         Group {
-            if UIDevice.current.userInterfaceIdiom == .pad {
+            // An iPad window that is narrow (Split View, Slide Over, a small Stage Manager window) is compact: it gets the
+            // phone layout, like the editor does.
+            if UIDevice.current.userInterfaceIdiom == .pad, horizontalSizeClass != .compact {
                 LibrarySplitView()
             } else {
                 LibraryPhoneView()

@@ -39,7 +39,7 @@ final class EditorTabs {
 
     /// Flushes ink, then forgets the tab. The notebook itself is untouched.
     func close(id: UUID) {
-        sessions[id]?.flushAll()
+        if let session = sessions[id] { UnsavedInkKeeper.shared.settle(session) }
         sessions[id] = nil
         guard let index = openIDs.firstIndex(of: id) else { return }
         openIDs.remove(at: index)
@@ -47,7 +47,7 @@ final class EditorTabs {
     }
 
     func closeAll() {
-        for id in openIDs { sessions[id]?.flushAll() }
+        for id in openIDs { if let session = sessions[id] { UnsavedInkKeeper.shared.settle(session) } }
         sessions.removeAll()
         openIDs.removeAll()
         activeID = nil

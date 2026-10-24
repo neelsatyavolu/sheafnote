@@ -151,6 +151,34 @@ import Testing
         #expect(purged.contains { $0.recordType == "SNPage" })
     }
 
+    @Test func liveItemsInsideADeletedFolderMoveToTheTopLevelInsteadOfVanishing() throws {
+        let f = try StoreFixture()
+        let folder = try f.library.createFolder(name: "F", in: nil)
+        let inner = try f.library.createFolder(name: "Inner", in: folder.id)
+        let nb = try f.notebook(in: folder.id)
+        // Another device added to the folder while this one deleted it: the folder is deleted, its contents are not.
+        try f.library.softDelete([.folder(folder.id)], now: Date(timeIntervalSince1970: 10))
+        inner.deletedAt = nil
+        nb.deletedAt = nil
+        #expect(try f.library.reparentOrphans() == 2)
+        #expect(nb.folderID == nil && inner.parentID == nil)
+        #expect(nb.syncDirty && inner.syncDirty)
+        #expect(try f.library.reparentOrphans() == 0)
+    }
+
+    @Test func purgingAFolderNeverStrandsALiveNotebookInside() throws {
+        let f = try StoreFixture()
+        let folder = try f.library.createFolder(name: "F", in: nil)
+        let nb = try f.notebook(in: folder.id)
+        let now = Date(timeIntervalSince1970: 500 * day)
+        try f.library.softDelete([.folder(folder.id)], now: now - 40 * day)
+        nb.deletedAt = nil
+        try f.library.purgeExpired(now: now)
+        #expect(f.library.folder(id: folder.id) == nil)
+        let kept = try #require(f.library.notebook(id: nb.id))
+        #expect(kept.folderID == nil && kept.deletedAt == nil)
+    }
+
     @Test func purgeNeverTouchesLiveItems() throws {
         let f = try StoreFixture()
         let live = try f.notebook("Live", now: Date(timeIntervalSince1970: 0))

@@ -221,6 +221,39 @@
         }
       }
     },
+    "Black": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Black"
+          }
+        }
+      }
+    },
+    "Blue": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Blue"
+          }
+        }
+      }
+    },
+    "Brown": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Brown"
+          }
+        }
+      }
+    },
     "Cancel": {
       "extractionState": "manual",
       "localizations": {
@@ -551,6 +584,28 @@
         }
       }
     },
+    "Gray": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gray"
+          }
+        }
+      }
+    },
+    "Green": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Green"
+          }
+        }
+      }
+    },
     "Highlighter": {
       "extractionState": "manual",
       "localizations": {
@@ -613,6 +668,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Medium"
+          }
+        }
+      }
+    },
+    "Merged your latest writing with changes from iCloud.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Merged your latest writing with changes from iCloud."
           }
         }
       }
@@ -782,6 +848,17 @@
         }
       }
     },
+    "Orange": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Orange"
+          }
+        }
+      }
+    },
     "Page %lld": {
       "extractionState": "manual",
       "localizations": {
@@ -936,6 +1013,17 @@
         }
       }
     },
+    "Pink": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pink"
+          }
+        }
+      }
+    },
     "Position": {
       "extractionState": "manual",
       "localizations": {
@@ -943,6 +1031,28 @@
           "stringUnit": {
             "state": "translated",
             "value": "Position"
+          }
+        }
+      }
+    },
+    "Purple": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Purple"
+          }
+        }
+      }
+    },
+    "Red": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Red"
           }
         }
       }
@@ -1123,6 +1233,17 @@
         }
       }
     },
+    "Teal": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Teal"
+          }
+        }
+      }
+    },
     "Template": {
       "extractionState": "manual",
       "localizations": {
@@ -1141,6 +1262,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "The ink on this page could not be read. It has been left untouched, and this page is read-only."
+          }
+        }
+      }
+    },
+    "The ink on this page has not arrived from iCloud yet. This page is read-only until it does.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The ink on this page has not arrived from iCloud yet. This page is read-only until it does."
           }
         }
       }
@@ -1277,6 +1409,17 @@
         }
       }
     },
+    "White": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "White"
+          }
+        }
+      }
+    },
     "Width": {
       "extractionState": "manual",
       "localizations": {
@@ -1310,6 +1453,17 @@
         }
       }
     },
+    "Yellow": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yellow"
+          }
+        }
+      }
+    },
     "You can bring them back with Undo.": {
       "extractionState": "manual",
       "localizations": {
@@ -1332,6 +1486,17 @@
         }
       }
     },
+    "Your latest writing could not be saved yet. Stay on this page while Sheafnote keeps trying; the ink is still on screen and nothing has been lost.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your latest writing could not be saved yet. Stay on this page while Sheafnote keeps trying; the ink is still on screen and nothing has been lost."
+          }
+        }
+      }
+    },
     "Your writing is not changed, only the paper behind it. You can undo this.": {
       "extractionState": "manual",
       "localizations": {
@@ -1339,6 +1504,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Your writing is not changed, only the paper behind it. You can undo this."
+          }
+        }
+      }
+    },
+    "Your writing was kept. The iCloud version of this page is in Recovered Pages.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your writing was kept. The iCloud version of this page is in Recovered Pages."
           }
         }
       }

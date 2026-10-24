@@ -54,7 +54,7 @@ struct InkOptionsRow: View {
                 .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
-        .accessibilityLabel(Text("Color \(preset.colorHex)", tableName: "Editor"))
+        .accessibilityLabel(Text("Color \(NamedColor.spokenName(forHex: preset.colorHex))", tableName: "Editor"))
         .accessibilityHint(selected ? Text("Double tap to edit this color", tableName: "Editor") : Text(""))
         .accessibilityAddTraits(selected ? .isSelected : [])
         .accessibilityIdentifier("editor.options.color")
@@ -196,5 +196,26 @@ struct PresetEditorView: View {
         all.removeAll { $0.id == id }
         store.setPresets(all, for: toolID)
         if let first = all.first { store.selectPreset(first.id, for: toolID) }
+    }
+}
+
+extension NamedColor {
+    /// What VoiceOver says for a color: its plain name, or the hex code for a string that is not a color.
+    static func spokenName(forHex hex: String) -> String {
+        guard let named = nearest(toHex: hex) else { return hex }
+        switch named {
+        case .black: return String(localized: "Black", table: "Editor")
+        case .white: return String(localized: "White", table: "Editor")
+        case .gray: return String(localized: "Gray", table: "Editor")
+        case .red: return String(localized: "Red", table: "Editor")
+        case .orange: return String(localized: "Orange", table: "Editor")
+        case .yellow: return String(localized: "Yellow", table: "Editor")
+        case .green: return String(localized: "Green", table: "Editor")
+        case .teal: return String(localized: "Teal", table: "Editor")
+        case .blue: return String(localized: "Blue", table: "Editor")
+        case .purple: return String(localized: "Purple", table: "Editor")
+        case .pink: return String(localized: "Pink", table: "Editor")
+        case .brown: return String(localized: "Brown", table: "Editor")
+        }
     }
 }

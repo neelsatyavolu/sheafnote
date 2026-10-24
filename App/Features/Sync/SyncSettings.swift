@@ -40,6 +40,9 @@ private struct SyncSettingsContent: View {
             .accessibilityElement(children: .combine)
             .accessibilityIdentifier("sync.status")
             if controller.isEnabled, controller.status != .syncing, case .error = controller.status { errorDetail }
+            if let problem = controller.settingsProblem {
+                Text(problem).font(.footnote).foregroundStyle(.orange)
+            }
             if let last = controller.lastSyncDate {
                 LabeledContent(String(localized: "Last Synced", table: "Sync")) { Text(last, format: .dateTime.day().month().hour().minute()) }
             }

@@ -1,5 +1,6 @@
 import AVFoundation
 import Foundation
+import OSLog
 
 enum MicrophonePermission: Equatable, Sendable { case granted, denied }
 
@@ -89,7 +90,13 @@ final class AVAudioRecorderCapture: NSObject, AudioCapturing, AVAudioRecorderDel
         recorder = nil
         if let observer { NotificationCenter.default.removeObserver(observer) }
         observer = nil
-        try? AVAudioSession.sharedInstance().setActive(false, options: .notifyOthersOnDeactivation)
+        do {
+            try AVAudioSession.sharedInstance().setActive(false, options: .notifyOthersOnDeactivation)
+        } catch {
+            // The recording itself is already stopped and saved; a session that stays active only delays other apps' audio.
+            Logger(subsystem: "co.xanom.sheafnote", category: "audio")
+                .error("Could not release the audio session: \(error.localizedDescription, privacy: .public)")
+        }
         return length
     }
 

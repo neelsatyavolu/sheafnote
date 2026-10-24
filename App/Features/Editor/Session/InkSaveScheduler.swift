@@ -41,16 +41,30 @@ final class InkSaveScheduler {
         write(data: encoded.0, ids: encoded.1, version: version, page: page)
     }
 
-    func flushNow() {
-        guard let page = owner, hasUnsavedChanges, page.isEditable else { return }
+    /// Writes now. Returns false when the ink could not be saved: the caller must then keep the page alive, because
+    /// the retry runs from this scheduler and needs its page.
+    @discardableResult
+    func flushNow() -> Bool {
+        guard let page = owner, hasUnsavedChanges, page.isEditable else { return !hasUnsavedChanges }
         task?.cancel()
         let drawing = page.drawing
         write(data: drawing.dataRepresentation(), ids: page.strokeIDs, version: page.drawingVersion, page: page)
+        return !hasUnsavedChanges
+    }
+
+    /// The store already holds the editor's ink (written by a reconcile), so nothing is pending any more.
+    func markSaved() {
+        task?.cancel()
+        hasUnsavedChanges = false
     }
 
     private func write(data: Data, ids: [StrokeID], version: Int, page: PageSession) {
+        // Sync may have changed this page's stored ink since the editor loaded it. Writing our copy blindly would
+        // delete the remote strokes, so merge first; when that already saved the result there is nothing left to write.
+        if page.reconcileWithStore() { return }
         do {
-            try page.services.pages.saveInk(pageID: page.pageID, drawingData: data, strokeIDs: ids)
+            let hash = try page.services.pages.saveInk(pageID: page.pageID, drawingData: data, strokeIDs: ids)
+            page.noteSaved(hash: hash, strokeIDs: ids)
             savedVersion = version
             hasUnsavedChanges = page.drawingVersion != version
             page.notebook.clearSaveError()

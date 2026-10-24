@@ -15,6 +15,8 @@ final class SyncController {
     private(set) var isEnabled: Bool
     private(set) var awaitingAccountDecision: Bool
     private(set) var lastSyncDate: Date?
+    /// Set when the saved sync settings could not be read and sync was switched off until the user turns it on again.
+    private(set) var settingsProblem: String?
 
     @ObservationIgnored private var debounce: Task<Void, Never>?
     @ObservationIgnored private var changeObserver: (any NSObjectProtocol)?
@@ -29,6 +31,7 @@ final class SyncController {
         isEnabled = coordinator.isEnabled
         awaitingAccountDecision = coordinator.awaitingAccountDecision
         lastSyncDate = coordinator.lastSyncDate
+        settingsProblem = coordinator.settingsProblem
         coordinator.onStatusChange = { [weak self] _, _ in self?.refresh() }
         refresh()
     }
@@ -67,6 +70,7 @@ final class SyncController {
         isEnabled = coordinator.isEnabled
         awaitingAccountDecision = coordinator.awaitingAccountDecision
         lastSyncDate = coordinator.lastSyncDate
+        settingsProblem = coordinator.settingsProblem
         let model = services.syncStatus
         model.state = Self.modelState(for: coordinator.status)
         model.isSyncEnabled = coordinator.isEnabled

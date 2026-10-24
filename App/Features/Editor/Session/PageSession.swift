@@ -32,6 +32,9 @@ final class PageSession: PageContext {
     @ObservationIgnored private(set) lazy var elementStore = PageElements(page: self)
     @ObservationIgnored let saver = InkSaveScheduler()
     @ObservationIgnored private var echoDrawing: PKDrawing?
+    /// `inkHash` and stroke ids of the stored ink the editor last loaded or saved: what sync is compared against.
+    @ObservationIgnored var storedInkHash: String
+    @ObservationIgnored var storedStrokeIDs: [String]
     @ObservationIgnored private var cachedIDs: (version: Int, ids: [StrokeID])?
 
     var services: AppServices { notebook.services }
@@ -48,17 +51,30 @@ final class PageSession: PageContext {
         self.notebookID = notebook.notebook.id
         self.pageSize = page.size
         self.snapshot = PageSnapshotFactory.make(page: page, notebook: notebook.notebook)
-        var loaded = PKDrawing()
-        if let data = page.inkData, !data.isEmpty {
-            do { loaded = try PKDrawing(data: data) } catch {
-                loadProblem = String(localized: "The ink on this page could not be read. It has been left untouched, and this page is read-only.",
-                                     table: "Editor")
-            }
-        }
+        self.storedInkHash = page.inkHash
+        self.storedStrokeIDs = page.strokeIDs
+        let loaded: PKDrawing
+        (loaded, loadProblem) = Self.load(page)
         self.drawing = loaded
         canvasDelegate.page = self
         saver.owner = self
         reloadElements()
+    }
+
+    /// Decodes the stored ink. A page that claims strokes but has no ink bytes (a download that did not arrive) or whose
+    /// bytes cannot be read stays read-only, so the next save never overwrites what may still be recoverable.
+    static func load(_ page: Page) -> (drawing: PKDrawing, problem: String?) {
+        if let data = page.inkData, !data.isEmpty {
+            do { return (try PKDrawing(data: data), nil) } catch {
+                return (PKDrawing(), String(localized: "The ink on this page could not be read. It has been left untouched, and this page is read-only.",
+                                            table: "Editor"))
+            }
+        }
+        guard page.strokeIDs.isEmpty else {
+            return (PKDrawing(), String(localized: "The ink on this page has not arrived from iCloud yet. This page is read-only until it does.",
+                                        table: "Editor"))
+        }
+        return (PKDrawing(), nil)
     }
 
     // MARK: Canvas
@@ -82,7 +98,12 @@ final class PageSession: PageContext {
 
     func canvasDrawingChanged(_ new: PKDrawing) {
         guard isEditable, !isLifted, !Self.same(new, drawing) else { return }
-        if let echo = echoDrawing, Self.same(new, echo) { return }
+        // The echo of a programmatic assignment is skipped at most once. A later user edit that happens to produce
+        // the same drawing (undo, draw, erase) must still be saved.
+        if let echo = echoDrawing {
+            echoDrawing = nil
+            if Self.same(new, echo) { return }
+        }
         let old = drawing
         drawing = new
         let name = new.strokes.count > old.strokes.count ? "Draw" : "Erase"
@@ -152,6 +173,32 @@ final class PageSession: PageContext {
         a.strokes.count == b.strokes.count && a.bounds == b.bounds && a.dataRepresentation() == b.dataRepresentation()
     }
 
+    // MARK: Store changes
+
+    /// Shows ink that sync wrote into the store. Not an edit: no undo step, nothing to save.
+    func replaceDrawingFromStore(_ new: PKDrawing) {
+        drawing = new
+        showInCanvas(new)
+        drawingVersion += 1
+        cachedIDs = nil
+        container?.updateAccessibility()
+        notebook.undoManager.removeAllActions()
+        if notebook.selection.pageID == pageID { notebook.selection.clear() }
+        NotificationCenter.default.post(name: EditorNotifications.inkDidChange, object: pageID)
+    }
+
+    func clearLoadProblem() {
+        loadProblem = nil
+        canvas?.isUserInteractionEnabled = true
+    }
+
+    /// The stored ink changed to something unreadable: keep what is on screen but stop writing over it.
+    func markUnreadable() {
+        loadProblem = String(localized: "The ink on this page could not be read. It has been left untouched, and this page is read-only.",
+                             table: "Editor")
+        canvas?.isUserInteractionEnabled = false
+    }
+
     // MARK: Ink bookkeeping
 
     private func inkChanged() {
@@ -171,7 +218,8 @@ final class PageSession: PageContext {
     }
 
     /// Writes any unsaved ink now. Called when the page leaves the viewport, the app backgrounds or the editor closes.
-    func flush() { saver.flushNow() }
+    @discardableResult
+    func flush() -> Bool { saver.flushNow() }
 
     // MARK: Elements and layers
 

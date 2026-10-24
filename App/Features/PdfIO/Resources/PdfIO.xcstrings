@@ -171,22 +171,22 @@
         }
       }
     },
-    "Choose a backup folder first.": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Choose a backup folder first."
-          }
-        }
-      }
-    },
     "Choose Photos": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
             "value": "Choose Photos"
+          }
+        }
+      }
+    },
+    "Choose a backup folder first.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Choose a backup folder first."
           }
         }
       }
@@ -301,22 +301,22 @@
         }
       }
     },
-    "Export ready": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Export ready"
-          }
-        }
-      }
-    },
     "Export Whole Library…": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
             "value": "Export Whole Library…"
+          }
+        }
+      }
+    },
+    "Export ready": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Export ready"
           }
         }
       }
@@ -461,22 +461,22 @@
         }
       }
     },
-    "Insert Pages": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Insert Pages"
-          }
-        }
-      }
-    },
     "Insert PDF or Images…": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
             "value": "Insert PDF or Images…"
+          }
+        }
+      }
+    },
+    "Insert Pages": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Insert Pages"
           }
         }
       }
@@ -591,6 +591,16 @@
         }
       }
     },
+    "One PDF per notebook. Pages keep their size.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "One PDF per notebook. Pages keep their size."
+          }
+        }
+      }
+    },
     "One image per page.": {
       "localizations": {
         "en": {
@@ -601,12 +611,22 @@
         }
       }
     },
-    "One PDF per notebook. Pages keep their size.": {
+    "PDF": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "One PDF per notebook. Pages keep their size."
+            "value": "PDF"
+          }
+        }
+      }
+    },
+    "PDF from Files…": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "PDF from Files…"
           }
         }
       }
@@ -681,36 +701,6 @@
         }
       }
     },
-    "PDF": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "PDF"
-          }
-        }
-      }
-    },
-    "PDF from Files…": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "PDF from Files…"
-          }
-        }
-      }
-    },
-    "photo %lld": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "photo %lld"
-          }
-        }
-      }
-    },
     "Photos %@": {
       "localizations": {
         "en": {
@@ -751,22 +741,32 @@
         }
       }
     },
-    "Sheafnote backup": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sheafnote backup"
-          }
-        }
-      }
-    },
     "Sheafnote Backup %@": {
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
             "value": "Sheafnote Backup %@"
+          }
+        }
+      }
+    },
+    "Sheafnote Notebooks": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sheafnote Notebooks"
+          }
+        }
+      }
+    },
+    "Sheafnote backup": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sheafnote backup"
           }
         }
       }
@@ -787,16 +787,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Sheafnote couldn't read %1$@: %2$@"
-          }
-        }
-      }
-    },
-    "Sheafnote Notebooks": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Sheafnote Notebooks"
           }
         }
       }
@@ -831,6 +821,17 @@
         }
       }
     },
+    "The copy in the folder did not match the backup.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The copy in the folder did not match the backup."
+          }
+        }
+      }
+    },
     "The page background couldn't be loaded. Your ink is safe.": {
       "localizations": {
         "en": {
@@ -857,6 +858,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Try Again"
+          }
+        }
+      }
+    },
+    "photo %lld": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "photo %lld"
           }
         }
       }

@@ -26,6 +26,9 @@ final class TextDocumentModel {
     private var lastUndoPush = Date.distantPast
     private var hasUnsavedChanges = false
     @ObservationIgnored private var saveTask: Task<Void, Never>?
+    /// The stored text this editor last loaded or wrote; a different stored value means sync changed it meanwhile.
+    @ObservationIgnored private var knownStored: Data?
+    @ObservationIgnored private var syncObserver: (any NSObjectProtocol)?
 
     var canUndo: Bool { !undoStack.isEmpty }
     var canRedo: Bool { !redoStack.isEmpty }
@@ -35,9 +38,29 @@ final class TextDocumentModel {
         self.notebook = notebook
         self.services = services
         load()
+        syncObserver = NotificationCenter.default.addObserver(forName: .sheafnoteServerChangesApplied, object: nil,
+                                                              queue: .main) { [weak self] _ in
+            MainActor.assumeIsolated { self?.storeDidChange() }
+        }
+    }
+
+    isolated deinit {
+        if let syncObserver { NotificationCenter.default.removeObserver(syncObserver) }
+    }
+
+    /// iCloud wrote a newer text into the store. With nothing unsaved here, show it; otherwise the next save keeps the
+    /// stored version as a copy before writing ours (see `flush`).
+    private func storeDidChange() {
+        guard !hasUnsavedChanges, notebook.richText != knownStored else { return }
+        undoStack.removeAll()
+        redoStack.removeAll()
+        document = .empty
+        loadError = nil
+        load()
     }
 
     private func load() {
+        knownStored = notebook.richText
         guard let data = notebook.richText, !data.isEmpty else { return }
         do {
             document = try RichTextDocument.decode(data)
@@ -121,10 +144,16 @@ final class TextDocumentModel {
     func flush() {
         saveTask?.cancel()
         guard hasUnsavedChanges, isEditable else { return }
-        notebook.richText = document.encoded()
+        // Sync replaced the stored text since we loaded it: keep that version as a copy instead of overwriting it.
+        if let stored = notebook.richText, !stored.isEmpty, stored != knownStored {
+            TextConflictCopy.keep(stored, from: notebook, in: services.context)
+        }
+        let encoded = document.encoded()
+        notebook.richText = encoded
         markDirty(notebook, fields: ["richText"])
         do {
             try services.context.save()
+            knownStored = encoded
             hasUnsavedChanges = false
         } catch {
             Self.log.error("Saving text document failed: \(error.localizedDescription, privacy: .public)")

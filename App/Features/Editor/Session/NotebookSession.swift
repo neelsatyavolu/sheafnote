@@ -74,6 +74,7 @@ final class NotebookSession: EditorContext {
         self.scrollDirection = notebook.scrollDirectionValue
         undoManager.levelsOfUndo = 300
         observeUndo()
+        observeServerChanges()
         observeTools()
         reloadPages()
         currentPageID = pageIDs.first
@@ -105,12 +106,19 @@ final class NotebookSession: EditorContext {
     /// Writes the page's ink and forgets its live state. Undo steps look pages up again by id, so this is safe.
     func releasePage(id: UUID) {
         guard let page = pageSessions[id] else { return }
-        page.flush()
+        // A page whose ink could not be written keeps its session: the retry needs it, and the strokes live only there.
+        guard page.flush() else { return }
         if selection.pageID == id { selection.clear() }
         pageSessions[id] = nil
     }
 
-    func flushAll() { pageSessions.values.forEach { $0.flush() } }
+    /// Writes every page's unsaved ink. Returns false when some of it could not be saved.
+    @discardableResult
+    func flushAll() -> Bool {
+        pageSessions.values.map { $0.flush() }.allSatisfy { $0 }
+    }
+
+    var hasUnsavedInk: Bool { pageSessions.values.contains { $0.saver.hasUnsavedChanges } }
 
     func reloadPages() {
         do {
@@ -131,8 +139,7 @@ final class NotebookSession: EditorContext {
         pageIDs = visible.map(\.id)
         pageSizes = Dictionary(uniqueKeysWithValues: visible.map { ($0.id, $0.size) })
         if let current = currentPageID, !pageIDs.contains(current) { currentPageID = pageIDs.first }
-        for (id, session) in pageSessions where !pageIDs.contains(id) {
-            session.flush()
+        for (id, session) in pageSessions where !pageIDs.contains(id) && session.flush() {
             pageSessions[id] = nil
         }
         layoutRevision += 1
@@ -269,6 +276,27 @@ final class NotebookSession: EditorContext {
             }
             observers.append(token)
         }
+    }
+
+    // MARK: Sync
+
+    private func observeServerChanges() {
+        let token = NotificationCenter.default.addObserver(forName: .sheafnoteServerChangesApplied, object: nil,
+                                                           queue: .main) { [weak self] _ in
+            MainActor.assumeIsolated { self?.serverChangesApplied() }
+        }
+        observers.append(token)
+    }
+
+    /// iCloud changed rows in the store: bring the open pages, their elements and the page list up to date, never
+    /// letting a stale in-memory copy overwrite what arrived.
+    func serverChangesApplied() {
+        for page in pageSessions.values {
+            page.reconcileWithStore()
+            page.refreshSnapshot()
+            page.reloadElements()
+        }
+        reloadPages()
     }
 
     private func refreshUndoState() {

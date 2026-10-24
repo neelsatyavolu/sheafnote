@@ -28,6 +28,12 @@ final class CKSyncEngineTransport: CloudTransport {
     var outgoing: [CKRecord.ID: OutgoingChange] = [:]
     var tempFiles: [URL] = []
     var explicitOperations = 0
+    /// Engine state (change token) that arrived while fetched records are still waiting to be applied and saved.
+    /// It is written to disk only by `commitFetched()`, so a crash or failed apply makes the next launch re-fetch them.
+    var heldSerialization: CKSyncEngine.State.Serialization?
+    var fetchAwaitingCommit = false
+    /// A fetched record could not be decoded. The token then never advances in this run, so the record is fetched again later.
+    var undecodableFetched = false
 
     init(stateStore: EngineStateStore, assetDirectory: URL = FileManager.default.temporaryDirectory.appending(path: "SheafnoteSyncAssets")) {
         self.stateStore = stateStore
@@ -73,6 +79,9 @@ final class CKSyncEngineTransport: CloudTransport {
     func resetState() async {
         engine = nil
         buffer = EventBuffer()
+        heldSerialization = nil
+        fetchAwaitingCommit = false
+        undecodableFetched = false
         persisted = EngineStateStore.Persisted()
         do { try stateStore.save(persisted) } catch {
             Self.log.error("Could not clear sync state: \(error.localizedDescription, privacy: .public)")
@@ -83,10 +92,23 @@ final class CKSyncEngineTransport: CloudTransport {
         guard let engine else { throw SyncFailure.other("Sync has not started.") }
         try throwBufferedError()
         try await perform { try await engine.fetchChanges() }
+        // A failure leaves the fetched records in the buffer: the next cycle still delivers the good ones.
+        try throwBufferedError()
         let changes = FetchedChanges(records: buffer.records, deletions: buffer.deletions, zoneDeleted: buffer.zoneDeleted)
         buffer.clearFetched()
-        try throwBufferedError()
         return changes
+    }
+
+    func commitFetched() async {
+        guard !undecodableFetched else {
+            Self.log.error("Not advancing the sync change token: a fetched record could not be read")
+            return
+        }
+        fetchAwaitingCommit = false
+        guard let held = heldSerialization else { return }
+        heldSerialization = nil
+        persisted.serialization = held
+        persistState()
     }
 
     func send(_ changes: [OutgoingChange]) async throws -> [SendOutcome] {

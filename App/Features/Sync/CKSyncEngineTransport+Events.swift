@@ -62,16 +62,22 @@ extension CKSyncEngineTransport: CKSyncEngineDelegate {
     func receive(_ event: CKSyncEngine.Event) {
         switch event {
         case .stateUpdate(let update):
-            persisted.serialization = update.stateSerialization
-            persistState()
+            if fetchAwaitingCommit {
+                heldSerialization = update.stateSerialization
+            } else {
+                persisted.serialization = update.stateSerialization
+                persistState()
+            }
         case .accountChange(let change):
             onAccountEvent?(Self.accountEvent(for: change.changeType))
         case .fetchedDatabaseChanges(let changes):
+            fetchAwaitingCommit = true
             if changes.deletions.contains(where: { $0.zoneID == CKRecordBridge.zoneID }) {
                 buffer.zoneDeleted = true
                 persisted.zoneCreated = false
             }
         case .fetchedRecordZoneChanges(let changes):
+            fetchAwaitingCommit = true
             collect(changes)
             if explicitOperations == 0 { onRemoteChange?() }
         case .sentDatabaseChanges(let sent):
@@ -93,6 +99,7 @@ extension CKSyncEngineTransport: CKSyncEngineDelegate {
                 if let record = try CKRecordBridge.syncRecord(from: modification.record) { buffer.records.append(record) }
             } catch {
                 buffer.error = error
+                undecodableFetched = true
             }
         }
         for deletion in changes.deletions {
@@ -110,7 +117,7 @@ extension CKSyncEngineTransport: CKSyncEngineDelegate {
         }
     }
 
-    private func persistState() {
+    func persistState() {
         do { try stateStore.save(persisted) } catch {
             Self.log.error("Could not save sync state: \(error.localizedDescription, privacy: .public)")
             buffer.error = error

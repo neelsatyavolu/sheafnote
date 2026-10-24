@@ -98,13 +98,30 @@ final class AutoBackupController {
         defer { try? FileManager.default.removeItem(at: temp) }   // our own temp file; a leftover is swept at launch
         let version = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "1"
         try await ArchiveExporter(context: services.context, appVersion: version).export(.library, to: temp, now: now)
-        do {
-            try FileManager.default.copyItem(at: temp, to: folder.appending(path: name))
-        } catch {
-            throw PdfIOAppError.backupFolderUnavailable(reason: error.localizedDescription)
-        }
+        try copyVerified(temp, to: folder.appending(path: name))
         trimOldBackups(in: folder, names: existing + [name])
         return name
+    }
+
+    /// Copies the finished archive into the user's folder and checks the copy byte for byte. A partial or damaged copy
+    /// (disk full, folder went offline mid-copy) is removed and reported, so it can never count as a backup and push
+    /// an older good one out when trimming.
+    private func copyVerified(_ source: URL, to destination: URL) throws {
+        let fm = FileManager.default
+        do {
+            try fm.copyItem(at: source, to: destination)
+            guard fm.contentsEqual(atPath: source.path, andPath: destination.path) else {
+                throw PdfIOAppError.backupFolderUnavailable(reason: String(localized: "The copy in the folder did not match the backup.", table: "PdfIO"))
+            }
+        } catch {
+            do { try fm.removeItem(at: destination) } catch let missing as CocoaError where missing.code == .fileNoSuchFile {
+                // Nothing was written, so there is nothing to clean up.
+            } catch {
+                Self.log.error("Could not remove an incomplete backup: \(error.localizedDescription, privacy: .public)")
+            }
+            if error is PdfIOAppError { throw error }
+            throw PdfIOAppError.backupFolderUnavailable(reason: error.localizedDescription)
+        }
     }
 
     private func resolveFolder() throws -> URL {

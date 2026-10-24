@@ -3,7 +3,7 @@ import SwiftData
 
 @MainActor
 public final class PageStore: AssetResolver {
-    private let context: ModelContext
+    let context: ModelContext
     private let revisions: RevisionStore
 
     public init(context: ModelContext, revisions: RevisionStore) {
@@ -90,8 +90,9 @@ public final class PageStore: AssetResolver {
 
     // MARK: Ink
 
-    /// Persists a page's ink. Clearing all ink snapshots the previous state first.
-    public func saveInk(pageID: UUID, drawingData: Data, strokeIDs: [StrokeID], now: Date = .now) throws {
+    /// Persists a page's ink and returns its new `inkHash`. Clearing all ink snapshots the previous state first.
+    @discardableResult
+    public func saveInk(pageID: UUID, drawingData: Data, strokeIDs: [StrokeID], now: Date = .now) throws -> String {
         guard let page = page(id: pageID) else { throw StoreError.notFound("the page") }
         if strokeIDs.isEmpty, !page.strokeIDs.isEmpty {
             try revisions.snapshot(page: page, reason: .beforeClear, now: now)
@@ -101,6 +102,7 @@ public final class PageStore: AssetResolver {
         page.inkHash = Hashing.sha256Hex(drawingData)
         markDirty(page, fields: ["inkData", "strokeIDs", "inkHash"], now: now)
         try context.save()
+        return page.inkHash
     }
 
     // MARK: Elements
