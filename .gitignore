@@ -12,3 +12,4 @@ xcuserdata/
 Sheafnote.xcodeproj/
 *.xcresult
 Packages/SheafnoteCore/.build/
+.claude/
