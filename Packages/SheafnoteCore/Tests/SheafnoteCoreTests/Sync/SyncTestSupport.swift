@@ -4,11 +4,18 @@ import SwiftData
 
 /// Ink codec for tests: the "drawing" is JSON of stroke entries, merged with the real `StrokeMerger`.
 struct JSONInkMerging: InkMerging {
+    /// Sorted keys keep the bytes (and so the hashes) of equal ink identical; the default key order varies between encoders.
+    static func encode(_ items: [Item]) throws -> Data {
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = [.sortedKeys]
+        return try encoder.encode(items)
+    }
+
     struct Item: Codable { var id: String; var t: Double }
 
     static func data(_ items: [(String, Double)]) -> Data {
         // Encoding plain Codable values cannot fail.
-        (try? JSONEncoder().encode(items.map { Item(id: $0.0, t: $0.1) })) ?? Data()
+        (try? encode(items.map { Item(id: $0.0, t: $0.1) })) ?? Data()
     }
 
     static func ids(_ items: [(String, Double)]) -> [String] { items.map(\.0) }
@@ -20,7 +27,7 @@ struct JSONInkMerging: InkMerging {
         let result = StrokeMerger.merge(base: base, ours: o.map(entry), theirs: t.map(entry))
         let byID = Dictionary((o + t).map { ($0.id, $0) }, uniquingKeysWith: { first, _ in first })
         let items = result.ordered.compactMap { byID[$0.id.rawValue] }
-        return InkState(data: try JSONEncoder().encode(items), strokeIDs: items.map(\.id))
+        return InkState(data: try Self.encode(items), strokeIDs: items.map(\.id))
     }
 
     private func entry(_ i: Item) -> StrokeEntry {
