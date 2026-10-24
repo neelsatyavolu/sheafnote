@@ -3,7 +3,7 @@ import SheafnoteCore
 
 struct StudySessionView: View {
     @State var model: StudySessionModel
-    @Environment(\.dismiss) private var dismiss
+    var onFinish: () -> Void = {}
 
     var body: some View {
         Group {
@@ -15,7 +15,6 @@ struct StudySessionView: View {
         }
         .navigationTitle(Text("Study", tableName: "AudioStudy"))
         .navigationBarTitleDisplayMode(.inline)
-        .accessibilityIdentifier("study.session")
     }
 
     private func cardView(_ card: Flashcard) -> some View {
@@ -88,11 +87,12 @@ struct StudySessionView: View {
                 Text("Reviewed \(model.reviewed) cards, \(model.againCount) to see again tomorrow.", tableName: "AudioStudy")
                     .foregroundStyle(.secondary)
             }
-            Button { dismiss() } label: { Text("Done", tableName: "AudioStudy") }
+            Button { onFinish() } label: { Text("Done", tableName: "AudioStudy") }
                 .buttonStyle(.borderedProminent)
                 .accessibilityIdentifier("study.done")
         }
         .padding()
+        .accessibilityElement(children: .contain)
         .accessibilityIdentifier("study.finished")
     }
 }

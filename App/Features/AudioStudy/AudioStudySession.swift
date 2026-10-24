@@ -16,8 +16,8 @@ final class AudioStudySession: RecordingInkSource {
     @ObservationIgnored weak var editor: (any EditorContext)? { didSet { if editor != nil { hadEditor = true } } }
     @ObservationIgnored private var restoreToolID: ToolID?
 
-    init(notebookID: UUID, services: AppServices, capture: any AudioCapturing = AVAudioRecorderCapture(),
-         player: any AudioPlaying = AVAudioPlayerBox(), pendingDirectory: URL = AudioStudySession.pendingDirectory) {
+    init(notebookID: UUID, services: AppServices, capture: any AudioCapturing = UITestAudio.capture(),
+         player: any AudioPlaying = UITestAudio.player(), pendingDirectory: URL = AudioStudySession.pendingDirectory) {
         self.notebookID = notebookID
         let recordings = RecordingStore(context: services.context)
         self.recordings = recordings

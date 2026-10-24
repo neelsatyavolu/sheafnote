@@ -14,6 +14,30 @@ struct FlashcardsTab: View {
     private var notebookID: UUID { editor.notebook.id }
 
     var body: some View {
+        Group {
+            if let studying {
+                studySession(studying)
+            } else {
+                deckList
+            }
+        }
+        .task { reload() }
+    }
+
+    /// The session replaces the deck list in place (no extra presentation on top of the navigator sheet).
+    private func studySession(_ model: StudySessionModel) -> some View {
+        NavigationStack {
+            StudySessionView(model: model, onFinish: { studying = nil; reload() })
+                .toolbar {
+                    ToolbarItem(placement: .cancellationAction) {
+                        Button { studying = nil; reload() } label: { Text("Close", tableName: "AudioStudy") }
+                            .accessibilityIdentifier("study.close")
+                    }
+                }
+        }
+    }
+
+    private var deckList: some View {
         NavigationStack {
             List {
                 if let errorMessage { Text(errorMessage).foregroundStyle(.red).accessibilityIdentifier("flashcards.error") }
@@ -31,9 +55,6 @@ struct FlashcardsTab: View {
                 }
             }
             .navigationTitle(Text("Flashcards", tableName: "AudioStudy"))
-            .navigationDestination(item: $studying) { model in
-                StudySessionView(model: model).onDisappear(perform: reload)
-            }
             .navigationDestination(for: String.self) { deck in
                 DeckCardsView(store: store, notebookID: notebookID, deck: deck, onChange: reload)
             }
@@ -44,8 +65,6 @@ struct FlashcardsTab: View {
                 Button(role: .cancel) {} label: { Text("Cancel", tableName: "AudioStudy") }
             }
         }
-        .task { reload() }
-        .accessibilityIdentifier("flashcards.tab")
     }
 
     private var emptyState: some View {
@@ -71,7 +90,7 @@ struct FlashcardsTab: View {
                 }
             }
             Button { study(deck: deck.name) } label: { Text("Study", tableName: "AudioStudy") }
-                .buttonStyle(.borderedProminent)
+                .buttonStyle(.borderless)
                 .disabled(deck.due == 0)
                 .accessibilityIdentifier("flashcards.study.\(deck.name)")
         }

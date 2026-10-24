@@ -95,6 +95,7 @@ struct AudioSheet: View {
                     .accessibilityIdentifier("audio.openSettings")
             }
         }
+        .accessibilityElement(children: .contain)
         .accessibilityIdentifier("audio.denied")
     }
 
