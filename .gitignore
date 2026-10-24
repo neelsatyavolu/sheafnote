@@ -1,0 +1,11 @@
+.DS_Store
+build/
+DerivedData/
+.derived/
+*.xcuserstate
+xcuserdata/
+.swiftpm/
+.build/
+*.p8
+*.p12
+*.mobileprovision
