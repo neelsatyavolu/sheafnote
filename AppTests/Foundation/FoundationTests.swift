@@ -32,7 +32,8 @@ import SheafnoteCore
         let host = FeatureHost(services: try services())
         host.bootstrap()
         #expect(host.library.sortedNewItems.map(\.id).prefix(2) == ["notebook", "folder"])
-        #expect(host.settings.sections.map(\.id) == ["general", "about"])
+        let sectionIDs = host.settings.sections.map(\.id)
+        #expect(sectionIDs.first == "general" && sectionIDs.last == "about" && sectionIDs.contains("sync"))
         #expect(host.library.backgroundTasks.contains { $0.id == "foundation.retention" })
         #expect(FeatureModules.all.count == 9)
     }

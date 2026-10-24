@@ -300,6 +300,15 @@ import Testing
         #expect(a.coordinator.lastReport.keptBothVersions == 1)
     }
 
+    @Test func serverPushTriggersACycleThatPullsTheChange() async throws {
+        let (_, a, b, nb, _) = try await twoDevicesWithOnePage()
+        try a.library.rename(.notebook(nb), to: "Pushed")
+        await a.sync()
+        b.transport.simulateRemoteChange()
+        try await Task.sleep(for: .milliseconds(100))
+        #expect(b.notebook(nb)?.title == "Pushed")
+    }
+
     @Test func concurrentSyncCallsAreCoalesced() async throws {
         let cloud = InMemoryCloud()
         let a = try Device(cloud: cloud)

@@ -78,6 +78,10 @@ public final class SyncCoordinator {
             guard let self else { return }
             Task { await self.handle(event) }
         }
+        transport.onRemoteChange = { [weak self] in
+            guard let self else { return }
+            Task { await self.syncNow() }
+        }
     }
 
     public var isEnabled: Bool { state.isEnabled }

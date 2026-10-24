@@ -13,6 +13,7 @@ extension LibraryContentView {
     }
 
     @ToolbarContentBuilder private var normalToolbar: some ToolbarContent {
+        ToolbarItem(placement: .topBarTrailing) { SyncStatusIndicator() }
         ToolbarItemGroup(placement: .topBarTrailing) {
             if scope != .favorites {
                 newMenu

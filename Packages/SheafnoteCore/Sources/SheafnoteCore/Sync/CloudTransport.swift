@@ -64,6 +64,8 @@ public enum AccountEvent: Sendable, Equatable {
 public protocol CloudTransport: AnyObject {
     /// Called when the signed-in iCloud account changes. Set by the coordinator.
     var onAccountEvent: (@MainActor @Sendable (AccountEvent) -> Void)? { get set }
+    /// Called when the server pushed changes or the engine fetched on its own. The coordinator runs a cycle.
+    var onRemoteChange: (@MainActor @Sendable () -> Void)? { get set }
     func accountStatus() async -> AccountStatus
     /// Creates the custom zone if needed and starts the engine.
     func start() async throws

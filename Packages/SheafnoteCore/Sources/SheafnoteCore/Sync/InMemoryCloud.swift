@@ -69,6 +69,7 @@ public final class InMemoryCloud {
 @MainActor
 public final class InMemoryTransport: CloudTransport {
     public var onAccountEvent: (@MainActor @Sendable (AccountEvent) -> Void)?
+    public var onRemoteChange: (@MainActor @Sendable () -> Void)?
     public var cloud: InMemoryCloud
     public var isOnline = true
     public var account: AccountStatus = .available
@@ -118,6 +119,9 @@ public final class InMemoryTransport: CloudTransport {
         }
         onAccountEvent?(event)
     }
+
+    /// Simulates a silent push telling the device the server changed.
+    public func simulateRemoteChange() { onRemoteChange?() }
 
     public func fetchChanges() async throws -> FetchedChanges {
         try checkReachable()

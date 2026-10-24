@@ -1,0 +1,456 @@
+{
+  "sourceLanguage": "en",
+  "strings": {
+    "%lld strokes, saved %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld strokes, saved %@"
+          }
+        }
+      }
+    },
+    "Couldn't Load Recovered Pages": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Couldn't Load Recovered Pages"
+          }
+        }
+      }
+    },
+    "Delete": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Delete"
+          }
+        }
+      }
+    },
+    "Delete Permanently": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Delete Permanently"
+          }
+        }
+      }
+    },
+    "Delete this recovered version?": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Delete this recovered version?"
+          }
+        }
+      }
+    },
+    "Deleted notebook": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deleted notebook"
+          }
+        }
+      }
+    },
+    "Deleted notebooks stay in Recently Deleted for 30 days on every device before they are removed from iCloud.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deleted notebooks stay in Recently Deleted for 30 days on every device before they are removed from iCloud."
+          }
+        }
+      }
+    },
+    "Good to Know": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Good to Know"
+          }
+        }
+      }
+    },
+    "If you sign out of iCloud, your notebooks stay on this device and sync resumes when you sign back in.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "If you sign out of iCloud, your notebooks stay on this device and sync resumes when you sign back in."
+          }
+        }
+      }
+    },
+    "If you switch to another iCloud account, Sheafnote asks before uploading this device's notebooks to it. Nothing is deleted.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "If you switch to another iCloud account, Sheafnote asks before uploading this device's notebooks to it. Nothing is deleted."
+          }
+        }
+      }
+    },
+    "It can't be brought back after this.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "It can't be brought back after this."
+          }
+        }
+      }
+    },
+    "Keep on This Device Only": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Keep on This Device Only"
+          }
+        }
+      }
+    },
+    "Kept after a sync conflict": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kept after a sync conflict"
+          }
+        }
+      }
+    },
+    "Kept until %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kept until %@"
+          }
+        }
+      }
+    },
+    "Last Synced": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Last Synced"
+          }
+        }
+      }
+    },
+    "Last synced %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Last synced %@"
+          }
+        }
+      }
+    },
+    "Not signed in to iCloud": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Not signed in to iCloud"
+          }
+        }
+      }
+    },
+    "Notebooks stay on this device only.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Notebooks stay on this device only."
+          }
+        }
+      }
+    },
+    "Notebooks, folders and pages sync between your devices through your own iCloud. With sync off, everything stays on this device. Sheafnote has no server of its own.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Notebooks, folders and pages sync between your devices through your own iCloud. With sync off, everything stays on this device. Sheafnote has no server of its own."
+          }
+        }
+      }
+    },
+    "Nothing Recovered": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nothing Recovered"
+          }
+        }
+      }
+    },
+    "Offline": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Offline"
+          }
+        }
+      }
+    },
+    "Page Restored": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Page Restored"
+          }
+        }
+      }
+    },
+    "Recovered Pages": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Recovered Pages"
+          }
+        }
+      }
+    },
+    "Restore as New Page": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Restore as New Page"
+          }
+        }
+      }
+    },
+    "Saved before a page was cleared": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Saved before a page was cleared"
+          }
+        }
+      }
+    },
+    "Saved before a page was deleted": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Saved before a page was deleted"
+          }
+        }
+      }
+    },
+    "Saved before a restore": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Saved before a restore"
+          }
+        }
+      }
+    },
+    "Sheafnote is exchanging changes with iCloud.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sheafnote is exchanging changes with iCloud."
+          }
+        }
+      }
+    },
+    "Status": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Status"
+          }
+        }
+      }
+    },
+    "Sync Now": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sync Now"
+          }
+        }
+      }
+    },
+    "Sync is off": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sync is off"
+          }
+        }
+      }
+    },
+    "Sync problem": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sync problem"
+          }
+        }
+      }
+    },
+    "Syncing": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Syncing"
+          }
+        }
+      }
+    },
+    "The recovered version was added to the notebook as a new page.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The recovered version was added to the notebook as a new page."
+          }
+        }
+      }
+    },
+    "Up to date": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Up to date"
+          }
+        }
+      }
+    },
+    "Upload": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Upload"
+          }
+        }
+      }
+    },
+    "Upload to New Account": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Upload to New Account"
+          }
+        }
+      }
+    },
+    "Upload to the new iCloud account?": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Upload to the new iCloud account?"
+          }
+        }
+      }
+    },
+    "Versions of pages that Sheafnote had to set aside appear here and are kept for 30 days.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Versions of pages that Sheafnote had to set aside appear here and are kept for 30 days."
+          }
+        }
+      }
+    },
+    "When two devices change the same page at once, Sheafnote merges the ink. If it can't, it keeps both versions here for 30 days so nothing is lost.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "When two devices change the same page at once, Sheafnote merges the ink. If it can't, it keeps both versions here for 30 days so nothing is lost."
+          }
+        }
+      }
+    },
+    "You signed in to a different iCloud account. Upload this device's notebooks to it? Nothing on this device is deleted either way.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You signed in to a different iCloud account. Upload this device's notebooks to it? Nothing on this device is deleted either way."
+          }
+        }
+      }
+    },
+    "Your notebooks are in sync with iCloud.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your notebooks are in sync with iCloud."
+          }
+        }
+      }
+    },
+    "iCloud Sync": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iCloud Sync"
+          }
+        }
+      }
+    },
+    "iCloud storage full": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iCloud storage full"
+          }
+        }
+      }
+    },
+    "iCloud sync status": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iCloud sync status"
+          }
+        }
+      }
+    }
+  },
+  "version": "1.0"
+}
