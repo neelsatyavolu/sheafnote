@@ -87,10 +87,7 @@ struct LibraryPurger {
     /// Assets nothing references any more.
     private func dropOrphans(among ids: Set<UUID>, into result: inout Result) throws {
         guard !ids.isEmpty else { return }
-        let pages = try context.fetch(FetchDescriptor<Page>())
-        var used = Set(pages.compactMap(\.backgroundAssetID))
-        used.formUnion(try context.fetch(FetchDescriptor<PageElement>()).compactMap(\.assetID))
-        used.formUnion(try context.fetch(FetchDescriptor<AudioRecording>()).map(\.assetID))
+        let used = try AssetReferences.allReferenced(in: context)
         for id in ids.subtracting(used) {
             if let a = try context.fetch(FetchDescriptor<Asset>(predicate: #Predicate { $0.id == id })).first {
                 result.records.append(PurgedRecord(recordType: Asset.recordType, id: a.id))
@@ -106,8 +103,20 @@ struct LibraryPurger {
             for r in old(rows) { result.records.append(PurgedRecord(recordType: T.recordType, id: r.id)); context.delete(r) }
         }
         let pages = old(try context.fetch(FetchDescriptor<Page>(predicate: #Predicate { $0.deletedAt != nil })))
-        let assetIDs = Set(pages.compactMap(\.backgroundAssetID))
+        var assetIDs = Set(pages.compactMap(\.backgroundAssetID))
+        // Elements, bookmarks and outline entries of a purged page have no page left to point at: erase them too.
+        let pageIDs = Set(pages.map(\.id))
+        let orphanElements = pageIDs.isEmpty ? [] : try context.fetch(FetchDescriptor<PageElement>()).filter { pageIDs.contains($0.pageID) }
+        let orphanBookmarks = pageIDs.isEmpty ? [] : try context.fetch(FetchDescriptor<Bookmark>()).filter { pageIDs.contains($0.pageID) }
+        let orphanOutline = pageIDs.isEmpty ? [] : try context.fetch(FetchDescriptor<OutlineEntry>())
+            .filter { $0.pageID.map(pageIDs.contains) == true }
+        assetIDs.formUnion(orphanElements.compactMap(\.assetID))
+        func dropNow<T: SyncableRecord>(_ rows: [T]) {
+            for r in rows { result.records.append(PurgedRecord(recordType: T.recordType, id: r.id)); context.delete(r) }
+        }
+        dropNow(orphanElements); dropNow(orphanBookmarks); dropNow(orphanOutline)
         drop(pages)
+        try context.save()
         drop(try context.fetch(FetchDescriptor<PageElement>(predicate: #Predicate { $0.deletedAt != nil })))
         drop(try context.fetch(FetchDescriptor<Bookmark>(predicate: #Predicate { $0.deletedAt != nil })))
         drop(try context.fetch(FetchDescriptor<OutlineEntry>(predicate: #Predicate { $0.deletedAt != nil })))

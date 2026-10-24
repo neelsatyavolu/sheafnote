@@ -142,7 +142,9 @@ public final class PageStore: AssetResolver {
 
     // MARK: Assets
 
-    public func importAsset(data: Data, kind: AssetKind, filename: String?, uti: String? = nil, now: Date = .now) throws -> Asset {
+    /// - Parameter save: pass false inside a larger transaction (archive import) so a later failure can roll the asset back too.
+    public func importAsset(data: Data, kind: AssetKind, filename: String?, uti: String? = nil, now: Date = .now,
+                            save: Bool = true) throws -> Asset {
         let hash = Hashing.sha256Hex(data)
         let existing = try context.fetch(FetchDescriptor<Asset>(
             predicate: #Predicate { $0.sha256 == hash && $0.deletedAt == nil }))
@@ -150,7 +152,7 @@ public final class PageStore: AssetResolver {
         let asset = Asset(kind: kind, data: data, sha256: hash, filename: filename, uti: uti, now: now)
         context.insert(asset)
         markDirty(asset, fields: ["kind", "data", "byteCount", "sha256", "filename", "uti"], now: now)
-        try context.save()
+        if save { try context.save() }
         return asset
     }
 

@@ -33,16 +33,18 @@ struct ArchiveCollector {
             out.library.folders = folders.map(Self.dto).sorted { $0.id.uuidString < $1.id.uuidString }
         }
         out.library.notebooks = notebooks.map { Self.dto($0, folderIDs: folderIDs) }
+        var assetIDs = Set<UUID>()
         for nb in notebooks where nb.richText?.isEmpty == false {
             let id = nb.id
             out.blobs.append(Blob(name: ArchiveLayout.richText(id)) { nb.richText ?? Data() })
+            assetIDs.formUnion(AssetReferences.ids(inJSON: nb.richText))
         }
         let pages = try collectPages(notebookIDs, into: &out)
         let pageIDs = Set(pages.map(\.id))
-        var assetIDs = Set(pages.compactMap(\.backgroundAssetID))
+        assetIDs.formUnion(pages.compactMap(\.backgroundAssetID))
         try collectElements(pageIDs, assetIDs: &assetIDs, into: &out)
         try collectNotebookRecords(notebookIDs, pageIDs: pageIDs, assetIDs: &assetIDs, into: &out)
-        if case .library = selection { try collectSavedElements(into: &out) }
+        if case .library = selection { try collectSavedElements(assetIDs: &assetIDs, into: &out) }
         try collectAssets(assetIDs, into: &out)
         return out
     }
@@ -121,10 +123,11 @@ struct ArchiveCollector {
         }
     }
 
-    private func collectSavedElements(into out: inout Collected) throws {
+    private func collectSavedElements(assetIDs: inout Set<UUID>, into out: inout Collected) throws {
         let rows = try context.fetch(FetchDescriptor<SavedElement>(predicate: #Predicate { $0.deletedAt == nil }))
         for s in rows.sorted(by: { $0.id.uuidString < $1.id.uuidString }) {
             let hasInk = s.inkData?.isEmpty == false
+            assetIDs.formUnion(AssetReferences.ids(inJSON: s.elements))
             out.library.savedElements.append(ArchiveSavedElement(id: s.id, name: s.name, category: s.category, width: s.width,
                                                                  height: s.height, hasInk: hasInk, elements: s.elements))
             if hasInk { out.blobs.append(Blob(name: ArchiveLayout.savedInk(s.id)) { s.inkData ?? Data() }) }

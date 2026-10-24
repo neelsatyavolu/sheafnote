@@ -56,7 +56,8 @@ struct RecordBuilder {
     private func new(_ id: UUID) -> UUID { ids[id] ?? id }
     private func new(_ id: UUID?) -> UUID? { id.flatMap { ids[$0] } }
 
-    /// Map used inside payload JSON: record ids to new ids (asset ids are never referenced from payloads).
+    /// Map used inside payload JSON: record ids to new ids (asset ids are never referenced from payloads; saved elements
+    /// and text documents carry their own asset references, which are remapped with `assetMap`).
     private var jsonMap: [UUID: UUID] { ids }
 
     /// Flags the new row for sync but keeps the archive's modification date, so "last edited" survives a restore.
@@ -104,7 +105,10 @@ struct RecordBuilder {
         row.isFavorite = n.isFavorite
         row.isLocked = n.isLocked
         row.pdfOutlineImported = n.pdfOutlineImported
-        if n.hasRichText { row.richText = try reader.read(ArchiveLayout.richText(n.id)) }
+        if n.hasRichText {
+            // Image blocks point at attached files; they now have new ids.
+            row.richText = UUIDRemapper.remap(try reader.read(ArchiveLayout.richText(n.id)), using: assetMap)
+        }
         context.insert(row)
         row.createdAt = n.createdAt
         stamp(row, fields: LibraryStore.notebookFields, modified: n.modifiedAt)
@@ -195,7 +199,7 @@ struct RecordBuilder {
         for s in library.savedElements {
             let row = SavedElement(id: new(s.id), name: s.name, category: s.category, width: s.width, height: s.height,
                                    inkData: s.hasInk ? try reader.read(ArchiveLayout.savedInk(s.id)) : nil,
-                                   elements: s.elements, thumbnail: try reader.read(ArchiveLayout.savedThumbnail(s.id)), now: now)
+                                   elements: UUIDRemapper.remap(s.elements, using: assetMap), thumbnail: try reader.read(ArchiveLayout.savedThumbnail(s.id)), now: now)
             context.insert(row)
             markDirty(row, fields: ["name", "category", "width", "height", "inkData", "elements", "thumbnail"], now: now)
         }

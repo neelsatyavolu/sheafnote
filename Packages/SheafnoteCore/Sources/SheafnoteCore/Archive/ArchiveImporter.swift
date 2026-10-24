@@ -41,10 +41,12 @@ public struct ArchiveImporter {
         try ArchiveValidator.validate(library, in: reader)
         progress?(0.05)
 
-        let assetMap = try await importAssets(library.assets, from: reader, progress: progress)
-        try Task.checkCancellation()
-        var builder = RecordBuilder(context: context, reader: reader, library: library, assetMap: assetMap, now: now)
+        // Everything below is one transaction: assets are inserted unsaved, so a failure or cancellation anywhere rolls
+        // them back with the rest. Note that `rollback()` applies to the whole context.
         do {
+            let assetMap = try await importAssets(library.assets, from: reader, progress: progress)
+            try Task.checkCancellation()
+            var builder = RecordBuilder(context: context, reader: reader, library: library, assetMap: assetMap, now: now)
             let summary = try builder.insertAll(into: folderID, wrapperFolderName: wrapperFolderName, manifest: manifest)
             try Task.checkCancellation()
             try context.save()
@@ -74,7 +76,7 @@ public struct ArchiveImporter {
             try Task.checkCancellation()
             let data = try reader.read(ArchiveLayout.asset(meta.id))
             guard Hashing.sha256Hex(data) == meta.sha256 else { throw ArchiveError.corrupt("attached file \(meta.filename ?? meta.id.uuidString) doesn't match its checksum") }
-            map[meta.id] = try pages.importAsset(data: data, kind: meta.kind, filename: meta.filename, uti: meta.uti).id
+            map[meta.id] = try pages.importAsset(data: data, kind: meta.kind, filename: meta.filename, uti: meta.uti, save: false).id
             progress?(0.05 + 0.6 * Double(index + 1) / Double(assets.count))
             if index % 4 == 3 { await Task.yield() }
         }

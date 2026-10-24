@@ -37,10 +37,11 @@ public struct PdfImporter {
     public func importPDF(_ data: Data, title: String, into folderID: UUID?, now: Date = .now,
                           progress: (@MainActor (Double) -> Void)? = nil) async throws -> PdfImportResult {
         let source = try PDFSource(data: data)
-        let asset = try pages.importAsset(data: data, kind: .pdf, filename: "\(title).pdf", uti: "com.adobe.pdf", now: now)
-        let plans = (0..<source.pageCount).map { PagePlan(size: source.size(ofPage: $0), backgroundAssetID: asset.id, backgroundPageIndex: $0) }
-        progress?(0.4)
         do {
+            // Unsaved until the notebook is saved too, so a failure leaves no stray attached file behind.
+            let asset = try pages.importAsset(data: data, kind: .pdf, filename: "\(title).pdf", uti: "com.adobe.pdf", now: now, save: false)
+            let plans = (0..<source.pageCount).map { PagePlan(size: source.size(ofPage: $0), backgroundAssetID: asset.id, backgroundPageIndex: $0) }
+            progress?(0.4)
             let notebook = try makeNotebook(title: title, firstPageSize: plans[0].size, in: folderID, now: now)
             let first = try pages.orderedPages(of: notebook.id).first
             let created = try PageInserter(context: context, pages: pages, now: now).insert(plans, into: notebook.id, at: .end, reuse: first)
@@ -60,9 +61,9 @@ public struct PdfImporter {
                           now: Date = .now) async throws -> PdfImportResult {
         let notebook = try requirePagedNotebook(notebookID)
         let source = try PDFSource(data: data)
-        let asset = try pages.importAsset(data: data, kind: .pdf, filename: filename, uti: "com.adobe.pdf", now: now)
-        let plans = (0..<source.pageCount).map { PagePlan(size: source.size(ofPage: $0), backgroundAssetID: asset.id, backgroundPageIndex: $0) }
         do {
+            let asset = try pages.importAsset(data: data, kind: .pdf, filename: filename, uti: "com.adobe.pdf", now: now, save: false)
+            let plans = (0..<source.pageCount).map { PagePlan(size: source.size(ofPage: $0), backgroundAssetID: asset.id, backgroundPageIndex: $0) }
             let created = try PageInserter(context: context, pages: pages, now: now).insert(plans, into: notebookID, at: position)
             let outline = try importOutline(source.outline(), notebookID: notebookID, pageIDs: created.map(\.id), now: now)
             if outline > 0 {
@@ -82,8 +83,8 @@ public struct PdfImporter {
     /// A new notebook with one page per image.
     public func importImages(_ images: [ImportedImage], title: String, into folderID: UUID?, now: Date = .now) async throws -> PdfImportResult {
         guard !images.isEmpty else { throw PdfIOError.nothingToImport }
-        let plans = try imagePlans(images, now: now)
         do {
+            let plans = try imagePlans(images, now: now)
             let notebook = try makeNotebook(title: title, firstPageSize: plans[0].size, in: folderID, now: now)
             let first = try pages.orderedPages(of: notebook.id).first
             let created = try PageInserter(context: context, pages: pages, now: now).insert(plans, into: notebook.id, at: .end, reuse: first)
@@ -100,8 +101,8 @@ public struct PdfImporter {
                              now: Date = .now) async throws -> PdfImportResult {
         guard !images.isEmpty else { throw PdfIOError.nothingToImport }
         _ = try requirePagedNotebook(notebookID)
-        let plans = try imagePlans(images, now: now)
         do {
+            let plans = try imagePlans(images, now: now)
             let created = try PageInserter(context: context, pages: pages, now: now).insert(plans, into: notebookID, at: position)
             try context.save()
             return PdfImportResult(notebookID: notebookID, pageIDs: created.map(\.id), outlineEntryCount: 0)
@@ -116,7 +117,7 @@ public struct PdfImporter {
     private func imagePlans(_ images: [ImportedImage], now: Date) throws -> [PagePlan] {
         try images.map { image in
             let source = try ImagePageSource(data: image.data, name: image.filename ?? "photo")
-            let asset = try pages.importAsset(data: image.data, kind: .image, filename: image.filename, now: now)
+            let asset = try pages.importAsset(data: image.data, kind: .image, filename: image.filename, now: now, save: false)
             return PagePlan(size: ImagePageSource.pageSize(forPixels: source.pixelSize), backgroundAssetID: asset.id, backgroundPageIndex: nil)
         }
     }
