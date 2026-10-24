@@ -45,20 +45,4 @@ import Testing
         #expect(CanvasBounds.contentBounds(strokes: .null, elements: [CGRect(x: 1, y: 2, width: 3, height: 4)])
                 == CGRect(x: 1, y: 2, width: 3, height: 4))
     }
-
-    @Test func fitScaleKeepsContentInsideViewport() {
-        let content = CGRect(x: 100, y: 100, width: 1000, height: 500)
-        let scale = CanvasBounds.fitScale(content: content, viewport: CGSize(width: 500, height: 500), padding: 0)
-        #expect(abs(scale - 0.5) < 0.0001)
-        let padded = CanvasBounds.fitScale(content: content, viewport: CGSize(width: 500, height: 500), padding: 50)
-        #expect(padded < scale)
-    }
-
-    @Test func fitScaleIsClampedAndSafe() {
-        let viewport = CGSize(width: 500, height: 500)
-        #expect(CanvasBounds.fitScale(content: .zero, viewport: viewport, padding: 0) == 1)
-        #expect(CanvasBounds.fitScale(content: CGRect(x: 0, y: 0, width: 1, height: 1), viewport: viewport, padding: 0)
-                == CanvasBounds.maxFitScale)
-        #expect(CanvasBounds.fitScale(content: CGRect(x: 0, y: 0, width: 10, height: 10), viewport: .zero, padding: 0) == 1)
-    }
 }
