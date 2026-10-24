@@ -3,6 +3,8 @@
 # Generates the project, runs core tests, builds for the simulator, then runs the app unit tests
 # on a temporary simulator that is deleted afterwards.
 set -euo pipefail
+# Xcode-beta (the default xcode-select) hangs the simulator test runner; use the release Xcode.
+export DEVELOPER_DIR="${DEVELOPER_DIR:-/Applications/Xcode.app/Contents/Developer}"
 LABEL="${1:?usage: scripts/verify.sh <label>}"
 cd "$(dirname "$0")/.."
 xcodegen generate

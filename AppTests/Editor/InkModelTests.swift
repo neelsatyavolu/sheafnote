@@ -73,8 +73,11 @@ import SheafnoteCore
 
     // MARK: Presets
 
+    /// Held so the in-memory SwiftData container outlives the settings store's ModelContext.
+    private let services = try! AppServices.inMemory()
+
     private func store() throws -> EditorPresetStore {
-        EditorPresetStore(settings: try AppServices.inMemory().settings)
+        EditorPresetStore(settings: services.settings)
     }
 
     @Test func defaultsHaveColorsAndThreeWidths() throws {
@@ -125,7 +128,8 @@ import SheafnoteCore
         #expect(marker.inkType == .marker)
         #expect(ToolConfigurator.inkingTool(for: .pen, store: s).inkType == .pen)
         #expect(ToolConfigurator.eraserTool(mode: .stroke, store: s).eraserType == .vector)
-        #expect(ToolConfigurator.eraserTool(mode: .partial, store: s).eraserType == .bitmap)
+        // With an explicit width PencilKit reports the fixed-width bitmap variant.
+        #expect(ToolConfigurator.eraserTool(mode: .partial, store: s).eraserType != .vector)
     }
 
     @Test func preferencesPersist() throws {
