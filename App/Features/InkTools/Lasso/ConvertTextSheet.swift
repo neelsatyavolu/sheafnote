@@ -42,29 +42,3 @@ struct ConvertTextSheet: View {
         }
     }
 }
-
-/// Names a selection before it is saved to the element library.
-struct SaveElementSheet: View {
-    @State var name: String
-    let save: (String) -> Void
-    @Environment(\.dismiss) private var dismiss
-
-    var body: some View {
-        NavigationStack {
-            Form {
-                TextField(text: $name) { Text("Name", tableName: "InkTools") }
-                    .accessibilityIdentifier("inktools.saveElement.name")
-            }
-            .navigationTitle(Text("Save as Element", tableName: "InkTools"))
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) { Button { dismiss() } label: { Text("Cancel", tableName: "InkTools") } }
-                ToolbarItem(placement: .confirmationAction) {
-                    Button { save(name.trimmingCharacters(in: .whitespaces)); dismiss() } label: { Text("Save", tableName: "InkTools") }
-                        .disabled(name.trimmingCharacters(in: .whitespaces).isEmpty)
-                        .accessibilityIdentifier("inktools.saveElement.save")
-                }
-            }
-        }
-    }
-}

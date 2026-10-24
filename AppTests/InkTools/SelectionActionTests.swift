@@ -261,13 +261,10 @@ import SheafnoteCore
 
     // MARK: Save as element
 
-    @Test func saveAsElementOpensTheNamingSheet() async throws {
+    @Test func savedElementsRoundTripThroughTheLibrary() async throws {
         let f = try InkToolsFixture()
         let page = try pageWithTwoStrokes(f)
         f.select([0], on: page)
-        try await perform("ink.saveElement", f, page)
-        #expect(f.session.sheet != nil)
-        #expect(try f.services.elementLibrary.all().isEmpty, "nothing is saved until the user confirms a name")
         let contents = try #require(SelectionContents(selection: f.session.selection, page: page))
         let saved = try f.services.elementLibrary.save(name: "Wave", category: "My Elements", from: contents.snapshot, thumbnail: Data([1]))
         #expect(try f.services.elementLibrary.all().map(\.id) == [saved.id])

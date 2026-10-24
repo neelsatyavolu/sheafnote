@@ -30,7 +30,7 @@ final class ClosureSelectionAction: SelectionAction {
 @MainActor
 enum InkSelectionActions {
     static func make(host: FeatureHost, clipboard: ClipboardService) -> [any SelectionAction] {
-        [copy(clipboard), cut(clipboard), duplicate(), delete(), style(), screenshot(host), convert(host), saveElement(host)]
+        [copy(clipboard), cut(clipboard), duplicate(), delete(), style(), screenshot(host), convert(host)]
     }
 
     private static func contents(_ selection: SelectionModel, _ page: any PageContext) throws -> SelectionContents {
@@ -113,24 +113,6 @@ enum InkSelectionActions {
                 AnyView(ConvertTextSheet(text: text, canReplace: page is PageSession,
                                          insert: { text in run(editor) { try conversion.place(text, over: source, page: page, editor: editor, replacing: false) } },
                                          replace: { text in run(editor) { try conversion.place(text, over: source, page: page, editor: editor, replacing: true) } }))
-            })
-        }
-    }
-
-    private static func saveElement(_ host: FeatureHost) -> ClosureSelectionAction {
-        ClosureSelectionAction(id: "ink.saveElement", title: LocalizedStringResource("Save as Element", table: "InkTools"),
-                               symbolName: "star.square.on.square", order: 80) { selection, page, editor in
-            let source = try contents(selection, page)
-            let thumbnail = try await SelectionImageRenderer(host: host).image(of: source, scale: 1).pngData() ?? Data()
-            let proposed = String(localized: "My Element", table: "InkTools")
-            editor.present(EditorSheet(detents: [.height(220)]) {
-                AnyView(SaveElementSheet(name: proposed) { name in
-                    run(editor) {
-                        try editor.services.elementLibrary.save(name: name, category: String(localized: "My Elements", table: "InkTools"),
-                                                                from: source.snapshot, thumbnail: thumbnail)
-                        editor.showToast(LocalizedStringResource("Saved to your elements", table: "InkTools"))
-                    }
-                })
             })
         }
     }

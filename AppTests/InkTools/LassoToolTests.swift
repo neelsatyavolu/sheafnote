@@ -14,7 +14,7 @@ import SheafnoteCore
         #expect(f.host.tools.tools(for: .text).isEmpty)
         #expect(f.host.elementRenderers.renderer(for: .shape) != nil)
         #expect(f.host.selectionActions.actions.map(\.id) == ["ink.copy", "ink.cut", "ink.duplicate", "ink.delete", "ink.style",
-                                                              "ink.screenshot", "ink.convertText", "ink.saveElement"])
+                                                              "ink.screenshot", "ink.convertText"])
         #expect(f.host.touchObservers.observers(for: .pen).count == 1)
         #expect(f.host.touchObservers.observers(for: .highlighter).count == 1)
         #expect(f.host.touchObservers.observers(for: .lasso).isEmpty)
