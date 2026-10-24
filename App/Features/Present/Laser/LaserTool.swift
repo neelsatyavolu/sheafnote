@@ -37,12 +37,16 @@ struct LaserOptionsView: View {
                 .pickerStyle(.segmented)
                 .frame(width: 150)
                 .accessibilityIdentifier("present.laser.style")
-            HStack(spacing: 8) {
+            HStack(spacing: 2) {
                 ForEach(LaserController.palette) { swatch in
                     let selected = controller.colorID == swatch.id
                     Button { controller.setColor(swatch.id) } label: {
-                        Circle().fill(swatch.color).frame(width: 26, height: 26)
-                            .overlay(Circle().strokeBorder(Color.primary, lineWidth: selected ? 2.5 : 0).padding(-3))
+                        ZStack {
+                            Circle().fill(swatch.color).frame(width: 24, height: 24)
+                            Circle().strokeBorder(Color.primary, lineWidth: selected ? 2.5 : 0).frame(width: 32, height: 32)
+                        }
+                        .frame(width: 32, height: 32)
+                        .contentShape(Rectangle())
                     }
                     .buttonStyle(.plain)
                     .accessibilityLabel(Text(swatch.name))
