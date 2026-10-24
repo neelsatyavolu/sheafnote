@@ -11,6 +11,8 @@ enum Theme {
     static let inkMuted = Color("InkMuted")
     static let rule = Color("Rule")
     static let accent = Color.accentColor
+    /// A physical sheet of paper drawn inside artwork (folder inserts); cream in both modes.
+    static let sheet = Color(red: 1, green: 0xFD / 255, blue: 0xF8 / 255)
 
     // MARK: Playful set (covers, folders, presets, stickers)
 

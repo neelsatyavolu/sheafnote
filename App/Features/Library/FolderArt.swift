@@ -24,7 +24,7 @@ struct FolderArt: View {
                     .fill(tint)
                     .overlay(FolderBackShape().fill(Color.black.opacity(0.14)))
                 RoundedRectangle(cornerRadius: w * 0.03, style: .continuous)
-                    .fill(Theme.paperRaised)
+                    .fill(Theme.sheet)
                     .frame(width: w * 0.84, height: h * 0.5)
                     .offset(y: -h * 0.12)
                 front
