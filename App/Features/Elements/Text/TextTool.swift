@@ -11,7 +11,7 @@ final class TextTool: EditorTool {
     let supportedKinds: Set<NotebookKind> = [.paged, .whiteboard]
     let inputPolicy = ToolInputPolicy.overlayCapturesAll
 
-    private let editing: TextEditSession
+    let editing: TextEditSession
     private unowned let host: FeatureHost
 
     init(editing: TextEditSession, host: FeatureHost) {

@@ -49,11 +49,12 @@ enum ImageImporter {
     static func decode(_ data: Data, maxPixel: Int? = nil) -> CGImage? {
         guard let source = CGImageSourceCreateWithData(data as CFData, nil) else { return nil }
         guard let maxPixel else { return CGImageSourceCreateImageAtIndex(source, 0, [kCGImageSourceShouldCacheImmediately: true] as CFDictionary) }
+        let limit = min(maxPixel, max(naturalDimension(of: source), 1))   // never upscale
         let options: [CFString: Any] = [
             kCGImageSourceCreateThumbnailFromImageAlways: true,
             kCGImageSourceCreateThumbnailWithTransform: true,
             kCGImageSourceShouldCacheImmediately: true,
-            kCGImageSourceThumbnailMaxPixelSize: maxPixel,
+            kCGImageSourceThumbnailMaxPixelSize: limit,
         ]
         return CGImageSourceCreateThumbnailAtIndex(source, 0, options as CFDictionary)
     }
