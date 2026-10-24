@@ -82,7 +82,7 @@ struct MakeFlashcardSheet: View {
                 .pickerStyle(.segmented)
                 .accessibilityIdentifier("flashcard.side")
                 Text("Drag the colored box over the writing for this side. Drag its corner to resize.", tableName: "AudioStudy")
-                    .font(.footnote).foregroundStyle(.secondary)
+                    .font(.footnote).foregroundStyle(Theme.inkMuted)
                 GeometryReader { geo in canvas(in: geo.size) }
                 deckField
                 if let error = maker.errorMessage {
@@ -90,6 +90,7 @@ struct MakeFlashcardSheet: View {
                 }
             }
             .padding()
+            .background(Theme.paper)
             .navigationTitle(Text("Make flashcard", tableName: "AudioStudy"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -103,6 +104,7 @@ struct MakeFlashcardSheet: View {
                 }
             }
         }
+        .presentationBackground(Theme.paper)
         .task { await maker.loadPage() }
     }
 

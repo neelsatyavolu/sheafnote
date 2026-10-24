@@ -21,14 +21,15 @@ struct AudioSheet: View {
                     if session.items.isEmpty {
                         Text("No recordings yet. Start one, then write: tap a stroke later to hear what was said.",
                              tableName: "AudioStudy")
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(Theme.inkMuted)
                             .accessibilityIdentifier("audio.empty")
                     }
                     ForEach(session.items) { row($0) }
                 } header: {
-                    Text("Recordings", tableName: "AudioStudy")
+                    Text("Recordings", tableName: "AudioStudy").paperHeader()
                 }
             }
+            .paperList()
             .navigationTitle(Text("Audio", tableName: "AudioStudy"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -38,9 +39,10 @@ struct AudioSheet: View {
                 }
             }
             .safeAreaInset(edge: .bottom) {
-                if session.player.isLoaded { PlayerBar(session: session).background(.bar) }
+                if session.player.isLoaded { PlayerBar(session: session).background(Theme.paperRaised).overlay(alignment: .top) { Theme.rule.frame(height: 1) } }
             }
         }
+        .presentationBackground(Theme.paper)
         .alert(Text("Rename recording", tableName: "AudioStudy"), isPresented: Binding(
             get: { renaming != nil }, set: { if !$0 { renaming = nil } })) {
             TextField(text: $newTitle) { Text("Title", tableName: "AudioStudy") }
@@ -65,11 +67,11 @@ struct AudioSheet: View {
         } label: {
             HStack {
                 Image(systemName: recorder.isRecording ? "stop.circle.fill" : "record.circle")
-                    .font(.title).foregroundStyle(.red)
+                    .font(.title).foregroundStyle(Theme.accent)
                 VStack(alignment: .leading) {
                     recorder.isRecording ? Text("Stop recording", tableName: "AudioStudy") : Text("Start recording", tableName: "AudioStudy")
                     if recorder.isRecording {
-                        Text(AudioTimeFormat.clock(recorder.elapsed)).font(.subheadline.monospacedDigit()).foregroundStyle(.secondary)
+                        Text(AudioTimeFormat.clock(recorder.elapsed)).font(.subheadline.monospacedDigit()).foregroundStyle(Theme.inkMuted)
                     }
                 }
                 Spacer()
@@ -118,11 +120,11 @@ struct AudioSheet: View {
         Button { session.beginPlayback(recording); dismissIfWriting() } label: {
             HStack {
                 Image(systemName: session.player.recording?.id == recording.id ? "speaker.wave.2.fill" : "play.circle")
-                    .foregroundStyle(.tint)
+                    .foregroundStyle(Theme.accent)
                 VStack(alignment: .leading) {
-                    Text(recording.title).foregroundStyle(.primary)
+                    Text(recording.title).foregroundStyle(Theme.ink)
                     Text(verbatim: "\(recording.startedAt.formatted(date: .abbreviated, time: .shortened)) · \(AudioTimeFormat.clock(recording.duration))")
-                        .font(.caption).foregroundStyle(.secondary)
+                        .font(.caption).foregroundStyle(Theme.inkMuted)
                 }
             }
         }

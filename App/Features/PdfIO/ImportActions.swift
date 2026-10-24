@@ -34,6 +34,7 @@ enum ImportActions {
             let title = url.deletingPathExtension().lastPathComponent
             last = try await importer.importPDF(data, title: title, into: ctx.currentFolderID)
         }
+        Haptics.light()
         open(last, urls.count, ctx)
     }
 
@@ -44,7 +45,9 @@ enum ImportActions {
         for url in urls { images.append(ImportedImage(data: try await FileReading.data(at: url), filename: url.lastPathComponent)) }
         let title = urls.count == 1 ? urls[0].deletingPathExtension().lastPathComponent : String(localized: "Imported Images", table: "PdfIO")
         let importer = PdfImporter(context: ctx.services.context, pages: ctx.services.pages)
-        open(try await importer.importImages(images, title: title, into: ctx.currentFolderID), 1, ctx)
+        let result = try await importer.importImages(images, title: title, into: ctx.currentFolderID)
+        Haptics.light()
+        open(result, 1, ctx)
     }
 
     // MARK: Backups
@@ -56,6 +59,7 @@ enum ImportActions {
             notebooks += summary.notebookIDs.count
             pages += summary.pageCount
         }
+        Haptics.light()
         ctx.present(AnyView(ImportSummarySheet(notebooks: notebooks, pages: pages)))
     }
 
@@ -143,6 +147,7 @@ struct PhotosNotebookSheet: View {
             let title = String(localized: "Photos \(Date.now.formatted(date: .abbreviated, time: .omitted))", table: "PdfIO")
             let importer = PdfImporter(context: context.services.context, pages: context.services.pages)
             let result = try await importer.importImages(images, title: title, into: context.currentFolderID)
+            Haptics.light()
             dismiss()
             if let notebook = context.services.library.notebook(id: result.notebookID) { context.open(notebook) }
         } catch {

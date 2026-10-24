@@ -31,7 +31,7 @@ private struct LockSettingsContent: View {
                 .accessibilityIdentifier("appLock.grace")
             }
         } header: {
-            Text("App Lock", tableName: "DocTypes")
+            Text("App Lock", tableName: "DocTypes").paperHeader()
         } footer: {
             Text("Sheafnote asks for Face ID, Touch ID or your device passcode when you open it, and hides its contents in the app switcher. To lock a single notebook, touch and hold it in the library and choose Lock. Locks only control who can open the app on this device; your notes and iCloud sync are not changed.", tableName: "DocTypes")
         }

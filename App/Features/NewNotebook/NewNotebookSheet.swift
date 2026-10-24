@@ -37,8 +37,13 @@ struct NewNotebookSheet: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: 22) {
                     preview
-                    TextField("Untitled Notebook", text: $title)
-                        .textFieldStyle(.roundedBorder).font(.title3)
+                    TextField("Untitled Notebook", text: $title,
+                              prompt: Text("Untitled Notebook").foregroundStyle(Theme.inkMuted))
+                        .font(Theme.notebookTitle(.title3)).foregroundStyle(Theme.ink)
+                        .multilineTextAlignment(.center)
+                        .padding(.horizontal, 14).padding(.vertical, 12)
+                        .background(Theme.paperRaised, in: RoundedRectangle(cornerRadius: Theme.Radius.control, style: .continuous))
+                        .overlay(RoundedRectangle(cornerRadius: Theme.Radius.control, style: .continuous).stroke(Theme.rule, lineWidth: 1))
                         .focused($titleFocused).submitLabel(.done)
                         .accessibilityLabel(Text("Notebook title"))
                         .accessibilityIdentifier("newNotebook.title")
@@ -49,7 +54,9 @@ struct NewNotebookSheet: View {
                     section("Size") { sizeControls }
                 }
                 .padding()
+                .padding(.bottom, 24)
             }
+            .background(Theme.paper)
             .navigationTitle("New Notebook")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -63,14 +70,18 @@ struct NewNotebookSheet: View {
             } message: { Text(errorMessage ?? "") }
         }
         .presentationDetents([.large])
+        .presentationSizing(.page)
+        .presentationBackground(Theme.paper)
         .accessibilityIdentifier("newNotebookSheet")
     }
 
     private var preview: some View {
         HStack(alignment: .bottom, spacing: 24) {
-            NotebookCoverView(cover: CoverSpec(coverID: cover)).frame(maxWidth: 150)
+            NotebookCoverView(cover: CoverSpec(coverID: cover)).frame(maxWidth: 120)
+                .shadow(color: Theme.shadowColor, radius: 10, y: 5)
             PaperPreviewView(template: template, color: paperColor, pageSize: pageSize)
-                .frame(maxWidth: pageSize.width > pageSize.height ? 190 : 130).shadow(radius: 2, y: 1)
+                .frame(maxWidth: pageSize.width > pageSize.height ? 150 : 100)
+                .shadow(color: Theme.shadowColor, radius: 10, y: 5)
         }
         .frame(maxWidth: .infinity)
         .accessibilityHidden(true)
@@ -80,7 +91,7 @@ struct NewNotebookSheet: View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(alignment: .top, spacing: 14) {
                 ForEach(CoverCatalog.all) { def in
-                    Button { cover = def.id } label: { CoverChoice(definition: def, isSelected: cover == def.id).frame(width: coverWidth) }
+                    Button { cover = def.id } label: { NewNotebookCoverChoice(definition: def, isSelected: cover == def.id).frame(width: coverWidth) }
                         .buttonStyle(.plain)
                         .accessibilityLabel(Text(def.title))
                         .accessibilityAddTraits(cover == def.id ? [.isButton, .isSelected] : .isButton)
@@ -89,6 +100,7 @@ struct NewNotebookSheet: View {
             }
             .padding(.vertical, 4)
         }
+        .scrollClipDisabled()
     }
 
     private var sizeControls: some View {
@@ -99,7 +111,7 @@ struct NewNotebookSheet: View {
             }
             .pickerStyle(.segmented)
             .accessibilityIdentifier("paper.size")
-            Text(paperSize.dimensionsText(units: units)).font(.footnote).foregroundStyle(.secondary)
+            Text(paperSize.dimensionsText(units: units)).font(.footnote).foregroundStyle(Theme.inkMuted)
             Picker("Orientation", selection: $orientation) {
                 ForEach(PageOrientation.allCases, id: \.self) { Text($0.title).tag($0) }
             }
@@ -111,7 +123,7 @@ struct NewNotebookSheet: View {
 
     private func section<Content: View>(_ name: LocalizedStringKey, @ViewBuilder content: () -> Content) -> some View {
         VStack(alignment: .leading, spacing: 10) {
-            Text(name).font(.headline).accessibilityAddTraits(.isHeader)
+            Text(name).font(Theme.title(.headline)).foregroundStyle(Theme.ink).accessibilityAddTraits(.isHeader)
             content()
         }
     }
@@ -125,10 +137,28 @@ struct NewNotebookSheet: View {
                 orientation: paperSize.supportsOrientation ? orientation : .portrait, paperColor: paperColor, in: folderID)
             try services.settings.savePaperDefaults(PaperDefaults(template: template, color: paperColor, size: paperSize,
                                                                   orientation: orientation, coverID: cover))
+            Haptics.light()
             dismiss()
             onCreated(notebook)
         } catch {
             errorMessage = error.localizedDescription
+        }
+    }
+}
+
+/// A cover in the carousel: ring in accent when selected, name in ink (semibold) or muted ink.
+private struct NewNotebookCoverChoice: View {
+    let definition: CoverDefinition
+    let isSelected: Bool
+
+    var body: some View {
+        VStack(spacing: 6) {
+            NotebookCoverView(cover: CoverSpec(coverID: definition.id))
+                .padding(4)
+                .overlay(RoundedRectangle(cornerRadius: Theme.Radius.cover + 2, style: .continuous)
+                    .stroke(Theme.accent, lineWidth: isSelected ? 3 : 0))
+            Text(definition.title).font(.caption.weight(isSelected ? .semibold : .regular))
+                .foregroundStyle(isSelected ? Theme.ink : Theme.inkMuted)
         }
     }
 }
@@ -147,7 +177,9 @@ struct NewFolderSheet: View {
                 TextField("Folder name", text: $name)
                     .accessibilityIdentifier("newFolder.name")
                     .submitLabel(.done)
+                    .paperRows()
             }
+            .paperList()
             .navigationTitle("New Folder")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -163,6 +195,7 @@ struct NewFolderSheet: View {
             } message: { Text(errorMessage ?? "") }
         }
         .presentationDetents([.medium])
+        .presentationBackground(Theme.paper)
     }
 
     private func create() {

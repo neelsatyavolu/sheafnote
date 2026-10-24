@@ -106,6 +106,7 @@ struct LinkPageGrid: View {
             }
             .padding()
         }
+        .paperList()
         .overlay { if let failure { Text(failure).foregroundStyle(.secondary).padding() } }
         .task {
             do { pageIDs = try services.pages.orderedPages(of: notebookID).map(\.id) } catch { failure = error.localizedDescription }
@@ -170,7 +171,7 @@ struct LinkWebForm: View {
                     .onChange(of: text) { _, _ in message = nil }
                     .accessibilityIdentifier("search.link.url")
             } header: {
-                Text("Web Address", tableName: "Search")
+                Text("Web Address", tableName: "Search").paperHeader()
             } footer: {
                 if let message { Text(message).foregroundStyle(.red) }
             }
@@ -180,6 +181,7 @@ struct LinkWebForm: View {
                     .accessibilityIdentifier("search.link.addURL")
             }
         }
+        .paperList()
     }
 
     private func commit() {

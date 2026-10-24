@@ -14,6 +14,7 @@ struct ExportOptionsSheet: View {
                 optionsSection
                 actionSection
             }
+            .paperList()
             .navigationTitle(Text("Export", tableName: "PdfIO"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -24,6 +25,7 @@ struct ExportOptionsSheet: View {
             }
             .onDisappear { model.dismiss() }
         }
+        .presentationBackground(Theme.paper)
         .accessibilityIdentifier("export.sheet")
     }
 

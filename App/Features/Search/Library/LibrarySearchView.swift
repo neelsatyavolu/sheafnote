@@ -24,6 +24,9 @@ struct LibrarySearchView: View {
             if !model.titles.isEmpty { titleSection }
             if !model.pages.isEmpty { pageSection }
         }
+        .listStyle(.plain)
+        .scrollContentBackground(.hidden)
+        .background(Theme.paper)
         .overlay { placeholder }
         .searchable(text: $query, prompt: Text("Handwriting, text, PDFs and titles", tableName: "Search"))
         .navigationTitle(Text("Search", tableName: "Search"))
@@ -42,7 +45,7 @@ struct LibrarySearchView: View {
                 titleRow(result)
             }
         } header: {
-            Text("Notebooks and Folders", tableName: "Search")
+            Text("Notebooks and Folders", tableName: "Search").paperHeader()
         }
     }
 
@@ -50,18 +53,21 @@ struct LibrarySearchView: View {
     private func titleRow(_ result: TitleResult) -> some View {
         switch result.target {
         case .folder(let id):
-            NavigationLink(value: id) { Label(result.title, systemImage: "folder") }
+            NavigationLink(value: id) { Label(result.title, systemImage: "folder").foregroundStyle(Theme.ink) }
+                .searchCardRow()
                 .accessibilityIdentifier("search.result.title.\(result.title)")
         case .notebook(let id):
             Button { openNotebook(id, page: nil) } label: {
                 VStack(alignment: .leading, spacing: 2) {
                     Label(result.title, systemImage: result.isTextDocument ? "doc.text" : "book.closed")
                     if result.isTextDocument {
-                        Text(SnippetText.attributed(result.snippet)).font(.callout).foregroundStyle(.secondary).lineLimit(2)
+                        Text(SnippetText.attributed(result.snippet)).font(.callout).foregroundStyle(Theme.inkMuted).lineLimit(2)
                     }
                 }
+                .frame(maxWidth: .infinity, alignment: .leading)
             }
-            .foregroundStyle(.primary)
+            .foregroundStyle(Theme.ink)
+            .searchCardRow()
             .accessibilityIdentifier("search.result.title.\(result.title)")
         }
     }
@@ -72,27 +78,29 @@ struct LibrarySearchView: View {
                 Button { openNotebook(result.notebookID, page: result.pageID) } label: {
                     PageHitRow(result: result, showsNotebookTitle: true, services: service.services, highlighter: highlighter)
                 }
-                .foregroundStyle(.primary)
+                .foregroundStyle(Theme.ink)
+                .searchCardRow(padded: false)
                 .accessibilityIdentifier("search.result.page.\(result.notebookTitle).\(result.pageNumber)")
             }
         } header: {
-            Text("Pages", tableName: "Search")
+            Text("Pages", tableName: "Search").paperHeader()
         } footer: {
             if service.ocr.pendingCount > 0 {
                 Text("Still reading handwriting on \(service.ocr.pendingCount) pages. Search will find more once that's done.", tableName: "Search")
+                    .foregroundStyle(Theme.inkMuted)
             }
         }
     }
 
     @ViewBuilder private var placeholder: some View {
         if !model.hasQuery {
-            ContentUnavailableView {
-                Label { Text("Search Your Library", tableName: "Search") } icon: { Image(systemName: "magnifyingglass") }
-            } description: {
-                Text("Find words in your handwriting, typed text, PDFs and notebook names.", tableName: "Search")
-            }
+            DoodleEmptyState(kind: .search,
+                             title: Text("Search Your Library", tableName: "Search"),
+                             message: Text("Find words in your handwriting, typed text, PDFs and notebook names.", tableName: "Search"))
         } else if model.isEmpty {
-            ContentUnavailableView.search(text: query)
+            DoodleEmptyState(kind: .search,
+                             title: Text("No Results", tableName: "Search"),
+                             message: Text("Nothing matches \u{201C}\(query)\u{201D}. Try another word or a shorter one.", tableName: "Search"))
         }
     }
 

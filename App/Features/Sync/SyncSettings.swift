@@ -91,7 +91,7 @@ private struct SyncSettingsContent: View {
             Label { Text("If you switch to another iCloud account, Sheafnote asks before uploading this device's notebooks to it. Nothing is deleted.", tableName: "Sync") } icon: { Image(systemName: "arrow.left.arrow.right") }
             Label { Text("Deleted notebooks stay in Recently Deleted for 30 days on every device before they are removed from iCloud.", tableName: "Sync") } icon: { Image(systemName: "trash") }
         } header: {
-            Text("Good to Know", tableName: "Sync")
+            Text("Good to Know", tableName: "Sync").paperHeader()
         }
     }
 

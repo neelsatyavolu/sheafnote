@@ -51,9 +51,10 @@ struct FlashcardsTab: View {
                         .disabled(decks.allSatisfy { $0.due == 0 })
                         .accessibilityIdentifier("flashcards.studyAll")
                     }
-                    Section { ForEach(decks) { deckRow($0) } } header: { Text("Decks", tableName: "AudioStudy") }
+                    Section { ForEach(decks) { deckRow($0) } } header: { Text("Decks", tableName: "AudioStudy").paperHeader() }
                 }
             }
+            .paperList()
             .navigationTitle(Text("Flashcards", tableName: "AudioStudy"))
             .navigationDestination(for: String.self) { deck in
                 DeckCardsView(store: store, notebookID: notebookID, deck: deck, onChange: reload)
@@ -68,15 +69,12 @@ struct FlashcardsTab: View {
     }
 
     private var emptyState: some View {
-        VStack(spacing: 8) {
-            Image(systemName: "rectangle.on.rectangle.angled").font(.largeTitle).foregroundStyle(.secondary)
-            Text("No flashcards yet", tableName: "AudioStudy").font(.headline)
-            Text("Select writing with the lasso and choose Make flashcard, or use Make flashcards in a page's menu.",
-                 tableName: "AudioStudy")
-                .font(.subheadline).foregroundStyle(.secondary).multilineTextAlignment(.center)
-        }
+        DoodleEmptyState(kind: .cards,
+                         title: Text("No flashcards yet", tableName: "AudioStudy"),
+                         message: Text("Select writing with the lasso and choose Make flashcard, or use Make flashcards in a page's menu.",
+                                       tableName: "AudioStudy"))
         .frame(maxWidth: .infinity)
-        .padding()
+        .listRowBackground(Color.clear)
         .accessibilityElement(children: .combine)
         .accessibilityIdentifier("flashcards.empty")
     }
@@ -85,8 +83,8 @@ struct FlashcardsTab: View {
         HStack {
             NavigationLink(value: deck.name) {
                 VStack(alignment: .leading) {
-                    Text(deck.name).font(.headline)
-                    Text("\(deck.total) cards, \(deck.due) due", tableName: "AudioStudy").font(.caption).foregroundStyle(.secondary)
+                    Text(deck.name).font(.headline).foregroundStyle(Theme.ink)
+                    Text("\(deck.total) cards, \(deck.due) due", tableName: "AudioStudy").font(.caption).foregroundStyle(Theme.inkMuted)
                 }
             }
             Button { study(deck: deck.name) } label: { Text("Study", tableName: "AudioStudy") }
@@ -164,6 +162,7 @@ struct DeckCardsView: View {
                 .accessibilityElement(children: .contain)
             }
         }
+        .paperList()
         .navigationTitle(deck)
         .navigationBarTitleDisplayMode(.inline)
         .confirmationDialog(Text("Delete this flashcard?", tableName: "AudioStudy"), isPresented: Binding(
@@ -179,7 +178,8 @@ struct DeckCardsView: View {
         Group {
             if let image = UIImage(data: data) {
                 Image(uiImage: image).resizable().scaledToFit().frame(maxHeight: 80)
-                    .background(Color.white).border(Color.secondary.opacity(0.4))
+                    .background(Color.white, in: RoundedRectangle(cornerRadius: 6, style: .continuous))
+                    .overlay(RoundedRectangle(cornerRadius: 6, style: .continuous).stroke(Theme.rule))
             } else {
                 Image(systemName: "photo")
             }

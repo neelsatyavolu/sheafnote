@@ -23,16 +23,17 @@ struct OutlineTabView: View {
                 ForEach(model.userRows) { row in entryRow(row, editable: true) }
                     .onMove { model.move(from: $0, to: $1) }
             } header: {
-                Text("My Outline", tableName: "Search")
+                Text("My Outline", tableName: "Search").paperHeader()
             }
             if !model.pdfRows.isEmpty {
                 Section {
                     ForEach(model.pdfRows) { row in entryRow(row, editable: false) }
                 } header: {
-                    Text("PDF Outline", tableName: "Search")
+                    Text("PDF Outline", tableName: "Search").paperHeader()
                 }
             }
         }
+        .paperList()
         .overlay { if model.userRows.isEmpty && model.pdfRows.isEmpty { emptyState } }
         .toolbar {
             ToolbarItem(placement: .topBarLeading) { EditButton().accessibilityIdentifier("search.outline.edit") }
@@ -149,6 +150,7 @@ struct AddOutlineEntrySheet: View {
                     Text("The entry jumps to the page you are on now.", tableName: "Search")
                 }
             }
+            .paperList()
             .navigationTitle(Text("New Outline Entry", tableName: "Search"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {

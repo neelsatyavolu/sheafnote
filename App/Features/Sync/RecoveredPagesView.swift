@@ -15,15 +15,15 @@ struct RecoveredPagesView: View {
     var body: some View {
         List {
             if items.isEmpty {
-                ContentUnavailableView {
-                    Label { Text("Nothing Recovered", tableName: "Sync") } icon: { Image(systemName: "tray") }
-                } description: {
-                    Text("Versions of pages that Sheafnote had to set aside appear here and are kept for 30 days.", tableName: "Sync")
-                }
-                .listRowBackground(Color.clear)
+                DoodleEmptyState(kind: .tray,
+                                 title: Text("Nothing Recovered", tableName: "Sync"),
+                                 message: Text("Versions of pages that Sheafnote had to set aside appear here and are kept for 30 days.", tableName: "Sync"))
+                    .frame(maxWidth: .infinity)
+                    .listRowBackground(Color.clear)
             }
             ForEach(items) { item in row(item) }
         }
+        .paperList()
         .navigationTitle(Text("Recovered Pages", tableName: "Sync"))
         .navigationBarTitleDisplayMode(.inline)
         .task { reload() }
@@ -43,12 +43,12 @@ struct RecoveredPagesView: View {
 
     private func row(_ item: RecoveredItem) -> some View {
         VStack(alignment: .leading, spacing: 4) {
-            Text(item.notebookTitle ?? String(localized: "Deleted notebook", table: "Sync")).font(.headline)
-            Text(reasonText(item.reason)).font(.subheadline)
+            Text(item.notebookTitle ?? String(localized: "Deleted notebook", table: "Sync")).font(.headline).foregroundStyle(Theme.ink)
+            Text(reasonText(item.reason)).font(.subheadline).foregroundStyle(Theme.ink)
             Text("\(item.strokeCount) strokes, saved \(item.createdAt.formatted(date: .abbreviated, time: .shortened))", tableName: "Sync")
-                .font(.footnote).foregroundStyle(.secondary)
+                .font(.footnote).foregroundStyle(Theme.inkMuted)
             Text("Kept until \(item.expiresAt.formatted(date: .abbreviated, time: .omitted))", tableName: "Sync")
-                .font(.footnote).foregroundStyle(.secondary)
+                .font(.footnote).foregroundStyle(Theme.inkMuted)
         }
         .accessibilityElement(children: .combine)
         .swipeActions(edge: .trailing) {

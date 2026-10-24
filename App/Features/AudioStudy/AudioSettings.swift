@@ -45,7 +45,7 @@ private struct AudioSettingsContent: View {
             }
             if let saveError { Text(saveError).foregroundStyle(.red).font(.footnote) }
         } header: {
-            Text("Audio", tableName: "AudioStudy")
+            Text("Audio", tableName: "AudioStudy").paperHeader()
         } footer: {
             Text("Standard is smaller and clear for speech. High keeps more detail for music. Applies to new recordings.",
                  tableName: "AudioStudy")

@@ -45,6 +45,7 @@ struct InsertPagesSheet: View {
                 if working { Section { ProgressView { Text("Inserting pages…", tableName: "PdfIO") } } }
                 if let message { Section { Text(message).foregroundStyle(.red).accessibilityIdentifier("insert.error") } }
             }
+            .paperList()
             .navigationTitle(Text("Insert Pages", tableName: "PdfIO"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar { ToolbarItem(placement: .cancellationAction) { Button { dismiss() } label: { Text("Cancel", tableName: "PdfIO") } } }

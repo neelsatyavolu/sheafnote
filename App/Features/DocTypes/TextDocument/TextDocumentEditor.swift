@@ -31,6 +31,7 @@ struct TextDocumentEditor: View {
                 .navigationBarTitleDisplayMode(.inline)
                 .toolbar { toolbar }
         }
+        .tint(Theme.accent)
         .accessibilityIdentifier("textdoc.root")
         .onChange(of: focus) { _, new in if let new { model.focusedBlock = new } }
         .onChange(of: model.focusedBlock) { _, new in if focus != new { focus = new } }
@@ -65,6 +66,7 @@ struct TextDocumentEditor: View {
                 .frame(maxWidth: .infinity)
             }
             .scrollDismissesKeyboard(.interactively)
+            .background(Theme.paper)
         }
     }
 
