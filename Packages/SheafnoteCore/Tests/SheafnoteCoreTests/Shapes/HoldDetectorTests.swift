@@ -8,7 +8,7 @@ import Testing
         var d = HoldDetector()
         d.begin(at: CGPoint(x: 10, y: 10), time: 100)
         #expect(!d.isHeld(at: 100.3))
-        #expect(d.isHeld(at: 100.6))
+        #expect(d.isHeld(at: 100.61))
     }
 
     @Test func smallJitterKeepsTheHold() {

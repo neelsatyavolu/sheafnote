@@ -87,7 +87,7 @@ struct ShapesOptionsRow: View {
     private func fillButton(_ shape: ShapeToolSettings) -> some View {
         Button { showFill = true } label: {
             ZStack {
-                Image(systemName: "paintbucket").opacity(shape.fillHex == nil ? 1 : 0.35)
+                Image(systemName: "drop.fill").opacity(shape.fillHex == nil ? 1 : 0.35)
                 if let fill = shape.fillHex { Circle().fill(Color(hex: fill)).frame(width: 18, height: 18) }
             }
             .frame(minWidth: 44, minHeight: 44)
