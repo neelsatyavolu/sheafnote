@@ -51,7 +51,8 @@ struct SavedElementsView: View {
                 thumbnail(item)
                     .frame(height: 88)
                     .frame(maxWidth: .infinity)
-                    .background(RoundedRectangle(cornerRadius: 10).fill(Color(.secondarySystemBackground)))
+                    .background(RoundedRectangle(cornerRadius: Theme.Radius.control, style: .continuous).fill(Theme.paperRaised))
+                    .overlay(RoundedRectangle(cornerRadius: Theme.Radius.control, style: .continuous).strokeBorder(Theme.rule, lineWidth: 1))
                 Text(item.name).font(.footnote).lineLimit(1)
                 Text(item.category).font(.caption2).foregroundStyle(.secondary).lineLimit(1)
             }

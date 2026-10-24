@@ -69,12 +69,12 @@ struct PresentationPageView: View {
         let insetWidth = min(size.width * 0.8, 1400)
         let insetHeight = insetWidth * focus.height / max(focus.width, 1)
         return ZStack(alignment: .topLeading) {
-            Rectangle().strokeBorder(Color.accentColor, lineWidth: 2).frame(width: box.width, height: box.height)
+            Rectangle().strokeBorder(Theme.accent, lineWidth: 2).frame(width: box.width, height: box.height)
                 .offset(x: box.minX, y: box.minY)
             if let strip = zoom.stripImage {
                 Image(decorative: strip, scale: 1).resizable()
                     .frame(width: insetWidth, height: insetHeight)
-                    .overlay(Rectangle().strokeBorder(Color.accentColor, lineWidth: 3))
+                    .overlay(Rectangle().strokeBorder(Theme.accent, lineWidth: 3))
                     .offset(x: (size.width - insetWidth) / 2, y: size.height - insetHeight - 24)
             }
         }

@@ -25,9 +25,11 @@ struct TextOptionsRow: View {
             backgroundControl(payload)
             if !target.hasTarget {
                 Text("Tap the page to add a text box", tableName: "Elements")
-                    .font(.footnote).foregroundStyle(.secondary).lineLimit(1)
+                    .font(.footnote).foregroundStyle(Theme.inkMuted).lineLimit(1)
             }
         }
+        .padding(.horizontal, 12)
+        .optionsCapsule()
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("elements.text.options")
     }
@@ -74,7 +76,7 @@ struct TextOptionsRow: View {
         Button { target.apply(change) } label: {
             Image(systemName: symbol)
                 .frame(width: 32, height: 32)
-                .background(RoundedRectangle(cornerRadius: 8).fill(isOn ? Color.accentColor.opacity(0.2) : .clear))
+                .background(RoundedRectangle(cornerRadius: 8).fill(isOn ? Theme.accent.opacity(0.2) : .clear))
         }
         .accessibilityLabel(Text(label))
         .accessibilityAddTraits(isOn ? .isSelected : [])

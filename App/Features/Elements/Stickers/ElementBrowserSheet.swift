@@ -73,7 +73,7 @@ struct StickerGrid: View {
             LazyVStack(alignment: .leading, spacing: 20, pinnedViews: []) {
                 ForEach(StickerCategory.allCases, id: \.self) { category in
                     VStack(alignment: .leading, spacing: 8) {
-                        Text(title(for: category)).font(.headline).accessibilityAddTraits(.isHeader)
+                        Text(title(for: category)).font(Theme.title(.headline)).accessibilityAddTraits(.isHeader)
                         LazyVGrid(columns: [GridItem(.adaptive(minimum: category == .washi ? 150 : 76), spacing: 12)], spacing: 12) {
                             ForEach(StickerCatalog.stickers(in: category)) { sticker in tile(sticker) }
                         }
@@ -90,7 +90,8 @@ struct StickerGrid: View {
                 .aspectRatio(sticker.aspectRatio, contentMode: .fit)
                 .padding(8)
                 .frame(maxWidth: .infinity, minHeight: 72)
-                .background(RoundedRectangle(cornerRadius: 12).fill(Color(.secondarySystemBackground)))
+                .background(RoundedRectangle(cornerRadius: Theme.Radius.control, style: .continuous).fill(Theme.paperRaised))
+                .overlay(RoundedRectangle(cornerRadius: Theme.Radius.control, style: .continuous).strokeBorder(Theme.rule, lineWidth: 1))
         }
         .buttonStyle(.plain)
         .accessibilityLabel(Text(String(localized: String.LocalizationValue(sticker.name), table: "Elements")))

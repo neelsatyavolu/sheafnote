@@ -17,7 +17,7 @@ struct TapeOptionsRow: View {
         let hasTape = pages.contains { $0.elements.all.contains { $0.kind == .tape } }
         HStack(spacing: 12) {
             ForEach(StudyTape.swatches) { swatch in swatchButton(swatch) }
-            Divider().frame(height: 22)
+            OptionsDivider()
             Button { setAll(revealed: allCovering) } label: {
                 Label {
                     allCovering ? Text("Show all", tableName: "Elements") : Text("Hide all", tableName: "Elements")
@@ -30,9 +30,11 @@ struct TapeOptionsRow: View {
             .accessibilityHint(Text("Applies to the pages on screen", tableName: "Elements"))
             if !hasTape {
                 Text("Drag on the page to lay down tape", tableName: "Elements")
-                    .font(.footnote).foregroundStyle(.secondary).lineLimit(1)
+                    .font(.footnote).foregroundStyle(Theme.inkMuted).lineLimit(1)
             }
         }
+        .padding(.horizontal, 12)
+        .optionsCapsule()
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("elements.tape.options")
     }
@@ -42,7 +44,8 @@ struct TapeOptionsRow: View {
         return Button { swatchID = swatch.id } label: {
             Circle().fill(Color(hex: swatch.hex))
                 .frame(width: 24, height: 24)
-                .overlay(Circle().stroke(Color.primary, lineWidth: selected ? 2.5 : 0).padding(-3))
+                .overlay(Circle().strokeBorder(Theme.ink.opacity(0.18), lineWidth: 1))
+                .overlay { if selected { Circle().strokeBorder(Theme.ink, lineWidth: 2).padding(-4) } }
                 .overlay { if swatch.style != .solid { Image(systemName: swatch.style == .striped ? "line.diagonal" : "circle.dotted").font(.caption2).foregroundStyle(.white) } }
                 .frame(width: 34, height: 34)
         }

@@ -38,7 +38,7 @@ struct TextToolOverlay: View {
         let grip = 28 / zoom
         TextBoxEditingView(session: session)
             .frame(width: frame.width, height: height)
-            .overlay(Rectangle().strokeBorder(Color.accentColor, style: StrokeStyle(lineWidth: 1.5 / zoom, dash: [5 / zoom, 3 / zoom])))
+            .overlay(Rectangle().strokeBorder(Theme.accent, style: StrokeStyle(lineWidth: 1.5 / zoom, dash: [5 / zoom, 3 / zoom])))
             .position(x: frame.midX, y: frame.minY + height / 2)
         gripView(symbol: "arrow.up.and.down.and.arrow.left.and.right", size: grip,
                  label: String(localized: "Move text box", table: "Elements"))
@@ -53,10 +53,10 @@ struct TextToolOverlay: View {
     private func gripView(symbol: String, size: CGFloat, label: String) -> some View {
         Image(systemName: symbol)
             .font(.system(size: size * 0.5))
-            .foregroundStyle(Color.accentColor)
+            .foregroundStyle(Theme.accent)
             .frame(width: size, height: size)
             .background(Circle().fill(Color.white))
-            .overlay(Circle().stroke(Color.accentColor, lineWidth: size / 14))
+            .overlay(Circle().stroke(Theme.accent, lineWidth: size / 14))
             .contentShape(Circle())
             .accessibilityLabel(Text(label))
             .accessibilityAddTraits(.isButton)

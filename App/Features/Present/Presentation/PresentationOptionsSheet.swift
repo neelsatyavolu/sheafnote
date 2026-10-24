@@ -34,7 +34,7 @@ struct PresentationOptionsSheet: View {
                          tableName: "Present")
                 }
                 if let notice = controller.notice {
-                    Section { Text(notice).foregroundStyle(.orange) }
+                    Section { Text(notice).foregroundStyle(Theme.tangerine) }
                 }
             }
             .onDisappear { if startRequested { startRequested = false; controller.start(editor: editor) } }

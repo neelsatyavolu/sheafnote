@@ -9,10 +9,10 @@ final class PageSlotView: UIView {
     init(frame: CGRect, paper: UIColor) {
         super.init(frame: frame)
         backgroundColor = paper
-        layer.shadowColor = UIColor.black.cgColor
-        layer.shadowOpacity = 0.18
-        layer.shadowRadius = 6
-        layer.shadowOffset = CGSize(width: 0, height: 2)
+        layer.shadowColor = Theme.pageShadowUIColor.cgColor
+        layer.shadowOpacity = 0.22
+        layer.shadowRadius = 10
+        layer.shadowOffset = CGSize(width: 0, height: 3)
         layer.shadowPath = UIBezierPath(rect: bounds).cgPath
         isUserInteractionEnabled = false
     }

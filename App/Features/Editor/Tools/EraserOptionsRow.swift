@@ -27,7 +27,7 @@ struct EraserOptionsRow: View {
                     Text("Switch Back After Erasing", tableName: "Editor")
                 }
             } label: {
-                Image(systemName: "slider.horizontal.3").frame(minWidth: 44, minHeight: 44)
+                Image(systemName: "slider.horizontal.3").foregroundStyle(Theme.inkMuted).frame(minWidth: 44, minHeight: 44)
             }
             .accessibilityLabel(Text("Eraser options", tableName: "Editor"))
             .accessibilityIdentifier("editor.eraser.options")

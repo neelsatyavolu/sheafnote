@@ -97,7 +97,7 @@ struct EditorTabStrip: View {
             }
             .padding(.horizontal, 12).padding(.vertical, 6)
         }
-        .background(.bar)
+        .background(Theme.paper)
         .accessibilityIdentifier("editor.tabs")
     }
 
@@ -105,14 +105,15 @@ struct EditorTabStrip: View {
         let selected = tabs.activeID == notebook.id
         return HStack(spacing: 6) {
             Button { tabs.activeID = notebook.id } label: {
-                Text(notebook.title).lineLimit(1).frame(maxWidth: 180)
+                Text(notebook.title).font(Theme.notebookTitle(.subheadline)).lineLimit(1).frame(maxWidth: 180)
             }
             .accessibilityAddTraits(selected ? .isSelected : [])
             Button { tabs.close(id: notebook.id) } label: { Image(systemName: "xmark").imageScale(.small) }
                 .accessibilityLabel(Text("Close tab \(notebook.title)", tableName: "Editor"))
         }
         .padding(.horizontal, 12).padding(.vertical, 6)
-        .background(Capsule().fill(selected ? Color.accentColor.opacity(0.18) : Color(.secondarySystemFill)))
-        .foregroundStyle(.primary)
+        .background(Capsule().fill(selected ? Theme.accent.opacity(0.18) : Theme.paperRaised))
+        .overlay(Capsule().strokeBorder(selected ? Theme.accent.opacity(0.5) : Theme.rule, lineWidth: 1))
+        .foregroundStyle(Theme.ink)
     }
 }

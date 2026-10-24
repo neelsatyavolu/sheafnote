@@ -28,7 +28,9 @@ struct ZoomOptionsView: View {
             marginStepper(title: Text("Right margin", tableName: "Present"), id: "rightMargin",
                           value: Binding(get: { controller.model.rightMargin }, set: { controller.setRightMargin($0) }))
         }
+        .padding(.horizontal, 12)
         .padding(.vertical, 2)
+        .optionsCapsule()
     }
 
     private var nudgePad: some View {
@@ -43,6 +45,7 @@ struct ZoomOptionsView: View {
     private func nudge(_ direction: NudgeDirection, symbol: String, label: Text) -> some View {
         Button { controller.nudge(direction) } label: { Image(systemName: symbol).frame(width: 32, height: 32) }
             .buttonStyle(.bordered)
+            .tint(Theme.ink)
             .accessibilityLabel(label)
             .accessibilityIdentifier("present.zoom.nudge.\(symbol)")
     }

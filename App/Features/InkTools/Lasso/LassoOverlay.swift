@@ -27,7 +27,7 @@ struct LassoOverlay: View {
                     path.dropFirst().forEach { p.addLine(to: $0) }
                     p.closeSubpath()
                 }
-                .stroke(Color.accentColor, style: StrokeStyle(lineWidth: 1.5 / zoom, lineCap: .round, lineJoin: .round,
+                .stroke(Theme.accent, style: StrokeStyle(lineWidth: 1.5 / zoom, lineCap: .round, lineJoin: .round,
                                                               dash: [6 / zoom, 4 / zoom]))
                 .allowsHitTesting(false)
             }

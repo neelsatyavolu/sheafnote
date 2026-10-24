@@ -43,9 +43,9 @@ struct ZoomFocusOverlay: View {
             Color.clear
             if controller.pageID == page.pageID {
                 RoundedRectangle(cornerRadius: 3 / max(page.zoomScale, 0.1))
-                    .fill(Color.accentColor.opacity(0.14))
+                    .fill(Theme.accent.opacity(0.14))
                     .overlay(RoundedRectangle(cornerRadius: 3 / max(page.zoomScale, 0.1))
-                        .strokeBorder(Color.accentColor, lineWidth: 2 / max(page.zoomScale, 0.1)))
+                        .strokeBorder(Theme.accent, lineWidth: 2 / max(page.zoomScale, 0.1)))
                     .frame(width: rect.width, height: rect.height)
                     .offset(x: rect.minX, y: rect.minY)
                     .allowsHitTesting(false)

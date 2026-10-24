@@ -37,6 +37,8 @@ struct ElementOptionsRow: View {
             .accessibilityIdentifier("elements.insert.browser")
             SelectedElementControls(editor: editor, host: host, imageCache: imageCache)
         }
+        .padding(.horizontal, 12)
+        .optionsCapsule()
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("elements.options")
         .onChange(of: photoItem) { _, item in

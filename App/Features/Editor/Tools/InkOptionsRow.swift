@@ -9,12 +9,14 @@ struct InkOptionsRow: View {
     let session: NotebookSession
     @State private var showEditor = false
     @State private var showAdd = false
+    @Environment(\.horizontalSizeClass) private var sizeClass
 
+    private var metrics: OptionsMetrics { OptionsMetrics(compact: sizeClass == .compact) }
     private var store: EditorPresetStore { session.presetStore }
 
     var body: some View {
         let _ = store.revision
-        HStack(spacing: 6) {
+        HStack(spacing: metrics.spacing) {
             if toolID == .pen { inkMenu }
             OptionsDivider()
             ForEach(store.presets(for: toolID)) { swatch($0) }
@@ -24,7 +26,7 @@ struct InkOptionsRow: View {
             ForEach(Array(EditorOptionsAccessories.views(for: toolID, editor: session).enumerated()), id: \.offset) { $0.element }
         }
         .popover(isPresented: $showEditor) { PresetEditorView(toolID: toolID, store: store, mode: .edit).presentationCompactAdaptation(.popover) }
-        .padding(.horizontal, 12)
+        .padding(.horizontal, sizeClass == .compact ? 6 : 12)
         .optionsCapsule()
         .accessibilityElement(children: .contain)
         .accessibilityLabel(Text("Tool options", tableName: "Editor"))
@@ -36,7 +38,7 @@ struct InkOptionsRow: View {
                 ForEach(InkKind.penChoices, id: \.self) { kind in Label(kind.title, systemImage: kind.symbolName).tag(kind) }
             } label: { Text("Ink type", tableName: "Editor") }
         } label: {
-            Image(systemName: store.inkKind(for: toolID).symbolName).frame(minWidth: 44, minHeight: 44)
+            Image(systemName: store.inkKind(for: toolID).symbolName).foregroundStyle(Theme.ink).frame(minWidth: metrics.target, minHeight: 44)
         }
         .accessibilityLabel(Text("Ink type, \(String(localized: store.inkKind(for: toolID).title))", tableName: "Editor"))
         .accessibilityIdentifier("editor.options.inkType")
@@ -47,10 +49,8 @@ struct InkOptionsRow: View {
         return Button {
             if selected { showEditor = true } else { store.selectPreset(preset.id, for: toolID) }
         } label: {
-            Circle().fill(Color(hex: preset.colorHex)).frame(width: 26, height: 26)
-                .overlay(Circle().strokeBorder(.primary.opacity(0.25), lineWidth: 1))
-                .overlay { if selected { Circle().strokeBorder(Color.accentColor, lineWidth: 3).padding(-4) } }
-                .frame(minWidth: 44, minHeight: 44)
+            PresetDot(color: Color(hex: preset.colorHex), selected: selected)
+                .frame(minWidth: metrics.target, minHeight: 44)
                 .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
@@ -62,7 +62,7 @@ struct InkOptionsRow: View {
 
     private var addButton: some View {
         Button { showAdd = true } label: {
-            Image(systemName: "plus.circle").frame(minWidth: 44, minHeight: 44)
+            Image(systemName: "plus.circle").foregroundStyle(Theme.inkMuted).frame(minWidth: metrics.target, minHeight: 44)
         }
         .accessibilityLabel(Text("Add color", tableName: "Editor"))
         .accessibilityIdentifier("editor.options.addColor")
@@ -72,34 +72,33 @@ struct InkOptionsRow: View {
     }
 }
 
-struct OptionsDivider: View {
-    var body: some View {
-        Divider().frame(height: 24).accessibilityHidden(true)
-    }
-}
-
-extension View {
-    /// Liquid Glass capsule behind an options row.
-    func optionsCapsule() -> some View {
-        glassEffect(.regular, in: Capsule())
-    }
-}
-
-/// Three width presets as dots of growing size; tapping selects one.
+/// Three width presets drawn as short ink strokes of that width; tapping selects one.
 struct WidthDots: View {
     let toolID: ToolID
     let store: EditorPresetStore
+    @Environment(\.horizontalSizeClass) private var sizeClass
+    @Environment(\.colorScheme) private var scheme
+
+    private var tint: Color {
+        guard let hex = store.selectedPreset(for: toolID)?.colorHex, toolID == .pen || toolID == .highlighter else { return Theme.accent }
+        return Color(hex: hex).legible(on: scheme)
+    }
 
     var body: some View {
         let _ = store.revision   // re-read when a width preset is selected or edited
         let widths = store.widths(for: toolID)
+        let target = OptionsMetrics(compact: sizeClass == .compact).target
         HStack(spacing: 0) {
             ForEach(Array(widths.values.enumerated()), id: \.offset) { index, value in
                 let selected = index == widths.selectedIndex
                 Button { store.selectWidth(index: index, for: toolID) } label: {
-                    Circle().fill(selected ? Color.accentColor : Color.primary.opacity(0.7))
-                        .frame(width: dot(value), height: dot(value))
-                        .frame(minWidth: 44, minHeight: 44)
+                    WidthStroke(width: value, tint: selected ? tint : Theme.inkMuted)
+                        .frame(minWidth: target, minHeight: 44)
+                        .background {
+                            if selected {
+                                RoundedRectangle(cornerRadius: 8, style: .continuous).fill(tint.opacity(0.14)).frame(width: 34, height: 34)
+                            }
+                        }
                         .contentShape(Rectangle())
                 }
                 .buttonStyle(.plain)
@@ -110,8 +109,6 @@ struct WidthDots: View {
             }
         }
     }
-
-    private func dot(_ width: Double) -> CGFloat { min(max(6 + CGFloat(width) * 0.8, 6), 24) }
 
     private func label(_ index: Int) -> LocalizedStringKey {
         switch index {
@@ -137,7 +134,7 @@ struct PresetEditorView: View {
         self.toolID = toolID
         self.store = store
         self.mode = mode
-        let hex = store.selectedPreset(for: toolID)?.colorHex ?? "#1B1B1F"
+        let hex = store.selectedPreset(for: toolID)?.colorHex ?? "#2B2420"
         _color = State(initialValue: Color(hex: hex))
         _width = State(initialValue: store.widths(for: toolID).selected)
     }

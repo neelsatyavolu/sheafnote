@@ -63,6 +63,7 @@ struct PagesGridView: View {
             }
             .padding()
         }
+        .background(Theme.paper)
         .toolbar { toolbar }
         .safeAreaInset(edge: .bottom) { if selecting { selectionBar } }
         .confirmationDialog(Text("Delete selected pages?", tableName: "Editor"), isPresented: $confirmDelete, titleVisibility: .visible) {
@@ -79,18 +80,23 @@ struct PagesGridView: View {
         let isCurrent = session.currentPageID == id
         return VStack(spacing: 6) {
             PageThumbnail(session: session, pageID: id)
-                .overlay(RoundedRectangle(cornerRadius: 2).stroke(isCurrent ? Color.accentColor : .clear, lineWidth: 3))
+                .overlay(RoundedRectangle(cornerRadius: 2).stroke(isCurrent ? Theme.accent : .clear, lineWidth: 3))
                 .overlay(alignment: .bottomTrailing) {
                     if selecting {
                         Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
-                            .font(.title2).foregroundStyle(isSelected ? Color.accentColor : .secondary)
+                            .font(.title2).foregroundStyle(isSelected ? Theme.accent : Theme.inkMuted)
                             .padding(6)
                     }
                 }
                 .overlay(alignment: .top) {
-                    if dropTarget == id { Rectangle().fill(Color.accentColor).frame(height: 4) }
+                    if dropTarget == id { Rectangle().fill(Theme.accent).frame(height: 4) }
                 }
-            Text("\(index + 1)").font(.footnote.monospacedDigit()).foregroundStyle(isCurrent ? Color.accentColor : .secondary)
+            Text("\(index + 1)")
+                .font(.system(.footnote, design: .rounded).monospacedDigit().weight(.semibold))
+                .foregroundStyle(isCurrent ? Theme.paperRaised : Theme.inkMuted)
+                .padding(.horizontal, 9).padding(.vertical, 2)
+                .background(Capsule().fill(isCurrent ? Theme.accent : Theme.paperRaised))
+                .overlay(Capsule().strokeBorder(isCurrent ? Color.clear : Theme.rule, lineWidth: 1))
         }
         .contentShape(Rectangle())
         .onTapGesture { tap(id) }
@@ -163,7 +169,9 @@ struct PagesGridView: View {
         .labelStyle(.iconOnly)
         .disabled(selected.isEmpty)
         .padding(.horizontal, 20).padding(.vertical, 10)
-        .glassEffect(.regular, in: Capsule())
+        .background(Theme.paperRaised, in: Capsule())
+        .overlay(Capsule().strokeBorder(Theme.rule, lineWidth: 1))
+        .shadow(color: Theme.shadowColor, radius: 8, y: 2)
         .padding(.bottom, 8)
     }
 
@@ -221,11 +229,11 @@ struct PageThumbnail: View {
     var body: some View {
         let size = session.pageSizes[pageID] ?? CGSize(width: 595, height: 842)
         ZStack {
-            Rectangle().fill(Color(.systemBackground))
+            Rectangle().fill(Theme.paperRaised)
             if let image { Image(decorative: image, scale: 2).resizable().scaledToFit() }
         }
         .aspectRatio(size.width / max(size.height, 1), contentMode: .fit)
-        .shadow(color: .black.opacity(0.2), radius: 4, y: 2)
+        .shadow(color: Theme.shadowColor, radius: 4, y: 2)
         .task(id: session.layoutRevision) {
             image = await session.services.pageRenderer.thumbnail(pageID: pageID, width: 360)
         }
