@@ -15,20 +15,20 @@ extension StickerCatalog {
     }
 
     static let washi: [StickerDefinition] = [
-        washiStrip("washi-plain", "Plain Washi", primary: "#F4A3B5", pattern: [
+        washiStrip("washi-plain", "Plain Washi", primary: "#FF6FA8", pattern: [
             StickerLayer(P.rect(CGRect(x: 0, y: 8, width: 200, height: 6)), fill: .white, opacity: 0.28, clipToBase: true),
         ]),
-        washiStrip("washi-stripes", "Striped Washi", primary: "#7FB5E8", pattern: stripeLayers()),
-        washiStrip("washi-dots", "Dotted Washi", primary: "#8FD3B6", pattern: dotLayers()),
-        washiStrip("washi-checks", "Checked Washi", primary: "#B9A4E6", pattern: checkLayers()),
-        washiStrip("washi-wave", "Wavy Washi", primary: "#F7D16B", pattern: [
+        washiStrip("washi-stripes", "Striped Washi", primary: "#3D9BFF", pattern: stripeLayers()),
+        washiStrip("washi-dots", "Dotted Washi", primary: "#3CC9A0", pattern: dotLayers()),
+        washiStrip("washi-checks", "Checked Washi", primary: "#A77BFF", pattern: checkLayers()),
+        washiStrip("washi-wave", "Wavy Washi", primary: "#FFC93C", pattern: [
             line(waveCommands(amplitude: 8), paint: .white, width: 3, opacity: 0.85, clip: true),
         ]),
-        washiStrip("washi-zigzag", "Zigzag Washi", primary: "#F08A6C", pattern: [
+        washiStrip("washi-zigzag", "Zigzag Washi", primary: "#F2542D", pattern: [
             line(P.polyline(zigzagPoints()), paint: .white, width: 3, opacity: 0.85, clip: true),
         ]),
-        washiStrip("washi-grid", "Grid Washi", primary: "#D8B98A", pattern: gridLayers()),
-        washiStrip("washi-stars", "Starry Washi", primary: "#5FB7B0", pattern: starLayers()),
+        washiStrip("washi-grid", "Grid Washi", primary: "#FFC93C", pattern: gridLayers()),
+        washiStrip("washi-stars", "Starry Washi", primary: "#3CC9A0", pattern: starLayers()),
     ]
 
     private static func stripeLayers() -> [StickerLayer] {
