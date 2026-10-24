@@ -16,7 +16,7 @@ public enum PdfIOError: LocalizedError, Equatable {
         case .unreadablePDF: "Sheafnote couldn't open this PDF. The file may be damaged."
         case .passwordProtected: "This PDF is password protected. Remove the password in another app, then import it again."
         case .emptyPDF: "This PDF has no pages."
-        case .unreadableImage(let name): "Sheafnote couldn't read the image \(name)."
+        case .unreadableImage(let name): "Sheafnote couldn't read the image \u{201C}\(name)\u{201D}."
         case .nothingToImport: "There was nothing to import."
         case .notAPagedNotebook: "Pages can only be inserted into a regular notebook."
         case .notebookMissing: "That notebook is no longer available."

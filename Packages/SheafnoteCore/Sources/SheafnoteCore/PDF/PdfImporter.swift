@@ -115,7 +115,7 @@ public struct PdfImporter {
 
     private func imagePlans(_ images: [ImportedImage], now: Date) throws -> [PagePlan] {
         try images.map { image in
-            let source = try ImagePageSource(data: image.data, name: image.filename ?? "image")
+            let source = try ImagePageSource(data: image.data, name: image.filename ?? "photo")
             let asset = try pages.importAsset(data: image.data, kind: .image, filename: image.filename, now: now)
             return PagePlan(size: ImagePageSource.pageSize(forPixels: source.pixelSize), backgroundAssetID: asset.id, backgroundPageIndex: nil)
         }
