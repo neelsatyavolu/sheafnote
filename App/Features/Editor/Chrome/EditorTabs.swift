@@ -11,12 +11,25 @@ final class EditorTabs {
     private(set) var openIDs: [UUID] = []
     var activeID: UUID?
     @ObservationIgnored private var sessions: [UUID: NotebookSession] = [:]
+    @ObservationIgnored private var claims: [UUID: UUID] = [:]
 
     func session(for notebook: Notebook, host: FeatureHost, sizing: PageSizing) -> NotebookSession {
         if let existing = sessions[notebook.id] { return existing }
         let created = NotebookSession(notebook: notebook, host: host, sizing: sizing)
         sessions[notebook.id] = created
         return created
+    }
+
+    /// A notebook is live in one window at a time (two windows would fight over one canvas and could overwrite each
+    /// other's ink). The first scaffold to claim it shows it; a second one shows a notice instead.
+    func claim(_ notebookID: UUID, token: UUID) -> Bool {
+        if let owner = claims[notebookID], owner != token { return false }
+        claims[notebookID] = token
+        return true
+    }
+
+    func release(_ notebookID: UUID, token: UUID) {
+        if claims[notebookID] == token { claims[notebookID] = nil }
     }
 
     func open(_ notebook: Notebook) {

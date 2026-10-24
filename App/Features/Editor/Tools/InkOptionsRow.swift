@@ -91,6 +91,7 @@ struct WidthDots: View {
     let store: EditorPresetStore
 
     var body: some View {
+        let _ = store.revision   // re-read when a width preset is selected or edited
         let widths = store.widths(for: toolID)
         HStack(spacing: 0) {
             ForEach(Array(widths.values.enumerated()), id: \.offset) { index, value in

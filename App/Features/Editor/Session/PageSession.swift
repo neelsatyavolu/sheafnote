@@ -159,6 +159,7 @@ final class PageSession: PageContext {
         cachedIDs = nil
         container?.updateAccessibility()
         saver.markChanged()
+        notebook.growInfinitePageIfNeeded(self)
         NotificationCenter.default.post(name: EditorNotifications.inkDidChange, object: pageID)
     }
 

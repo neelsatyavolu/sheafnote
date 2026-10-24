@@ -33,7 +33,7 @@ struct EditorOverlays: View {
     private var pageIndicator: some View {
         if session.pageIDs.count > 1 {
             Button { showGoTo = true } label: {
-                Text("\(session.currentPageNumber) / \(session.pageIDs.count)")
+                Text("\(session.currentPageNumber) / \(session.pageIDs.count)", tableName: "Editor")
                     .font(.footnote.monospacedDigit().weight(.medium))
                     .padding(.horizontal, 14).padding(.vertical, 8)
                     .glassEffect(.regular, in: Capsule())

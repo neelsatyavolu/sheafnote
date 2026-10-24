@@ -67,7 +67,9 @@ final class PageContainerView: UIView {
         canvas.isAccessibilityElement = true
         canvas.accessibilityIdentifier = "editor.page.\(number)"
         canvas.accessibilityLabel = String(localized: "Page \(number) of \(count), writing area", table: "Editor")
-        canvas.accessibilityValue = String(localized: "\(page.drawing.strokes.count) strokes", table: "Editor")
+        let strokes = page.drawing.strokes.count
+        canvas.accessibilityValue = strokes == 1 ? String(localized: "1 stroke", table: "Editor")
+                                                 : String(localized: "\(strokes) strokes", table: "Editor")
         canvas.accessibilityTraits = .allowsDirectInteraction
     }
 

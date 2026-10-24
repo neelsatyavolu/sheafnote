@@ -85,7 +85,7 @@ struct EditorMoreMenu: View {
                 Label { Text("Open Notebook in Tab…", tableName: "Editor") } icon: { Image(systemName: "plus.square.on.square") }
             }
             Button { openInNewWindow() } label: {
-                Label { Text("Open in New Window", tableName: "Editor") } icon: { Image(systemName: "macwindow.badge.plus") }
+                Label { Text("New Window", tableName: "Editor") } icon: { Image(systemName: "macwindow.badge.plus") }
             }
         }
     }
@@ -94,27 +94,12 @@ struct EditorMoreMenu: View {
         session.present(EditorSheet(detents: detents) { AnyView(content()) })
     }
 
+    /// Opens a second window showing the library, so a different notebook can sit beside this one (Stage Manager,
+    /// Split View). A notebook is only ever live in one window; opening it twice shows a notice instead.
     private func openInNewWindow() {
         session.flushAll()
-        let activity = EditorWindowActivity.userActivity(for: session.notebook.id)
-        UIApplication.shared.requestSceneSessionActivation(nil, userActivity: activity, options: nil) { error in
+        UIApplication.shared.requestSceneSessionActivation(nil, userActivity: nil, options: nil) { error in
             Task { @MainActor in session.report(error) }
         }
-    }
-}
-
-/// `NSUserActivity` used to open a notebook in a second window (Stage Manager, Split View).
-enum EditorWindowActivity {
-    static let type = "co.xanom.sheafnote.openNotebook"
-    private static let idKey = "notebookID"
-
-    static func userActivity(for notebookID: UUID) -> NSUserActivity {
-        let activity = NSUserActivity(activityType: type)
-        activity.userInfo = [idKey: notebookID.uuidString]
-        return activity
-    }
-
-    static func notebookID(from activity: NSUserActivity) -> UUID? {
-        (activity.userInfo?[idKey] as? String).flatMap(UUID.init(uuidString:))
     }
 }

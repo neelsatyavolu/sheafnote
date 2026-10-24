@@ -297,8 +297,8 @@ final class NotebookScrollController: UIViewController, UIScrollViewDelegate, UI
     }
 
     func setZoom(_ scale: CGFloat, animated: Bool) {
-        let target = min(max(scale * fitScale, fitScale), scrollView.maximumZoomScale)
-        scrollView.setZoomScale(target, animated: animated)
+        // Same units as `PageContext.zoomScale`: 1 is one page point per screen point, `fitScale` fits the page width.
+        scrollView.setZoomScale(min(max(scale, fitScale), scrollView.maximumZoomScale), animated: animated)
     }
 
     // MARK: UIScrollViewDelegate

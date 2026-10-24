@@ -12,6 +12,8 @@ struct EditorScaffold: View {
     var onClose: (() -> Void)?
 
     @State private var session: NotebookSession
+    @State private var token = UUID()
+    @State private var claimed: Bool?
     @State private var showGoTo = false
     @State private var goToText = ""
     @Environment(\.horizontalSizeClass) private var sizeClass
@@ -34,8 +36,16 @@ struct EditorScaffold: View {
         NavigationStack {
             ZStack {
                 Color(.systemGray5).ignoresSafeArea()
-                NotebookCanvasHost(session: session).ignoresSafeArea()
-                EditorOverlays(session: session, showGoTo: $showGoTo)
+                if claimed == true {
+                    NotebookCanvasHost(session: session).ignoresSafeArea()
+                    EditorOverlays(session: session, showGoTo: $showGoTo)
+                } else if claimed == false {
+                    ContentUnavailableView {
+                        Label { Text("Open in Another Window", tableName: "Editor") } icon: { Image(systemName: "macwindow.on.rectangle") }
+                    } description: {
+                        Text("This notebook is already open in another window. Close it there to work on it here.", tableName: "Editor")
+                    }
+                }
             }
             .safeAreaInset(edge: compact ? .bottom : .top, spacing: 0) {
                 OptionsRowHost(session: session).padding(.vertical, 6)
@@ -61,6 +71,11 @@ struct EditorScaffold: View {
             Text("This notebook has \(session.pageIDs.count) pages.", tableName: "Editor")
         }
         .onChange(of: scenePhase) { _, phase in if phase != .active { session.flushAll() } }
+        .onAppear { claimed = EditorTabs.shared.claim(notebook.id, token: token) }
+        .onDisappear {
+            session.flushAll()
+            EditorTabs.shared.release(notebook.id, token: token)
+        }
     }
 
     // MARK: Toolbar
