@@ -149,9 +149,9 @@ enum ExportFolder {
     static let prefix = "sheafnote-export-"
 
     /// Removes export folders left behind by earlier runs (a crash, or a share sheet that outlived its screen).
-    static func removeStale(olderThan age: TimeInterval = 3600, now: Date = .now) {
+    static func removeStale(in directory: URL = FileManager.default.temporaryDirectory, olderThan age: TimeInterval = 3600, now: Date = .now) {
         let fm = FileManager.default
-        guard let items = try? fm.contentsOfDirectory(at: fm.temporaryDirectory, includingPropertiesForKeys: [.contentModificationDateKey]) else { return }
+        guard let items = try? fm.contentsOfDirectory(at: directory, includingPropertiesForKeys: [.contentModificationDateKey]) else { return }
         for url in items where url.lastPathComponent.hasPrefix(prefix) {
             let modified = (try? url.resourceValues(forKeys: [.contentModificationDateKey]).contentModificationDate) ?? .distantPast
             if now.timeIntervalSince(modified) > age { try? fm.removeItem(at: url) }

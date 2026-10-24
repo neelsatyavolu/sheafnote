@@ -39,6 +39,12 @@ Sync is our own layer on `CKSyncEngine` against the CloudKit private database of
 - Before any TestFlight or App Store build, deploy the CloudKit schema to Production in the CloudKit Console (Development schema is created on first save from a signed build).
 - Automated tests cannot reach iCloud. Real CloudKit behavior (`CKSyncEngineTransport`) is not verified by agents: test with two devices or two simulators signed in to the same iCloud account, using signed builds and `SHEAFNOTE_CLOUDKIT_IN_SIMULATOR=1`. Unsigned simulator builds have no iCloud entitlement, so there sync shows "Not signed in".
 
+## PDFs, export and backup
+
+- **Import.** PDFs (Files, Open In, drag and drop) become a notebook with the PDF as each page's background; the original is stored once, untouched, and your ink is a separate layer on top. The PDF's table of contents becomes the notebook outline. Images and Photos become pages. "Insert PDF or Images" in the editor's More menu adds pages to an open notebook. A 500-page PDF imports in well under a second and only pages on screen are rendered.
+- **Export.** PDF (with or without page backgrounds), PNG or JPEG per page, for the whole notebook, the current page, selected pages or a typed range, through the share sheet. Writing is exported as a high-resolution image inside the PDF, not as vector strokes (PencilKit does not expose its ink as vector paths).
+- **Backup.** A `.sheafnote` file is a store-only ZIP: `manifest.json`, `library.json`, `ink/<pageID>.drawing`, `assets/<assetID>`. The byte-level format is in [docs/FORMAT.md](docs/FORMAT.md). Importing always adds new copies and checks the whole file first, so a damaged backup imports nothing. Settings > Import & Backup can also write a backup to a Files folder once a day when something changed, keeping the newest N files it made itself.
+
 ## Privacy
 
 No tracking, no third-party code, no network calls except iCloud sync. See `App/PrivacyInfo.xcprivacy`.

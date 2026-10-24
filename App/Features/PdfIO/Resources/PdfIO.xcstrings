@@ -1,0 +1,866 @@
+{
+  "sourceLanguage": "en",
+  "strings": {
+    "%@ is a text document. Export it as a Sheafnote backup instead; PDF and image export is for notebooks with pages.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ is a text document. Export it as a Sheafnote backup instead; PDF and image export is for notebooks with pages."
+          }
+        }
+      }
+    },
+    "1-3, 5": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1-3, 5"
+          }
+        }
+      }
+    },
+    "A .sheafnote file holds your notebooks, writing and attachments. Importing adds them as new copies and never changes what you already have.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A .sheafnote file holds your notebooks, writing and attachments. Importing adds them as new copies and never changes what you already have."
+          }
+        }
+      }
+    },
+    "Access was denied.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Access was denied."
+          }
+        }
+      }
+    },
+    "After the current page": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "After the current page"
+          }
+        }
+      }
+    },
+    "At the end": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "At the end"
+          }
+        }
+      }
+    },
+    "Automatic backup": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Automatic backup"
+          }
+        }
+      }
+    },
+    "Back Up Now": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Back Up Now"
+          }
+        }
+      }
+    },
+    "Backgrounds are the paper pattern and any imported PDF or image behind your writing.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Backgrounds are the paper pattern and any imported PDF or image behind your writing."
+          }
+        }
+      }
+    },
+    "Backing up…": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Backing up…"
+          }
+        }
+      }
+    },
+    "Backup": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Backup"
+          }
+        }
+      }
+    },
+    "Backup file ready": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Backup file ready"
+          }
+        }
+      }
+    },
+    "Backup files": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Backup files"
+          }
+        }
+      }
+    },
+    "Backup folder": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Backup folder"
+          }
+        }
+      }
+    },
+    "Backup imported": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Backup imported"
+          }
+        }
+      }
+    },
+    "Before the current page": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Before the current page"
+          }
+        }
+      }
+    },
+    "Cancel": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cancel"
+          }
+        }
+      }
+    },
+    "Choose a backup folder first.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Choose a backup folder first."
+          }
+        }
+      }
+    },
+    "Choose Photos": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Choose Photos"
+          }
+        }
+      }
+    },
+    "Current page": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Current page"
+          }
+        }
+      }
+    },
+    "Done": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Done"
+          }
+        }
+      }
+    },
+    "Each PDF page or image becomes a page you can write on. The original file is kept as it is.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Each PDF page or image becomes a page you can write on. The original file is kept as it is."
+          }
+        }
+      }
+    },
+    "Each photo becomes a page you can write on.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Each photo becomes a page you can write on."
+          }
+        }
+      }
+    },
+    "Enter page numbers from 1 to %lld, like 1-3, 5.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Enter page numbers from 1 to %lld, like 1-3, 5."
+          }
+        }
+      }
+    },
+    "Entire notebook": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Entire notebook"
+          }
+        }
+      }
+    },
+    "Everything in the notebook, including writing, attachments and outlines. Open it again in Sheafnote on any device.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Everything in the notebook, including writing, attachments and outlines. Open it again in Sheafnote on any device."
+          }
+        }
+      }
+    },
+    "Export": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Export"
+          }
+        }
+      }
+    },
+    "Export Again": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Export Again"
+          }
+        }
+      }
+    },
+    "Export Library": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Export Library"
+          }
+        }
+      }
+    },
+    "Export Pages…": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Export Pages…"
+          }
+        }
+      }
+    },
+    "Export ready": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Export ready"
+          }
+        }
+      }
+    },
+    "Export Whole Library…": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Export Whole Library…"
+          }
+        }
+      }
+    },
+    "Exporting…": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Exporting…"
+          }
+        }
+      }
+    },
+    "Export…": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Export…"
+          }
+        }
+      }
+    },
+    "Format": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Format"
+          }
+        }
+      }
+    },
+    "High": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "High"
+          }
+        }
+      }
+    },
+    "Image quality": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Image quality"
+          }
+        }
+      }
+    },
+    "Images (JPEG)": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Images (JPEG)"
+          }
+        }
+      }
+    },
+    "Images (PNG)": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Images (PNG)"
+          }
+        }
+      }
+    },
+    "Images from Files…": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Images from Files…"
+          }
+        }
+      }
+    },
+    "Import & Backup": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Import & Backup"
+          }
+        }
+      }
+    },
+    "Import Backup…": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Import Backup…"
+          }
+        }
+      }
+    },
+    "Imported Images": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Imported Images"
+          }
+        }
+      }
+    },
+    "Importing": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Importing"
+          }
+        }
+      }
+    },
+    "Include page backgrounds": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Include page backgrounds"
+          }
+        }
+      }
+    },
+    "Insert": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Insert"
+          }
+        }
+      }
+    },
+    "Insert Pages": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Insert Pages"
+          }
+        }
+      }
+    },
+    "Insert PDF or Images…": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Insert PDF or Images…"
+          }
+        }
+      }
+    },
+    "Inserting pages…": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Inserting pages…"
+          }
+        }
+      }
+    },
+    "Keep newest backups": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Keep newest backups"
+          }
+        }
+      }
+    },
+    "Last backup": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Last backup"
+          }
+        }
+      }
+    },
+    "Maximum": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Maximum"
+          }
+        }
+      }
+    },
+    "No pages match. Check the page numbers.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No pages match. Check the page numbers."
+          }
+        }
+      }
+    },
+    "None": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "None"
+          }
+        }
+      }
+    },
+    "Notebook from Photos": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Notebook from Photos"
+          }
+        }
+      }
+    },
+    "Notebooks": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Notebooks"
+          }
+        }
+      }
+    },
+    "Notebooks added": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Notebooks added"
+          }
+        }
+      }
+    },
+    "OK": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "OK"
+          }
+        }
+      }
+    },
+    "Once a day, when something changed, Sheafnote saves a backup file to the folder you choose. It only removes older backup files it made itself, beyond the number you keep.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Once a day, when something changed, Sheafnote saves a backup file to the folder you choose. It only removes older backup files it made itself, beyond the number you keep."
+          }
+        }
+      }
+    },
+    "One image per page.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "One image per page."
+          }
+        }
+      }
+    },
+    "One PDF per notebook. Pages keep their size.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "One PDF per notebook. Pages keep their size."
+          }
+        }
+      }
+    },
+    "Packing your library…": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Packing your library…"
+          }
+        }
+      }
+    },
+    "Page numbers": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Page numbers"
+          }
+        }
+      }
+    },
+    "Page range": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Page range"
+          }
+        }
+      }
+    },
+    "Pages": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pages"
+          }
+        }
+      }
+    },
+    "Pages added": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pages added"
+          }
+        }
+      }
+    },
+    "Pages exported": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pages exported"
+          }
+        }
+      }
+    },
+    "Pages inserted": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pages inserted"
+          }
+        }
+      }
+    },
+    "PDF": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "PDF"
+          }
+        }
+      }
+    },
+    "PDF from Files…": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "PDF from Files…"
+          }
+        }
+      }
+    },
+    "photo %lld": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "photo %lld"
+          }
+        }
+      }
+    },
+    "Photos %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Photos %@"
+          }
+        }
+      }
+    },
+    "Photos…": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Photos…"
+          }
+        }
+      }
+    },
+    "Selected pages (%lld)": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Selected pages (%lld)"
+          }
+        }
+      }
+    },
+    "Share or Save…": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Share or Save…"
+          }
+        }
+      }
+    },
+    "Sheafnote backup": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sheafnote backup"
+          }
+        }
+      }
+    },
+    "Sheafnote Backup %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sheafnote Backup %@"
+          }
+        }
+      }
+    },
+    "Sheafnote can't use the backup folder: %@ Choose the folder again in Settings.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sheafnote can't use the backup folder: %@ Choose the folder again in Settings."
+          }
+        }
+      }
+    },
+    "Sheafnote couldn't read %@: %@": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sheafnote couldn't read %1$@: %2$@"
+          }
+        }
+      }
+    },
+    "Sheafnote Notebooks": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sheafnote Notebooks"
+          }
+        }
+      }
+    },
+    "Something went wrong": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Something went wrong"
+          }
+        }
+      }
+    },
+    "Standard": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Standard"
+          }
+        }
+      }
+    },
+    "Stop": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stop"
+          }
+        }
+      }
+    },
+    "The page background couldn't be loaded. Your ink is safe.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The page background couldn't be loaded. Your ink is safe."
+          }
+        }
+      }
+    },
+    "They are new copies. Nothing that was already here was changed.": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "They are new copies. Nothing that was already here was changed."
+          }
+        }
+      }
+    },
+    "Try Again": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Try Again"
+          }
+        }
+      }
+    }
+  },
+  "version": "1.0"
+}

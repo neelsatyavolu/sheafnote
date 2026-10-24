@@ -64,7 +64,7 @@ public struct ZipReader {
     private struct Directory { var count: Int; var size: UInt64; var offset: UInt64 }
 
     private static func locateDirectory(in data: Data) throws -> Directory {
-        guard data.count >= 22 else { throw data.isEmpty ? ArchiveError.notAnArchive : ArchiveError.truncated }
+        guard data.count >= 22 else { throw data.starts(with: [0x50, 0x4B]) ? ArchiveError.truncated : ArchiveError.notAnArchive }
         let lowest = max(0, data.count - 22 - 65_535)
         var position = data.count - 22
         while position >= lowest {

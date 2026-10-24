@@ -77,6 +77,8 @@ struct ZipTests {
         #expect(throws: ArchiveError.self) { try ZipReader(data: bytes.prefix(bytes.count - 10)) }
         #expect(throws: ArchiveError.self) { try ZipReader(data: Data(repeating: 0x41, count: 500)) }
         #expect(throws: ArchiveError.self) { try ZipReader(data: Data()) }
+        #expect(throws: ArchiveError.notAnArchive) { try ZipReader(data: Data("not a zip".utf8)) }
+        #expect(throws: ArchiveError.truncated) { try ZipReader(data: Data([0x50, 0x4B, 0x03, 0x04])) }
     }
 
     @Test func rejectsEntriesPointingOutsideTheFile() throws {
