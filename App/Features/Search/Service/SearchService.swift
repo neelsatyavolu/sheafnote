@@ -75,9 +75,9 @@ final class SearchService {
     }
 
     /// Foreground and launch work: refresh the index and read any unread handwriting. Returns at once.
-    func kickOff() {
+    func kickOff(force: Bool = false) {
         Task { [weak self] in await self?.refreshIndex() }
-        ocr.start()
+        ocr.start(force: force)
     }
 
     func search(_ query: String, notebookID: UUID? = nil) -> [SearchHit] {
@@ -90,7 +90,7 @@ final class SearchService {
         ocr.resetFailures()
         _ = try PageTextStore(context: services.context).invalidateAll()
         pdfTexts.removeAll()
-        kickOff()
+        kickOff(force: true)
     }
 
     // MARK: PDF text

@@ -22,30 +22,42 @@ final class OCRIndexer {
     @ObservationIgnored private var failed = Set<String>()
     @ObservationIgnored private var task: Task<Void, Never>?
     @ObservationIgnored private var rerun = false
+    @ObservationIgnored private var forced = false
 
     init(services: AppServices) {
         self.services = services
         self.store = PageTextStore(context: services.context)
     }
 
-    /// Starts a pass unless one is running (then it runs once more when it ends).
+    /// Starts a pass unless one is running (then it runs once more when it ends). `force` is for passes the user
+    /// asked for: it runs in Low Power Mode and does not wait for recently edited pages to settle.
     func start(force: Bool = false) {
         guard force || !ProcessInfo.processInfo.isLowPowerModeEnabled else { return }
-        guard task == nil else { rerun = true; return }
+        guard task == nil else { rerun = true; forced = forced || force; return }
+        forced = force
         task = Task { [weak self] in
             await self?.runPasses()
             self?.task = nil
-            if self?.rerun == true {
-                self?.rerun = false
-                self?.start(force: force)
+            if let self, self.rerun {
+                self.rerun = false
+                self.start(force: self.forced)
             }
         }
     }
 
     /// Pages whose handwriting has not been read yet, regardless of how recently they were edited.
     func countPending() -> Int {
-        guard let states = try? store.ocrStates() else { return 0 }
-        return OCRSchedulingPolicy.plan(states, now: .distantFuture, limit: .max).count
+        do {
+            return OCRSchedulingPolicy.plan(try store.ocrStates(), now: .distantFuture, limit: .max).count
+        } catch {
+            Self.log.error("Could not count unread pages: \(error.localizedDescription, privacy: .public)")
+            return 0
+        }
+    }
+
+    /// Returns when the current pass (and any pass queued behind it) has finished.
+    func waitUntilIdle() async {
+        while let running = task { await running.value }
     }
 
     func cancel() {
@@ -78,7 +90,7 @@ final class OCRIndexer {
     private func makePlan() -> (items: [OCRPlanItem], pending: Int) {
         do {
             let states = try store.ocrStates()
-            let all = OCRSchedulingPolicy.plan(states, now: .now, limit: .max)
+            let all = OCRSchedulingPolicy.plan(states, now: forced ? .distantFuture : .now, limit: .max)
             let todo = all.filter { !failed.contains(key($0)) }
             return (Array(todo.prefix(Self.batchSize)), todo.count)
         } catch {
