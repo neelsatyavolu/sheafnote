@@ -73,7 +73,16 @@ public protocol CloudTransport: AnyObject {
     func stop()
     /// Forgets the change token and engine state (account switch, zone recreated): the next fetch is a full one.
     func resetState() async
+    /// Returns what the server changed since the last committed fetch. The change token must NOT be persisted by
+    /// this call: the coordinator calls `commitFetched()` only after it applied and saved the records, so a crash or a
+    /// failed apply makes the next launch fetch the same changes again.
     func fetchChanges() async throws -> FetchedChanges
+    /// The records returned by the last `fetchChanges` are saved locally; the change token may now advance for good.
+    func commitFetched() async
     /// Sends changes and reports a result per change. Throws for whole-request failures (offline, not signed in).
     func send(_ changes: [OutgoingChange]) async throws -> [SendOutcome]
+}
+
+public extension CloudTransport {
+    func commitFetched() async {}
 }

@@ -23,7 +23,7 @@ struct RootView: View {
     }
 
     private func runBackgroundTasks(_ host: FeatureHost) async {
-        for task in host.library.backgroundTasks { await task.run(host.services) }
+        for task in host.library.orderedBackgroundTasks { await task.run(host.services) }
     }
 }
 

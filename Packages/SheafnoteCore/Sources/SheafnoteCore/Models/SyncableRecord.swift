@@ -4,6 +4,8 @@ import SwiftData
 public extension Notification.Name {
     /// Posted by `markDirty` after any synced record changes. Sync listens.
     static let sheafnoteModelDidChange = Notification.Name("co.xanom.sheafnote.modelDidChange")
+    /// Posted by the sync coordinator after server changes were applied and saved. Open editors reconcile with the store.
+    static let sheafnoteServerChangesApplied = Notification.Name("co.xanom.sheafnote.serverChangesApplied")
 }
 
 public protocol SyncableRecord: PersistentModel {

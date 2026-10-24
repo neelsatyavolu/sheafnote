@@ -3,6 +3,16 @@ import Testing
 @testable import SheafnoteCore
 
 @Suite struct SortKeyTests {
+    @Test func keysWithTrailingZerosFromOutsideNeverTrap() {
+        for (a, b) in [("1", "10"), ("10", "1"), ("0", "00"), ("", "0")] as [(String?, String?)] {
+            _ = SortKey.between(a, b)
+        }
+        _ = SortKey.between(nil, "0")
+        _ = SortKey.between("0", nil)
+        _ = SortKey.between("1", "100")
+        #expect(SortKey.between("A0", "B") > "A" && SortKey.between("A0", "B") < "B")
+    }
+
     @Test func firstKeyIsMiddle() {
         #expect(SortKey.between(nil, nil) == "V")
     }

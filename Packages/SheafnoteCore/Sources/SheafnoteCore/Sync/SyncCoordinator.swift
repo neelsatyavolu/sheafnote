@@ -58,6 +58,8 @@ public final class SyncCoordinator {
 
     public internal(set) var status: SyncStatus = .idle { didSet { notifyStatus() } }
     public internal(set) var lastReport = SyncReport()
+    /// Set when the saved sync settings were unreadable at launch; cleared when the user re-enables sync.
+    public internal(set) var settingsProblem: String?
     /// Called whenever the status or the last successful sync date changes.
     public var onStatusChange: (@MainActor (SyncStatus, Date?) -> Void)?
 
@@ -71,8 +73,13 @@ public final class SyncCoordinator {
         do {
             state = try persistence.load()
         } catch {
+            // Unknown whether the user had turned sync off, so stay local-only until they switch it on again;
+            // uploading a whole library on a guess would be the worse mistake.
             state = SyncPersistedState()
-            status = .error("Sync settings could not be read, so Sheafnote started with the defaults. \(error.localizedDescription)")
+            state.isEnabled = false
+            let message = "Sync settings could not be read, so iCloud sync was switched off. Turn it on again in Settings. \(error.localizedDescription)"
+            settingsProblem = message
+            status = .error(message)
         }
         transport.onAccountEvent = { [weak self] event in
             guard let self else { return }
@@ -98,7 +105,10 @@ public final class SyncCoordinator {
     public func setEnabled(_ enabled: Bool) async {
         guard enabled != state.isEnabled else { return }
         state.isEnabled = enabled
-        if enabled { state.needsFullUpload = true }
+        if enabled {
+            state.needsFullUpload = true
+            settingsProblem = nil
+        }
         persist()
         if enabled {
             await syncNow()
@@ -177,6 +187,15 @@ public final class SyncCoordinator {
             report.count(try RecordMapper.applyServerDeletion(key, in: context, save: false))
         }
         try context.save()
+        await transport.commitFetched()
+        postServerChangesApplied(changes)
+    }
+
+    /// Tells open editors that rows changed under them (a page's ink, a text document) so they reload instead of
+    /// overwriting the new data with a stale in-memory copy.
+    private func postServerChangesApplied(_ changes: FetchedChanges) {
+        guard !changes.records.isEmpty || !changes.deletions.isEmpty else { return }
+        NotificationCenter.default.post(name: .sheafnoteServerChangesApplied, object: nil)
     }
 
     func handle(_ failure: SyncFailure) async {

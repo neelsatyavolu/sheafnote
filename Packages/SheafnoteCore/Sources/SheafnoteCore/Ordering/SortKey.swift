@@ -10,8 +10,12 @@ public enum SortKey {
 
     /// Key strictly between `a` and `b` (nil = open end). If `a >= b` (equal keys made on two devices),
     /// returns a key just after `a`; callers break ties by id.
+    ///
+    /// Keys come from archives and from other devices, so they are not trusted: trailing zeros (which our own keys never
+    /// have) are ignored instead of trapping.
     public static func between(_ a: String?, _ b: String?) -> String {
-        let lower = a ?? ""
+        let lower = a.map(withoutTrailingZeros) ?? ""
+        let b = b.map(withoutTrailingZeros)
         if let b, lower >= b { return lower + String(digits[base / 2]) }
         guard let b else { return lower.isEmpty ? String(digits[base / 2]) : increment(lower) }
         return midpoint(Array(lower), Array(b))
@@ -22,7 +26,15 @@ public enum SortKey {
         l.key == r.key ? l.id.uuidString < r.id.uuidString : l.key < r.key
     }
 
+    private static func withoutTrailingZeros(_ key: String) -> String {
+        var trimmed = key
+        while trimmed.hasSuffix("0") { trimmed.removeLast() }
+        return trimmed
+    }
+
     private static func midpoint(_ a: [Character], _ b: [Character]?) -> String {
+        // An exhausted upper bound is the same as an open end.
+        let b = b?.isEmpty == true ? nil : b
         if let b {
             var n = 0
             while n < b.count, (n < a.count ? a[n] : digits[0]) == b[n] { n += 1 }

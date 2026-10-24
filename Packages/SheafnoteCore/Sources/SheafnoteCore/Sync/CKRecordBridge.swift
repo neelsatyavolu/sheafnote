@@ -101,7 +101,9 @@ public enum CKRecordBridge {
     }
 
     private static func read(_ asset: CKAsset, field: String) throws -> Data {
-        guard let url = asset.fileURL else { return Data() }
+        guard let url = asset.fileURL else {
+            throw CKRecordBridgeError.unreadableAsset(field: field, underlying: "iCloud did not provide the downloaded file.")
+        }
         do { return try Data(contentsOf: url) } catch {
             throw CKRecordBridgeError.unreadableAsset(field: field, underlying: error.localizedDescription)
         }

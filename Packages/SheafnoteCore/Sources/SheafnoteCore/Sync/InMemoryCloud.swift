@@ -78,6 +78,8 @@ public final class InMemoryTransport: CloudTransport {
     public private(set) var savesSent: [RecordKey] = []
     public private(set) var deletesSent: [RecordKey] = []
     private var cursor = 0
+    private var committedCursor = 0
+    public private(set) var commitCount = 0
     private var knownGeneration = 0
     private var zoneWasDeleted = false
     private var hasStartedOnce = false
@@ -101,6 +103,7 @@ public final class InMemoryTransport: CloudTransport {
 
     public func resetState() async {
         cursor = 0
+        committedCursor = 0
         zoneWasDeleted = false
     }
 
@@ -109,6 +112,7 @@ public final class InMemoryTransport: CloudTransport {
         cloud = other
         knownGeneration = other.zoneGeneration
         cursor = 0
+        committedCursor = 0
     }
 
     /// Simulates iCloud account changes the way the system reports them.
@@ -134,6 +138,14 @@ public final class InMemoryTransport: CloudTransport {
         cursor = cloud.latestSeq
         return changes
     }
+
+    public func commitFetched() async {
+        committedCursor = cursor
+        commitCount += 1
+    }
+
+    /// Simulates quitting the app: a fetch that was never committed is forgotten and will be delivered again.
+    public func simulateRelaunch() { cursor = committedCursor }
 
     public func send(_ changes: [OutgoingChange]) async throws -> [SendOutcome] {
         try checkReachable()

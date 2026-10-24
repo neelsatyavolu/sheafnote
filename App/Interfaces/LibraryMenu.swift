@@ -58,6 +58,14 @@ final class LibraryMenuRegistry {
         backgroundTasks.append((id, run))
     }
 
+    /// Task id of the 30-day purge. It must see the server's latest state (a notebook restored on another device), so it
+    /// runs after every other task, including the sync cycle.
+    static let retentionTaskID = "foundation.retention"
+
+    var orderedBackgroundTasks: [(id: String, run: @MainActor (AppServices) async -> Void)] {
+        backgroundTasks.filter { $0.id != Self.retentionTaskID } + backgroundTasks.filter { $0.id == Self.retentionTaskID }
+    }
+
     var sortedNewItems: [LibraryNewItem] { newItems.sorted { $0.order < $1.order } }
     var sortedNotebookActions: [NotebookContextAction] { notebookActions.sorted { $0.order < $1.order } }
     var allImportTypes: [UTType] {

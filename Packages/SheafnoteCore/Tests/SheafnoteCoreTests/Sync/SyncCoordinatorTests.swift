@@ -244,6 +244,46 @@ import Testing
         #expect(relaunched.status == .localOnly)
     }
 
+    @Test func fetchedChangesAreCommittedOnlyAfterTheyWereApplied() async throws {
+        let cloud = InMemoryCloud()
+        let a = try Device(cloud: cloud)
+        let b = try Device(cloud: cloud)
+        let nb = try a.fx.store.notebook("Shared")
+        await a.sync()
+        await b.sync()
+        #expect(b.transport.commitCount == 1)
+        #expect(b.notebook(nb.id) != nil)
+        // A fetch that is never committed (crash before the save) is delivered again after a relaunch.
+        _ = try a.fx.store.notebook("Second")
+        await a.sync()
+        let lost = try await b.transport.fetchChanges()
+        #expect(!lost.records.isEmpty)
+        b.transport.simulateRelaunch()
+        let again = try await b.transport.fetchChanges()
+        #expect(again.records.map(\.key) == lost.records.map(\.key))
+    }
+
+    @Test func unreadableSettingsStartLocalOnlyInsteadOfUploadingEverything() async throws {
+        final class Broken: SyncPersistence {
+            struct Failure: Error {}
+            func load() throws -> SyncPersistedState { throw Failure() }
+            func save(_ state: SyncPersistedState) throws {}
+        }
+        let cloud = InMemoryCloud()
+        let a = try Device(cloud: cloud)
+        _ = try a.fx.store.notebook("Private")
+        let coordinator = SyncCoordinator(context: a.context, transport: a.transport, ink: JSONInkMerging(),
+                                          persistence: Broken())
+        #expect(!coordinator.isEnabled)
+        #expect(coordinator.settingsProblem != nil)
+        await coordinator.start()
+        #expect(coordinator.status == .localOnly)
+        #expect(a.transport.savesSent.isEmpty)
+        await coordinator.setEnabled(true)
+        #expect(coordinator.settingsProblem == nil)
+        #expect(!a.transport.savesSent.isEmpty)
+    }
+
     @Test func quotaExceededIsReportedAndNothingIsLost() async throws {
         let cloud = InMemoryCloud()
         let a = try Device(cloud: cloud)
