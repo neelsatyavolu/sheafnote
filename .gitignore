@@ -13,3 +13,5 @@ Sheafnote.xcodeproj/
 *.xcresult
 Packages/SheafnoteCore/.build/
 .claude/
+scripts/testflight.local.sh
+showcase-ink.json

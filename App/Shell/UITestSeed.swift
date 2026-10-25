@@ -6,7 +6,7 @@ import SheafnoteCore
 
 /// Launch-argument driven test mode: `-UITestMode 1 -UITestScenario <name>`.
 /// In-memory store, sync off, animations off, deterministic ids. Scenarios:
-/// empty, libraryBasic, notebookWith3Pages, pdfNotebook, recorded.
+/// empty, libraryBasic, notebookWith3Pages, pdfNotebook, recorded, showcase (screenshots; see UITestSeed+Showcase).
 @MainActor
 enum UITestSeed {
     static var isActive: Bool { UserDefaults.standard.bool(forKey: "UITestMode") }
@@ -30,6 +30,7 @@ enum UITestSeed {
         case "notebookWith3Pages": try threePages(services)
         case "pdfNotebook": try pdfNotebook(services)
         case "recorded": try recorded(services)
+        case "showcase": try showcase(services)
         default: break
         }
     }
@@ -37,18 +38,18 @@ enum UITestSeed {
     private static let t0 = Date(timeIntervalSince1970: 1_700_000_000)
 
     @discardableResult
-    private static func notebook(_ services: AppServices, n: Int, title: String, cover: String, template: TemplateKind,
-                                 folder: UUID? = nil, pages: Int = 1, size: CGSize? = nil) throws -> Notebook {
+    static func notebook(_ services: AppServices, n: Int, title: String, cover: String, template: TemplateKind,
+                         folder: UUID? = nil, pages: Int = 1, size: CGSize? = nil, created: Date? = nil) throws -> Notebook {
         let ctx = services.context
         let nb = Notebook(id: fixedID(n), title: title, kind: .paged, folderID: folder, cover: CoverSpec(coverID: cover),
                           template: TemplateSpec(kind: template), paperSize: .a4, orientation: .portrait, paperColor: .white,
-                          sortKey: SortKey.between(nil, nil), now: t0.addingTimeInterval(Double(n)))
+                          sortKey: SortKey.between(nil, nil), now: created ?? t0.addingTimeInterval(Double(n)))
         ctx.insert(nb)
         var previous: String?
         for i in 0..<pages {
             let key = SortKey.between(previous, nil)
             previous = key
-            let page = Page(id: fixedID(n * 100 + i), notebookID: nb.id, sortKey: key, size: size ?? nb.pageSize, now: t0)
+            let page = Page(id: fixedID(n * 100 + i), notebookID: nb.id, sortKey: key, size: size ?? nb.pageSize, now: created ?? t0)
             ctx.insert(page)
         }
         try ctx.save()

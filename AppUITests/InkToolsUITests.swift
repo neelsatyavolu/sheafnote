@@ -77,6 +77,19 @@ final class InkToolsUITests: XCTestCase {
         XCTAssertTrue(waitForValue(canvas, containing: "1 stroke"), "undo brings the stroke back")
     }
 
+    @MainActor func testTwoFingerTapUndoesAndThreeFingerTapRedoes() {
+        let app = openNotebook()
+        let canvas = page(in: app)
+        XCTAssertTrue(waitForValue(canvas, containing: "0 strokes"))
+        drawStroke(on: canvas)
+        XCTAssertTrue(waitForValue(canvas, containing: "1 stroke"))
+
+        canvas.twoFingerTap()
+        XCTAssertTrue(waitForValue(canvas, containing: "0 strokes"), "a two-finger tap undoes the stroke")
+        canvas.tap(withNumberOfTaps: 1, numberOfTouches: 3)
+        XCTAssertTrue(waitForValue(canvas, containing: "1 stroke"), "a three-finger tap redoes it")
+    }
+
     @MainActor func testShapesToolDrawsADraggedRectangleThatUndoRemoves() {
         let app = openNotebook()
         let canvas = page(in: app)

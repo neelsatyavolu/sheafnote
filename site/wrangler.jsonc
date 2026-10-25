@@ -1,0 +1,14 @@
+{
+  // Static site for sheafnote.com, served from Workers static assets. Deploy: cd site && wrangler deploy
+  "name": "sheafnote-site",
+  "compatibility_date": "2026-10-01",
+  "assets": {
+    "directory": "./public",
+    "html_handling": "auto-trailing-slash",
+    "not_found_handling": "404-page"
+  },
+  "routes": [
+    { "pattern": "sheafnote.com", "custom_domain": true },
+    { "pattern": "www.sheafnote.com", "custom_domain": true }
+  ]
+}

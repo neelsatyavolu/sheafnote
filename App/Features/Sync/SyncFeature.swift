@@ -38,6 +38,15 @@ enum SyncFeature: FeatureModule {
     }
 
     private static func makeController(services: AppServices) -> SyncController {
+        #if SHEAFNOTE_NO_ICLOUD
+        // Built without the iCloud entitlement (`scripts/testflight.sh --no-icloud`). Touching CloudKit would end the
+        // app, so sync starts off, and turning it on reports that iCloud isn't available instead of pretending to sync.
+        var state = SyncPersistedState()
+        state.isEnabled = false
+        let transport = InMemoryTransport(cloud: InMemoryCloud())
+        transport.account = .noAccount
+        return SyncController(services: services, transport: transport, persistence: InMemorySyncPersistence(state: state))
+        #else
         guard usesRealCloud else {
             var state = SyncPersistedState()
             state.isEnabled = false
@@ -61,5 +70,6 @@ enum SyncFeature: FeatureModule {
             return SyncController(services: services, transport: InMemoryTransport(cloud: InMemoryCloud()),
                                   persistence: InMemorySyncPersistence(state: state))
         }
+        #endif
     }
 }
