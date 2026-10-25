@@ -51,6 +51,18 @@ enum ImageHash {
         #expect(JSONCoding.decode(CoverSpec.self, from: JSONCoding.encode(spec)) == spec)
     }
 
+    @Test func photoSpecRoundTrip() {
+        let spec = CoverSpec(coverID: "tide", image: Data([0xFF, 0xD8, 0xFF, 0x00]))
+        #expect(JSONCoding.decode(CoverSpec.self, from: JSONCoding.encode(spec)) == spec)
+    }
+
+    @Test func specWithoutImageStillDecodes() {
+        let old = Data(#"{"coverID":"orbit","version":1}"#.utf8)
+        let spec = JSONCoding.decode(CoverSpec.self, from: old)
+        #expect(spec?.coverID == "orbit")
+        #expect(spec?.image == nil)
+    }
+
     @Test func tinySizesDoNotCrash() {
         for c in CoverCatalog.all { _ = CoverRenderer.renderImage(c, size: CGSize(width: 1, height: 1)) }
     }

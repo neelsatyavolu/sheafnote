@@ -1,3 +1,4 @@
+import PhotosUI
 import SwiftUI
 import SheafnoteCore
 
@@ -7,6 +8,10 @@ struct ChangeCoverSheet: View {
     @Environment(LibrarySession.self) private var session
     @Environment(\.dismiss) private var dismiss
     @State private var selected: String
+    /// The picked photo (already downscaled). Choosing a built-in cover clears it.
+    @State private var photo: Data?
+    @State private var photoItem: PhotosPickerItem?
+    @State private var photoFailed = false
     @ScaledMetric private var cellWidth: CGFloat = 100
 
     private var previewTitle: String? { session.services.library.notebook(id: notebookID)?.title }
@@ -19,8 +24,21 @@ struct ChangeCoverSheet: View {
     var body: some View {
         NavigationStack {
             ScrollView {
-                CoverGrid(selectedID: $selected, cellWidth: cellWidth, previewTitle: previewTitle)
-                    .padding()
+                VStack(spacing: 20) {
+                    PhotosPicker(selection: $photoItem, matching: .images) {
+                        Label("Choose Photo", systemImage: "photo")
+                    }
+                    .accessibilityIdentifier("changeCover.photo")
+                    if let photo {
+                        NotebookCoverView(cover: CoverSpec(coverID: selected, image: photo), title: previewTitle)
+                            .frame(maxWidth: 140)
+                            .accessibilityIdentifier("changeCover.photoPreview")
+                    }
+                    CoverGrid(selectedID: Binding(get: { photo == nil ? selected : "" },
+                                                  set: { selected = $0; photo = nil }),
+                              cellWidth: cellWidth, previewTitle: previewTitle)
+                }
+                .padding()
             }
             .background(Theme.paper)
             .navigationTitle("Change Cover")
@@ -29,17 +47,51 @@ struct ChangeCoverSheet: View {
                 ToolbarItem(placement: .cancellationAction) { Button("Cancel") { dismiss() } }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Done") {
-                        LibraryActions(session: session).setCover(notebookID, CoverSpec(coverID: selected))
+                        LibraryActions(session: session).setCover(notebookID, CoverSpec(coverID: selected, image: photo))
                         dismiss()
                     }
                     .disabled(selected.isEmpty).accessibilityIdentifier("changeCover.done")
                 }
             }
             .onAppear {
-                if selected.isEmpty, let nb = session.services.library.notebook(id: notebookID) { selected = nb.cover.coverID }
+                if selected.isEmpty, let nb = session.services.library.notebook(id: notebookID) {
+                    selected = nb.cover.coverID
+                    photo = nb.cover.image
+                }
             }
+            .onChange(of: photoItem) { _, item in
+                guard let item else { return }
+                Task { await loadPhoto(item) }
+            }
+            .alert("Couldn't use that photo", isPresented: $photoFailed) { Button("OK", role: .cancel) {} }
         }
         .presentationDetents([.medium, .large])
+    }
+
+    private func loadPhoto(_ item: PhotosPickerItem) async {
+        defer { photoItem = nil }
+        guard let data = try? await item.loadTransferable(type: Data.self),
+              let image = UIImage(data: data), let cover = Self.coverJPEG(from: image) else {
+            photoFailed = true
+            return
+        }
+        photo = cover
+    }
+
+    /// Crops the photo to the 3:4 cover shape at 600×800 so the notebook record stays small enough to sync.
+    static func coverJPEG(from image: UIImage) -> Data? {
+        let target = CGSize(width: 600, height: 800)
+        guard image.size.width > 0, image.size.height > 0 else { return nil }
+        let scale = max(target.width / image.size.width, target.height / image.size.height)
+        let drawn = CGSize(width: image.size.width * scale, height: image.size.height * scale)
+        let format = UIGraphicsImageRendererFormat()
+        format.scale = 1
+        format.opaque = true
+        let rendered = UIGraphicsImageRenderer(size: target, format: format).image { _ in
+            image.draw(in: CGRect(x: (target.width - drawn.width) / 2, y: (target.height - drawn.height) / 2,
+                                  width: drawn.width, height: drawn.height))
+        }
+        return rendered.jpegData(compressionQuality: 0.75)
     }
 }
 

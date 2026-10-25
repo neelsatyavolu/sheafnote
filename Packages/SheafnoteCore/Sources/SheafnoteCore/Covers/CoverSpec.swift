@@ -1,13 +1,16 @@
 import Foundation
 
-/// What a notebook cover looks like: a reference into the built-in catalog.
+/// What a notebook cover looks like: a reference into the built-in catalog, or a photo the user picked.
 public struct CoverSpec: Codable, Hashable, Sendable {
     public var coverID: String
     public var version: Int
+    /// A downscaled JPEG shown instead of the catalog art. It travels with the notebook record, so it syncs.
+    public var image: Data?
 
-    public init(coverID: String, version: Int = 1) {
+    public init(coverID: String, version: Int = 1, image: Data? = nil) {
         self.coverID = coverID
         self.version = version
+        self.image = image
     }
 
     public static let `default` = CoverSpec(coverID: "slate")

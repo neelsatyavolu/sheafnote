@@ -22,12 +22,24 @@ struct NotebookCoverView: View {
     @Environment(\.colorScheme) private var colorScheme
 
     var body: some View {
-        CoverArtView(definition: cover.definition)
+        art
             .overlay { CoverPlate(title: title) }
             .clipShape(UnevenRoundedRectangle(topLeadingRadius: 3, bottomLeadingRadius: 3,
                                               bottomTrailingRadius: Theme.Radius.cover,
                                               topTrailingRadius: Theme.Radius.cover, style: .continuous))
             .shadow(color: colorScheme == .dark ? Color.black.opacity(0.45) : Theme.shadowColor, radius: 7, x: 0, y: 4)
+    }
+
+    @ViewBuilder private var art: some View {
+        if let data = cover.image, let photo = UIImage(data: data) {
+            Color.clear
+                .aspectRatio(3.0 / 4.0, contentMode: .fit)
+                .overlay { Image(uiImage: photo).resizable().scaledToFill() }
+                .clipped()
+                .accessibilityHidden(true)
+        } else {
+            CoverArtView(definition: cover.definition)
+        }
     }
 }
 
