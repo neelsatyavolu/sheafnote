@@ -59,6 +59,7 @@ final class PageContainerView: UIView {
         selectionOverlay.frame = bounds
         addSubview(toolOverlay)
         addSubview(selectionOverlay)
+        layoutCanvas()
         updateAccessibility()
     }
 
@@ -75,16 +76,30 @@ final class PageContainerView: UIView {
 
     // MARK: Raster scale
 
-    /// PencilKit renders at the canvas's scale factor; raising it keeps ink sharp after the enclosing scroll view zooms.
-    func setRasterScale(_ scale: CGFloat) {
-        guard let canvas = page.canvas, abs(canvas.contentScaleFactor - scale) > 0.01 else { return }
-        Self.apply(scale: scale, to: canvas)
+    private var inkZoom: CGFloat = 1
+
+    /// PencilKit ignores the scale of an enclosing zoom, so its tiles get stretched and look blurry. Instead the canvas
+    /// zooms itself by `zoom` and is shrunk back by the same factor: page coordinates are unchanged, pixels are 1:1.
+    func setInkZoom(_ zoom: CGFloat) {
+        guard abs(inkZoom - zoom) > 0.01 else { return }
+        inkZoom = zoom
+        layoutCanvas()
     }
 
-    private static func apply(scale: CGFloat, to view: UIView) {
-        view.contentScaleFactor = scale
-        view.layer.contentsScale = scale
-        view.subviews.forEach { apply(scale: scale, to: $0) }
+    private func layoutCanvas() {
+        guard let canvas = page.canvas else { return }
+        let zoom = inkZoom
+        canvas.transform = .identity
+        canvas.zoomScale = 1
+        canvas.minimumZoomScale = zoom
+        canvas.maximumZoomScale = zoom
+        canvas.pinchGestureRecognizer?.isEnabled = false
+        canvas.bounds = CGRect(origin: .zero, size: CGSize(width: bounds.width * zoom, height: bounds.height * zoom))
+        canvas.contentSize = bounds.size
+        canvas.zoomScale = zoom
+        canvas.contentOffset = .zero
+        canvas.transform = CGAffineTransform(scaleX: 1 / zoom, y: 1 / zoom)
+        canvas.center = CGPoint(x: bounds.midX, y: bounds.midY)
     }
 
     // MARK: Touch routing

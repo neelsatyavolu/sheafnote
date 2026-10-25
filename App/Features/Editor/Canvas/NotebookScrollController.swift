@@ -67,6 +67,8 @@ final class NotebookScrollController: UIViewController, UIScrollViewDelegate, UI
         scrollView.addSubview(contentView)
         view.addSubview(scrollView)
         view.addInteraction(UIPencilInteraction(delegate: self))
+        addFingerTap(touches: 2, action: #selector(twoFingerTapped))
+        addFingerTap(touches: 3, action: #selector(threeFingerTapped))
         session.viewport = self
         observeSession()
     }
@@ -151,6 +153,7 @@ final class NotebookScrollController: UIViewController, UIScrollViewDelegate, UI
         }
         session.viewportDidZoom(scrollView.zoomScale)
         updateLivePages()
+        updateInkZoom()
         applyTools(session.toolConfiguration)
         configurePanForInput()
     }
@@ -249,7 +252,7 @@ final class NotebookScrollController: UIViewController, UIScrollViewDelegate, UI
         page.container = container
         containers[id] = container
         ToolConfigurator.apply(session.toolConfiguration, session: session, container: container)
-        container.setRasterScale(rasterScale)
+        container.setInkZoom(inkZoom)
     }
 
     private func removeContainer(_ id: UUID, flush: Bool) {
@@ -258,10 +261,8 @@ final class NotebookScrollController: UIViewController, UIScrollViewDelegate, UI
         if flush { session.releasePage(id: id) }
     }
 
-    private var rasterScale: CGFloat {
-        let screen = view.window?.windowScene?.screen.scale ?? traitCollection.displayScale
-        return min(max(screen * scrollView.zoomScale, screen), screen * 4)
-    }
+    /// Zoom the page canvases render ink at; below 1 the screen's own scale already oversamples.
+    private var inkZoom: CGFloat { min(max(scrollView.zoomScale, 1), 4) }
 
     // MARK: Tools
 
@@ -301,6 +302,12 @@ final class NotebookScrollController: UIViewController, UIScrollViewDelegate, UI
     func setZoom(_ scale: CGFloat, animated: Bool) {
         // Same units as `PageContext.zoomScale`: 1 is one page point per screen point, `fitScale` fits the page width.
         scrollView.setZoomScale(min(max(scale, fitScale), scrollView.maximumZoomScale), animated: animated)
+        if !animated { updateInkZoom() }
+    }
+
+    private func updateInkZoom() {
+        let zoom = inkZoom
+        containers.values.forEach { $0.setInkZoom(zoom) }
     }
 
     // MARK: UIScrollViewDelegate
@@ -314,8 +321,7 @@ final class NotebookScrollController: UIViewController, UIScrollViewDelegate, UI
     }
 
     func scrollViewDidEndZooming(_ scrollView: UIScrollView, with view: UIView?, atScale scale: CGFloat) {
-        let scale = rasterScale
-        containers.values.forEach { $0.setRasterScale(scale) }
+        updateInkZoom()
         updateLivePages()
     }
 
@@ -338,6 +344,29 @@ final class NotebookScrollController: UIViewController, UIScrollViewDelegate, UI
                                                    velocity: velocity.x),
               let frame = layout.frame(of: id) else { return }
         targetContentOffset.pointee.x = clamped(CGPoint(x: z * frame.midX - safe.left - viewportSize.width / 2, y: 0)).x
+    }
+
+    // MARK: Finger taps
+
+    /// Two-finger tap undoes, three-finger tap redoes. A tap fails as soon as the fingers move, so pans and pinches
+    /// are unaffected, and Pencil touches are ignored.
+    private func addFingerTap(touches: Int, action: Selector) {
+        let tap = UITapGestureRecognizer(target: self, action: action)
+        tap.numberOfTouchesRequired = touches
+        tap.allowedTouchTypes = [NSNumber(value: UITouch.TouchType.direct.rawValue)]
+        view.addGestureRecognizer(tap)
+    }
+
+    @objc private func twoFingerTapped() {
+        guard session.canUndo else { return }
+        session.undo()
+        Haptics.light()
+    }
+
+    @objc private func threeFingerTapped() {
+        guard session.canRedo else { return }
+        session.redo()
+        Haptics.light()
     }
 
     // MARK: UIPencilInteractionDelegate
