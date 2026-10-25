@@ -8,7 +8,7 @@ Sheafnote: handwritten notes app for iPad and iPhone (SwiftUI + PencilKit, iOS 2
 | Core tests (one suite) | `swift test --package-path Packages/SheafnoteCore --filter CoverTests` |
 | Core tests (all, ~25s) | `swift test --package-path Packages/SheafnoteCore` |
 | Regenerate Xcode project | `xcodegen generate` |
-| Release to TestFlight | `scripts/testflight.sh --no-icloud` |
+| Release to TestFlight | `scripts/testflight.sh` |
 
 ## Testing
 - Never run tests through Xcode: no `xcodebuild test`, simulators, `AppTests/`/`AppUITests/` runs, or `scripts/verify.sh`. Cold builds take many minutes.
@@ -36,7 +36,7 @@ Sheafnote: handwritten notes app for iPad and iPhone (SwiftUI + PencilKit, iOS 2
 ## Releasing
 1. Bump `MARKETING_VERSION` in `project.yml`.
 2. Commit as `chore: bump version to X.Y.Z`.
-3. Run `scripts/testflight.sh --no-icloud` (credentials load from 1Password via the gitignored `scripts/testflight.local.sh`). Drop `--no-icloud` once `iCloud.co.xanom.sheafnote` is registered on the App ID.
+3. Run `scripts/testflight.sh` (credentials load from 1Password via the gitignored `scripts/testflight.local.sh`).
 4. Check the script's exit code; don't pipe it through `tail`.
 
 ## External References
