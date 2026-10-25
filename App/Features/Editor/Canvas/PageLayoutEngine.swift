@@ -7,6 +7,14 @@ struct PageLayout: Equatable {
     struct Entry: Equatable {
         let id: UUID
         let frame: CGRect
+        /// What scrolling and fitting center on: the page itself, or its two-page spread around a fold.
+        let focus: CGRect
+
+        init(id: UUID, frame: CGRect, focus: CGRect? = nil) {
+            self.id = id
+            self.frame = frame
+            self.focus = focus ?? frame
+        }
     }
 
     var entries: [Entry]
@@ -16,6 +24,8 @@ struct PageLayout: Equatable {
     static let empty = PageLayout(entries: [], contentSize: .zero, direction: .vertical)
 
     func frame(of id: UUID) -> CGRect? { entries.first { $0.id == id }?.frame }
+
+    func focus(of id: UUID) -> CGRect? { entries.first { $0.id == id }?.focus }
 
     func index(of id: UUID) -> Int? { entries.firstIndex { $0.id == id } }
 
@@ -58,8 +68,17 @@ enum PageLayoutEngine {
     static let spacing: CGFloat = 20
     static let margin: CGFloat = 20
 
-    static func layout(pages: [(id: UUID, size: CGSize)], direction: ScrollDirection) -> PageLayout {
+    /// An active fold dividing the canvas into left and right halves (iPhone Duo held like a book).
+    struct Fold: Equatable {
+        /// The canvas area pages are fitted into, in screen points.
+        let viewport: CGSize
+        /// How wide the fold is, in screen points, widened by however far it sits off the viewport's center.
+        let width: CGFloat
+    }
+
+    static func layout(pages: [(id: UUID, size: CGSize)], direction: ScrollDirection, fold: Fold? = nil) -> PageLayout {
         guard !pages.isEmpty else { return PageLayout(entries: [], contentSize: .zero, direction: direction) }
+        if let fold, let spread = spreadLayout(pages: pages, direction: direction, fold: fold) { return spread }
         switch direction {
         case .vertical:
             let width = (pages.map(\.size.width).max() ?? 0) + 2 * margin
@@ -84,6 +103,19 @@ enum PageLayoutEngine {
         }
     }
 
+    /// Facing pages with the fold in the gutter; nil when the fold leaves no room for two pages.
+    private static func spreadLayout(pages: [(id: UUID, size: CGSize)], direction: ScrollDirection, fold: Fold) -> PageLayout? {
+        let horizontal = direction == .horizontal
+        let column = (pages.map(\.size.width).max() ?? 0) + margin
+        let height = horizontal ? (pages.map(\.size.height).max() ?? 0) + 2 * margin : nil
+        guard let gutter = FoldSpread.gutter(columnWidth: column, spreadHeight: height, viewport: fold.viewport,
+                                             foldWidth: fold.width) else { return nil }
+        let result = FoldSpread.layout(sizes: pages.map(\.size), gutter: gutter, margin: margin, spacing: spacing,
+                                       horizontal: horizontal)
+        let entries = zip(pages, result.slots).map { PageLayout.Entry(id: $0.id, frame: $1.frame, focus: $1.spread) }
+        return PageLayout(entries: entries, contentSize: result.contentSize, direction: direction)
+    }
+
     /// Zoom that makes the pages fit the viewport: widest page across for vertical scrolling, the focused page
     /// entirely for horizontal paging.
     static func fitScale(viewport: CGSize, layout: PageLayout, focus: UUID?) -> CGFloat {
@@ -92,7 +124,7 @@ enum PageLayoutEngine {
         case .vertical:
             return viewport.width / layout.contentSize.width
         case .horizontal:
-            let frame = focus.flatMap { layout.frame(of: $0) } ?? layout.entries.first?.frame ?? .zero
+            let frame = focus.flatMap { layout.focus(of: $0) } ?? layout.entries.first?.focus ?? .zero
             guard frame.width > 0, frame.height > 0 else { return 1 }
             return min(viewport.width / (frame.width + 2 * margin), viewport.height / (frame.height + 2 * margin))
         }
@@ -100,19 +132,24 @@ enum PageLayoutEngine {
 
     /// Which page a paged horizontal scroll should settle on, given where the viewport's center would land.
     static func snapTarget(in layout: PageLayout, projectedCenterX: CGFloat) -> UUID? {
-        layout.entries.min { abs($0.frame.midX - projectedCenterX) < abs($1.frame.midX - projectedCenterX) }?.id
+        layout.entries.min { abs($0.focus.midX - projectedCenterX) < abs($1.focus.midX - projectedCenterX) }?.id
     }
 
     /// Scroll velocity (points per millisecond) above which a release counts as a flick.
     static let flickVelocity: CGFloat = 0.3
 
-    /// Like a paged scroll view: a flick moves one page from `current` in its direction (positive velocity is toward
-    /// later pages); a slow release settles on the page nearest the projected center.
+    /// Like a paged scroll view: a flick moves one page (or spread) from `current` in its direction (positive velocity
+    /// is toward later pages); a slow release settles on the page nearest the projected center.
     static func snapTarget(in layout: PageLayout, projectedCenterX: CGFloat, from current: UUID?, velocity: CGFloat) -> UUID? {
         guard abs(velocity) > flickVelocity, let current, let index = layout.index(of: current) else {
             return snapTarget(in: layout, projectedCenterX: projectedCenterX)
         }
-        let next = min(max(index + (velocity > 0 ? 1 : -1), 0), layout.entries.count - 1)
+        let step = velocity > 0 ? 1 : -1
+        var next = index
+        while layout.entries.indices.contains(next + step) {
+            next += step
+            if layout.entries[next].focus != layout.entries[index].focus { break }
+        }
         return layout.entries[next].id
     }
 }

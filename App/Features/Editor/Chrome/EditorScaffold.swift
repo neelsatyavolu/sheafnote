@@ -16,6 +16,7 @@ struct EditorScaffold: View {
     @State private var claimed: Bool?
     @State private var showGoTo = false
     @State private var goToText = ""
+    @State private var canvasFold: CGRect?
     @Environment(\.horizontalSizeClass) private var sizeClass
     @Environment(\.colorScheme) private var colorScheme
     @Environment(\.dismiss) private var dismiss
@@ -38,7 +39,8 @@ struct EditorScaffold: View {
             ZStack {
                 Theme.backdrop(colorScheme).ignoresSafeArea()
                 if claimed == true {
-                    NotebookCanvasHost(session: session).ignoresSafeArea()
+                    NotebookCanvasHost(session: session, fold: canvasFold).ignoresSafeArea()
+                        .onVerticalFoldChange { canvasFold = $0 }
                     EditorOverlays(session: session, showGoTo: $showGoTo)
                 } else if claimed == false {
                     ContentUnavailableView {

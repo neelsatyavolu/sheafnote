@@ -40,6 +40,12 @@ final class NotebookScrollController: UIViewController, UIScrollViewDelegate, UI
     private var dragStartPage: UUID?
     private let maxLivePages = 9
 
+    /// The active fold dividing the canvas into left and right halves (iPhone Duo held like a book), in this view's
+    /// coordinates. While there is one, pages show as facing spreads with the fold in the gutter.
+    var fold: CGRect? {
+        didSet { if fold != oldValue { relayout(keepingPosition: false) } }
+    }
+
     init(session: NotebookSession) {
         self.session = session
         super.init(nibName: nil, bundle: nil)
@@ -125,7 +131,7 @@ final class NotebookScrollController: UIViewController, UIScrollViewDelegate, UI
         let directionChanged = layout.direction != session.scrollDirection
 
         let infos = session.pageIDs.map { (id: $0, size: session.pageSizes[$0] ?? CGSize(width: 595, height: 842)) }
-        layout = PageLayoutEngine.layout(pages: infos, direction: session.scrollDirection)
+        layout = PageLayoutEngine.layout(pages: infos, direction: session.scrollDirection, fold: layoutFold)
         isRelayouting = true
         reconcileSlots()
         fitScale = PageLayoutEngine.fitScale(viewport: viewportSize, layout: layout, focus: session.currentPageID)
@@ -156,6 +162,15 @@ final class NotebookScrollController: UIViewController, UIScrollViewDelegate, UI
         updateInkZoom()
         applyTools(session.toolConfiguration)
         configurePanForInput()
+    }
+
+    /// The fold as the layout engine needs it. A fold off the viewport's center counts as wider, so the centered gutter
+    /// still covers it. The infinite whiteboard has no pages to spread.
+    private var layoutFold: PageLayoutEngine.Fold? {
+        guard let fold, case .fixed = session.sizing else { return nil }
+        let viewport = viewportSize
+        let offCenter = abs(fold.midX - (view.safeAreaInsets.left + viewport.width / 2))
+        return PageLayoutEngine.Fold(viewport: viewport, width: fold.width + 2 * offCenter)
     }
 
     private func reconcileSlots() {
@@ -282,7 +297,7 @@ final class NotebookScrollController: UIViewController, UIScrollViewDelegate, UI
     // MARK: NotebookViewport
 
     func scrollToPage(id: UUID, animated: Bool) {
-        guard let frame = layout.frame(of: id) else { return }
+        guard let frame = layout.focus(of: id) else { return }
         let z = scrollView.zoomScale
         let inset = scrollView.contentInset
         let safe = view.safeAreaInsets
@@ -342,7 +357,7 @@ final class NotebookScrollController: UIViewController, UIScrollViewDelegate, UI
         let projectedCenter = (targetContentOffset.pointee.x + safe.left + viewportSize.width / 2) / z
         guard let id = PageLayoutEngine.snapTarget(in: layout, projectedCenterX: projectedCenter, from: dragStartPage,
                                                    velocity: velocity.x),
-              let frame = layout.frame(of: id) else { return }
+              let frame = layout.focus(of: id) else { return }
         targetContentOffset.pointee.x = clamped(CGPoint(x: z * frame.midX - safe.left - viewportSize.width / 2, y: 0)).x
     }
 

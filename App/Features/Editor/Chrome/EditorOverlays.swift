@@ -1,10 +1,12 @@
 import SwiftUI
 import SheafnoteCore
 
-/// Floating pieces over the canvas: page indicator, toast, save-failure and unreadable-page banners.
+/// Floating pieces over the canvas: page indicator, toast, save-failure and unreadable-page banners. While a fold
+/// divides the screen (iPhone Duo open like a book) they move to the trailing half so nothing sits on the crease.
 struct EditorOverlays: View {
     let session: NotebookSession
     @Binding var showGoTo: Bool
+    @State private var fold: CGRect?
 
     var body: some View {
         VStack(spacing: 8) {
@@ -26,6 +28,9 @@ struct EditorOverlays: View {
         }
         .padding(.top, 8)
         .padding(.bottom, 12)
+        .frame(maxWidth: .infinity)
+        .padding(.leading, fold?.maxX ?? 0)
+        .onVerticalFoldChange { fold = $0 }
         .allowsHitTesting(true)
         .onChange(of: session.pageIDs.count) { old, new in if new > old { Haptics.light() } }
     }

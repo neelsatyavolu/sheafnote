@@ -18,6 +18,8 @@ struct LibraryContentView: View {
     @State var confirmDeleteForever = false
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @ScaledMetric private var tileMinWidth: CGFloat = 150
+    @State private var gridWidth: CGFloat = 0
+    @State private var gridFold: CGRect?
 
     var actions: LibraryActions { LibraryActions(session: session) }
     var isTrash: Bool { scope == .recentlyDeleted }
@@ -60,12 +62,21 @@ struct LibraryContentView: View {
             }
     }
 
+    /// Adaptive columns, except while a fold divides the screen (iPhone Duo open like a book): then an even number of
+    /// columns with a gap at least as wide as the fold, so no tile sits on the crease.
+    private var gridColumns: [GridItem] {
+        guard let gridFold else { return [GridItem(.adaptive(minimum: tileMinWidth), spacing: 20, alignment: .top)] }
+        let spacing = max(20, gridFold.width)
+        let count = FoldSpread.evenColumnCount(width: gridWidth - 40, minimum: tileMinWidth, spacing: spacing)
+        return Array(repeating: GridItem(.flexible(), spacing: spacing, alignment: .top), count: count)
+    }
+
     @ViewBuilder private var content: some View {
         if entries.isEmpty {
             emptyState
         } else if session.layout == .grid {
             ScrollView {
-                LazyVGrid(columns: [GridItem(.adaptive(minimum: tileMinWidth), spacing: 20, alignment: .top)], spacing: 24) {
+                LazyVGrid(columns: gridColumns, spacing: 24) {
                     ForEach(entries) { entry in
                         cell(entry).transition(reduceMotion ? .opacity : .scale(scale: 0.6).combined(with: .opacity))
                     }
@@ -73,6 +84,8 @@ struct LibraryContentView: View {
                 .animation(reduceMotion ? nil : .spring(response: 0.45, dampingFraction: 0.68), value: entries.map(\.id))
                 .padding(.horizontal, 20).padding(.vertical, 12)
             }
+            .onGeometryChange(for: CGFloat.self) { $0.size.width } action: { gridWidth = $0 }
+            .onVerticalFoldChange { gridFold = $0 }
         } else {
             List(entries) { entry in
                 cell(entry).listRowBackground(Theme.paperRaised).listRowSeparatorTint(Theme.rule)

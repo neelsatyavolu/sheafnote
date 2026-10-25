@@ -1,7 +1,8 @@
 import SwiftUI
 import SheafnoteCore
 
-/// The library: a split view with a sidebar on iPad, a navigation stack on iPhone.
+/// The library: a split view with a sidebar when there is room both ways (iPad, iPhone Duo open), a navigation stack
+/// otherwise.
 struct LibraryRootView: View {
     @Environment(FeatureHost.self) private var host
     @State private var session: LibrarySession?
@@ -23,12 +24,14 @@ private struct LibraryShell: View {
     @Bindable var session: LibrarySession
     @Environment(FeatureHost.self) private var host
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @Environment(\.verticalSizeClass) private var verticalSizeClass
 
     var body: some View {
         Group {
-            // An iPad window that is narrow (Split View, Slide Over, a small Stage Manager window) is compact: it gets the
-            // phone layout, like the editor does.
-            if UIDevice.current.userInterfaceIdiom == .pad, horizontalSizeClass != .compact {
+            // Size classes, not the device: a narrow iPad window (Split View, Slide Over, a small Stage Manager window)
+            // gets the phone layout like the editor does, the iPhone Duo's inner display gets the sidebar, and its outer
+            // display or a landscape iPhone (regular width, compact height) keeps the stack.
+            if horizontalSizeClass == .regular, verticalSizeClass == .regular {
                 LibrarySplitView()
             } else {
                 LibraryPhoneView()

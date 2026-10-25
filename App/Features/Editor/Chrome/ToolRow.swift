@@ -1,7 +1,8 @@
 import SwiftUI
 import SheafnoteCore
 
-/// The center of the top bar: primary tools from the registry plus a menu for the rest.
+/// The center of the top bar: primary tools from the registry plus a menu for the rest. Stacks vertically when the
+/// system puts bars at the side of the display (iPhone Duo's outer display).
 struct ToolRow: View {
     let session: NotebookSession
     @State private var bounces: [ToolID: Int] = [:]
@@ -14,7 +15,7 @@ struct ToolRow: View {
     var body: some View {
         let primary = tools.filter { if case .primary = $0.placement { true } else { false } }
         let more = tools.filter { if case .more = $0.placement { true } else { false } }
-        HStack(spacing: sizeClass == .compact ? 0 : 2) {
+        BarStack(spacing: sizeClass == .compact ? 0 : 2) {
             ForEach(primary, id: \.id) { tool in button(for: tool) }
             if !more.isEmpty { moreMenu(more) }
         }
