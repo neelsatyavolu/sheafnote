@@ -85,16 +85,18 @@ public enum BackupChangeDetector {
     public static func latestChange(in context: ModelContext) throws -> Date? {
         var latest: Date?
         func consider(_ date: Date?) { if let date, date > (latest ?? .distantPast) { latest = date } }
-        consider(try newest(Folder.self, in: context))
-        consider(try newest(Notebook.self, in: context))
-        consider(try newest(Page.self, in: context))
-        consider(try newest(PageElement.self, in: context))
-        consider(try newest(Asset.self, in: context))
+        consider(try newest(\Folder.modifiedAt, in: context))
+        consider(try newest(\Notebook.modifiedAt, in: context))
+        consider(try newest(\Page.modifiedAt, in: context))
+        consider(try newest(\PageElement.modifiedAt, in: context))
+        consider(try newest(\Asset.modifiedAt, in: context))
         return latest
     }
 
-    private static func newest<T: SyncableRecord>(_ type: T.Type, in context: ModelContext) throws -> Date? {
-        var descriptor = FetchDescriptor<T>(sortBy: [SortDescriptor(\.modifiedAt, order: .reverse)])
+    /// Takes a concrete key path: SwiftData cannot resolve `\T.modifiedAt` formed in generic code in optimized builds.
+    private static func newest<T: SyncableRecord>(_ modifiedAt: any KeyPath<T, Date> & Sendable,
+                                                  in context: ModelContext) throws -> Date? {
+        var descriptor = FetchDescriptor<T>(sortBy: [SortDescriptor(modifiedAt, order: .reverse)])
         descriptor.fetchLimit = 1
         return try context.fetch(descriptor).first?.modifiedAt
     }

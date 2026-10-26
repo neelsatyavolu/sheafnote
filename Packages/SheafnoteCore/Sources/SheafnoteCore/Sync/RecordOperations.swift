@@ -23,9 +23,22 @@ struct TypedOperations<T: SyncCodable>: RecordOperations {
     var fieldNames: [String] { T.domainFields + CommonField.all.sorted() }
 
     func find(_ id: UUID, in context: ModelContext) throws -> T? {
-        var descriptor = FetchDescriptor<T>(predicate: #Predicate { $0.id == id })
+        let key = T.syncKeyPaths.id
+        var descriptor = FetchDescriptor<T>(predicate: Predicate {
+            PredicateExpressions.build_Equal(lhs: PredicateExpressions.build_KeyPath(root: $0, keyPath: key),
+                                             rhs: PredicateExpressions.build_Arg(id))
+        })
         descriptor.fetchLimit = 1
         return try context.fetch(descriptor).first
+    }
+
+    /// `formatVersion <= SchemaFormat.currentVersion`, built from concrete key paths (no `#Predicate` on `T`).
+    private static func isCurrentFormat(_ row: PredicateExpressions.Variable<T>)
+        -> PredicateExpressions.Comparison<PredicateExpressions.KeyPath<PredicateExpressions.Variable<T>, Int>,
+                                           PredicateExpressions.Value<Int>> {
+        PredicateExpressions.build_Comparison(
+            lhs: PredicateExpressions.build_KeyPath(root: row, keyPath: T.syncKeyPaths.formatVersion),
+            rhs: PredicateExpressions.build_Arg(SchemaFormat.currentVersion), op: .lessThanOrEqual)
     }
 
     func encode(id: UUID, in context: ModelContext) throws -> SyncRecord? {
@@ -44,14 +57,17 @@ struct TypedOperations<T: SyncCodable>: RecordOperations {
     }
 
     func dirtyIDs(in context: ModelContext) throws -> [UUID] {
-        let current = SchemaFormat.currentVersion
-        return try context.fetch(FetchDescriptor<T>(predicate: #Predicate { $0.syncDirty == true && $0.formatVersion <= current }))
-            .map(\.id)
+        let dirty = T.syncKeyPaths.syncDirty
+        return try context.fetch(FetchDescriptor<T>(predicate: Predicate {
+            PredicateExpressions.build_Conjunction(
+                lhs: PredicateExpressions.build_Equal(lhs: PredicateExpressions.build_KeyPath(root: $0, keyPath: dirty),
+                                                      rhs: PredicateExpressions.build_Arg(true)),
+                rhs: Self.isCurrentFormat($0))
+        })).map(\.id)
     }
 
     func allIDs(in context: ModelContext) throws -> [UUID] {
-        let current = SchemaFormat.currentVersion
-        return try context.fetch(FetchDescriptor<T>(predicate: #Predicate { $0.formatVersion <= current })).map(\.id)
+        try context.fetch(FetchDescriptor<T>(predicate: Predicate { Self.isCurrentFormat($0) })).map(\.id)
     }
 
     func markAllDirty(in context: ModelContext) throws -> Int {

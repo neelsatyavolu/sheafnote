@@ -18,6 +18,8 @@ protocol SyncCodable: SyncableRecord {
     func assign(_ r: SyncRecord, fields: Set<String>)
     /// A new, not yet inserted model carrying the identity of the record. Fields are assigned afterwards.
     static func blank(id: UUID) -> Self
+    /// Concrete key paths for generic fetches. See `SyncKeyPaths`.
+    static var syncKeyPaths: SyncKeyPaths<Self> { get }
 }
 
 extension SyncCodable {
