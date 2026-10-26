@@ -68,6 +68,10 @@ private struct AboutContent: View {
         Section {
             LabeledContent("Version", value: version)
             LabeledContent("License", value: "MIT")
+            Link("Privacy Policy", destination: URL(string: "https://sheafnote.com/privacy/")!)
+                .accessibilityIdentifier("settings.about.privacy")
+            Link("Support", destination: URL(string: "https://sheafnote.com/support/")!)
+                .accessibilityIdentifier("settings.about.support")
         }
         Section {
             Label("No tracking. No analytics. No accounts.", systemImage: "hand.raised")
