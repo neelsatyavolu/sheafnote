@@ -551,6 +551,39 @@
         }
       }
     },
+    "Erases exactly what it touches": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Erases exactly what it touches"
+          }
+        }
+      }
+    },
+    "Erases what it touches without leaving bits behind": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Erases what it touches without leaving bits behind"
+          }
+        }
+      }
+    },
+    "Erases whole strokes": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Erases whole strokes"
+          }
+        }
+      }
+    },
     "Fountain Pen": {
       "extractionState": "manual",
       "localizations": {
@@ -947,17 +980,6 @@
         }
       }
     },
-    "Partial": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Partial"
-          }
-        }
-      }
-    },
     "Pen": {
       "extractionState": "manual",
       "localizations": {
@@ -1031,6 +1053,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Position"
+          }
+        }
+      }
+    },
+    "Precision": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Precision"
           }
         }
       }
@@ -1185,6 +1218,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Squeeze needs an Apple Pencil Pro. Double-tap needs Apple Pencil (2nd generation) or later."
+          }
+        }
+      }
+    },
+    "Standard": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Standard"
           }
         }
       }

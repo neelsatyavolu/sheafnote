@@ -32,6 +32,8 @@ final class PageSession: PageContext {
     @ObservationIgnored private(set) lazy var elementStore = PageElements(page: self)
     @ObservationIgnored let saver = InkSaveScheduler()
     @ObservationIgnored private var echoDrawing: PKDrawing?
+    /// The drawing when a Standard-eraser gesture began; nil otherwise.
+    @ObservationIgnored private var eraseStart: PKDrawing?
     /// `inkHash` and stroke ids of the stored ink the editor last loaded or saved: what sync is compared against.
     @ObservationIgnored var storedInkHash: String
     @ObservationIgnored var storedStrokeIDs: [String]
@@ -112,7 +114,30 @@ final class PageSession: PageContext {
         notebook.inkDidChangeFromCanvas(on: self)
     }
 
-    func canvasBeganUsingTool() { lastInkTouchDate = .now }
+    func canvasBeganUsingTool() {
+        lastInkTouchDate = .now
+        let prefs = notebook.prefs.values
+        let cleansUp = notebook.toolState.activeToolID == .eraser && prefs.eraserMode == .standard && !prefs.eraserHighlighterOnly
+        eraseStart = cleansUp ? drawing : nil
+    }
+
+    /// Standard eraser: once the erase has landed, drops the crumbs it left of the strokes it cut.
+    func canvasEndedUsingTool() {
+        guard let start = eraseStart else { return }
+        eraseStart = nil
+        Task { @MainActor [weak self] in self?.removeEraseCrumbs(since: start) }
+    }
+
+    private func removeEraseCrumbs(since start: PKDrawing) {
+        guard let canvas, isEditable, !isLifted else { return }
+        let erased = canvas.drawing
+        // Make sure the erase itself is recorded before tidying it.
+        if !Self.same(erased, drawing) { canvasDrawingChanged(erased) }
+        let cleaned = EraseCrumbs.removing(from: erased, since: start)
+        guard cleaned.strokes.count != erased.strokes.count else { return }
+        // No undo step of its own: undoing the erase brings back the cut strokes whole, crumbs included.
+        setDrawingTransient(cleaned)
+    }
 
     /// Replaces the drawing as one undoable edit and mirrors it into the live canvas.
     func setDrawing(_ new: PKDrawing, undoName: String) {
@@ -296,6 +321,7 @@ final class CanvasDelegate: NSObject, PKCanvasViewDelegate {
     }
 
     func canvasViewDidEndUsingTool(_ canvasView: PKCanvasView) {
+        page?.canvasEndedUsingTool()
         page?.notebook.canvasEndedUsingTool()
     }
 }

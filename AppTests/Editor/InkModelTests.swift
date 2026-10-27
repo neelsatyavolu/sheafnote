@@ -129,7 +129,8 @@ import SheafnoteCore
         #expect(ToolConfigurator.inkingTool(for: .pen, store: s).inkType == .pen)
         #expect(ToolConfigurator.eraserTool(mode: .stroke, store: s).eraserType == .vector)
         // With an explicit width PencilKit reports the fixed-width bitmap variant.
-        #expect(ToolConfigurator.eraserTool(mode: .partial, store: s).eraserType != .vector)
+        #expect(ToolConfigurator.eraserTool(mode: .standard, store: s).eraserType != .vector)
+        #expect(ToolConfigurator.eraserTool(mode: .precision, store: s).eraserType == .fixedWidthBitmap)
     }
 
     @Test func preferencesPersist() throws {

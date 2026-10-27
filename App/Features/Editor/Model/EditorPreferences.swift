@@ -7,10 +7,12 @@ enum PencilTapAction: String, Codable, CaseIterable, Sendable {
 }
 
 enum EraserMode: String, Codable, CaseIterable, Sendable {
+    /// Erases exactly what is under the tip at a fixed width, leaving every bit of what remains.
+    case precision
+    /// Erases the part under the eraser, then removes the crumbs it leaves (`EraseCrumbs`). Stored as "partial" since 1.0.
+    case standard = "partial"
     /// Removes whole strokes.
     case stroke
-    /// Erases only the part under the eraser (PencilKit bitmap eraser).
-    case partial
 }
 
 struct EditorPreferenceValues: Codable, Equatable, Sendable {

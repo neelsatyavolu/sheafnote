@@ -44,7 +44,11 @@ enum ToolConfigurator {
     }
 
     static func eraserTool(mode: EraserMode, store: EditorPresetStore) -> PKEraserTool {
-        let type: PKEraserTool.EraserType = mode == .partial ? .bitmap : .vector
+        let type: PKEraserTool.EraserType = switch mode {
+        case .precision: .fixedWidthBitmap
+        case .standard: .bitmap
+        case .stroke: .vector
+        }
         let range = type.validWidthRange
         let width = min(max(CGFloat(store.widths(for: .eraser).selected), range.lowerBound), range.upperBound)
         return PKEraserTool(type, width: width)
