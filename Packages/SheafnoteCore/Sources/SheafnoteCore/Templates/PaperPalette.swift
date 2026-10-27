@@ -40,7 +40,7 @@ public struct PaperPalette: Sendable, Hashable {
             PaperPalette(paper: .init(hex: "FFFFFF")!, minor: .init(hex: "C6D0E0")!, major: .init(hex: "8FA1BD")!,
                          accent: .init(hex: "E08A8A")!, text: .init(hex: "7B879C")!)
         case .yellow:
-            PaperPalette(paper: .init(hex: "FBF1C4")!, minor: .init(hex: "D9CC96")!, major: .init(hex: "B3A56A")!,
+            PaperPalette(paper: .init(hex: "FCF7E2")!, minor: .init(hex: "E2D8B4")!, major: .init(hex: "BDB287")!,
                          accent: .init(hex: "D98A7A")!, text: .init(hex: "8F8458")!)
         case .dark:
             PaperPalette(paper: .init(hex: "1F2023")!, minor: .init(hex: "3A3D44")!, major: .init(hex: "5C616C")!,
