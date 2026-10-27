@@ -35,6 +35,15 @@ import Testing
         #expect(nb.pageSize == CGSize(width: 792, height: 612))
     }
 
+    @Test func notebookCreatedWithPhotoCoverKeepsIt() throws {
+        let f = try StoreFixture()
+        let photo = Data([0xFF, 0xD8, 0xFF, 0xE0, 0x01])
+        let nb = try f.library.createNotebook(title: "A", kind: .paged, cover: CoverSpec(coverID: "tide", image: photo),
+                                              template: .blank, paperSize: .a4, orientation: .portrait,
+                                              paperColor: .white, in: nil)
+        #expect(f.library.notebook(id: nb.id)?.cover == CoverSpec(coverID: "tide", image: photo))
+    }
+
     @Test func foldersNestAndAppendInOrder() throws {
         let f = try StoreFixture()
         let a = try f.library.createFolder(name: "A", in: nil)

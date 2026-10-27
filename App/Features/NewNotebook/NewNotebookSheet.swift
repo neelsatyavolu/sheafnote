@@ -10,6 +10,8 @@ struct NewNotebookSheet: View {
     @Environment(\.dismiss) private var dismiss
     @State private var title = ""
     @State private var cover: String
+    /// A picked cover photo (already cropped). Choosing a built-in cover clears it.
+    @State private var photo: Data?
     @State private var template: TemplateSpec
     @State private var paperColor: PaperColor
     @State private var paperSize: PaperSize
@@ -47,7 +49,10 @@ struct NewNotebookSheet: View {
                         .focused($titleFocused).submitLabel(.done)
                         .accessibilityLabel(Text("Notebook title"))
                         .accessibilityIdentifier("newNotebook.title")
-                    section("Cover") { coverCarousel }
+                    section("Cover") {
+                        coverCarousel
+                        CoverPhotoButtons(photo: $photo, identifier: "newNotebook.coverPhoto")
+                    }
                     section("Paper") {
                         TemplatePickerView(template: $template, paperColor: $paperColor, pageSize: pageSize)
                     }
@@ -77,7 +82,7 @@ struct NewNotebookSheet: View {
 
     private var preview: some View {
         HStack(alignment: .bottom, spacing: 24) {
-            NotebookCoverView(cover: CoverSpec(coverID: cover)).frame(maxWidth: 120)
+            NotebookCoverView(cover: CoverSpec(coverID: cover, image: photo)).frame(maxWidth: 120)
                 .shadow(color: Theme.shadowColor, radius: 10, y: 5)
             PaperPreviewView(template: template, color: paperColor, pageSize: pageSize)
                 .frame(maxWidth: pageSize.width > pageSize.height ? 150 : 100)
@@ -90,11 +95,23 @@ struct NewNotebookSheet: View {
     private var coverCarousel: some View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(alignment: .top, spacing: 14) {
+                if let photo {
+                    NewNotebookCoverChoice(cover: CoverSpec(coverID: cover, image: photo), name: Text("Photo"), isSelected: true)
+                        .frame(width: coverWidth)
+                        .accessibilityElement(children: .ignore)
+                        .accessibilityLabel(Text("Photo"))
+                        .accessibilityAddTraits(.isSelected)
+                        .accessibilityIdentifier("cover.photo")
+                }
                 ForEach(CoverCatalog.all) { def in
-                    Button { cover = def.id } label: { NewNotebookCoverChoice(definition: def, isSelected: cover == def.id).frame(width: coverWidth) }
+                    let isSelected = photo == nil && cover == def.id
+                    Button { cover = def.id; photo = nil } label: {
+                        NewNotebookCoverChoice(cover: CoverSpec(coverID: def.id), name: Text(def.title), isSelected: isSelected)
+                            .frame(width: coverWidth)
+                    }
                         .buttonStyle(.plain)
                         .accessibilityLabel(Text(def.title))
-                        .accessibilityAddTraits(cover == def.id ? [.isButton, .isSelected] : .isButton)
+                        .accessibilityAddTraits(isSelected ? [.isButton, .isSelected] : .isButton)
                         .accessibilityIdentifier("cover.\(def.id)")
                 }
             }
@@ -133,7 +150,7 @@ struct NewNotebookSheet: View {
         do {
             let notebook = try services.library.createNotebook(
                 title: name.isEmpty ? String(localized: "Untitled Notebook") : name, kind: .paged,
-                cover: CoverSpec(coverID: cover), template: template, paperSize: paperSize,
+                cover: CoverSpec(coverID: cover, image: photo), template: template, paperSize: paperSize,
                 orientation: paperSize.supportsOrientation ? orientation : .portrait, paperColor: paperColor, in: folderID)
             try services.settings.savePaperDefaults(PaperDefaults(template: template, color: paperColor, size: paperSize,
                                                                   orientation: orientation, coverID: cover))
@@ -148,16 +165,17 @@ struct NewNotebookSheet: View {
 
 /// A cover in the carousel: ring in accent when selected, name in ink (semibold) or muted ink.
 private struct NewNotebookCoverChoice: View {
-    let definition: CoverDefinition
+    let cover: CoverSpec
+    let name: Text
     let isSelected: Bool
 
     var body: some View {
         VStack(spacing: 6) {
-            NotebookCoverView(cover: CoverSpec(coverID: definition.id))
+            NotebookCoverView(cover: cover)
                 .padding(4)
                 .overlay(RoundedRectangle(cornerRadius: Theme.Radius.cover + 2, style: .continuous)
                     .stroke(Theme.accent, lineWidth: isSelected ? 3 : 0))
-            Text(definition.title).font(.caption.weight(isSelected ? .semibold : .regular))
+            name.font(.caption.weight(isSelected ? .semibold : .regular))
                 .foregroundStyle(isSelected ? Theme.ink : Theme.inkMuted)
         }
     }
