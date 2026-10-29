@@ -2,7 +2,9 @@
 
 A free, open-source handwritten notes app for iPad and iPhone. Notebooks, folders, Apple Pencil ink, and iCloud sync between your own devices. No accounts, no subscriptions, no ads, no analytics, no AI.
 
-Status: early. The library (folders, notebooks, covers, paper templates, Recently Deleted) is in place; the page editor and the other features are built by separate units, see `docs/superpowers/plans/`.
+Besides handwritten notebooks it has PDF import and annotation, typed text documents, whiteboards, handwriting search on the device, flashcards with spaced repetition, audio recording tied to your writing, a presentation mode with a laser pointer, stickers and washi tape, Face ID lock, and backups.
+
+Status: version 1.0.1, in TestFlight beta; not yet on the App Store. Website: [sheafnote.com](https://sheafnote.com).
 
 ## Build
 
@@ -23,6 +25,7 @@ To run on a device, set your own team in `project.yml` (`DEVELOPMENT_TEAM`) and 
 - `App/`: the app target (SwiftUI). `Interfaces/` holds the extension points features plug into.
 - `Packages/SheafnoteCore`: pure logic with no UIKit (models, templates, covers, stores, recognition). Tests run with `swift test`.
 - `AppTests/`, `AppUITests/`: unit and UI tests.
+- `site/`: the static sheafnote.com site (Cloudflare Workers static assets).
 
 ## Sync and CloudKit
 
