@@ -44,6 +44,8 @@ private struct IndicatorBody: View {
         VStack(alignment: .leading, spacing: 8) {
             Label(presentation.title, systemImage: presentation.symbolName).font(Theme.title(.headline)).foregroundStyle(Theme.ink)
             Text(presentation.detail).font(.subheadline).foregroundStyle(Theme.inkMuted)
+                .fixedSize(horizontal: false, vertical: true)
+                .textSelection(.enabled)
             if let last = controller.lastSyncDate {
                 Text("Last synced \(last.formatted(.relative(presentation: .named)))", tableName: "Sync")
                     .font(.footnote).foregroundStyle(Theme.inkMuted)
