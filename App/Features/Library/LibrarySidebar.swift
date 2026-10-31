@@ -79,6 +79,7 @@ struct LibrarySplitView: View {
                 Button("Settings", systemImage: "gearshape") { session.present(AnyView(SettingsView())) }
                     .accessibilityIdentifier("library.settings")
             }
+            ToolbarSpacer(.flexible, placement: .bottomBar)
         }
     }
 
