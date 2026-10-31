@@ -30,7 +30,7 @@ import Testing
         }
     }
 
-    @Test func largeBinaryFieldsBecomeAssetsAndSmallOnesStayInline() throws {
+    @Test func assetFieldsGoOutAsTempFilesWhateverTheirSize() throws {
         let a = try SyncFixture()
         let keys = try a.populateEverything()
         let dir = tempDir()
@@ -46,7 +46,7 @@ import Testing
         #expect(ckPage["inkData"] is CKAsset)          // page ink is always an asset
         let nb = try #require(keys.first { $0.recordType == "SNNotebook" })
         let (ckNb, _) = try CKRecordBridge.ckRecord(for: try #require(try RecordMapper.encode(nb, in: a.context)), assetDirectory: dir)
-        #expect(ckNb["richText"] is Data || ckNb["richText"] is NSData)
+        #expect(ckNb["richText"] is CKAsset)           // two bytes, still an asset: the schema type never changes
     }
 
     @Test func systemFieldsRoundTripSoSavesTargetTheServerVersion() throws {

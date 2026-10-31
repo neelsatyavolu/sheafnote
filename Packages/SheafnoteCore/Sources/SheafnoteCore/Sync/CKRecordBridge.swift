@@ -13,13 +13,10 @@ public enum CKRecordBridgeError: LocalizedError {
 }
 
 /// `SyncRecord` <-> `CKRecord`. Types follow design 4.2: strings, dates and lists map directly, `Int`/`Bool` are
-/// Int64, `Double` is Double, small `Data` is Bytes, and large `Data` is a `CKAsset` backed by a temp file.
+/// Int64, `Double` is Double, and `Data` is Bytes or a `CKAsset` backed by a temp file, as `CloudKitSchema` declares.
 public enum CKRecordBridge {
     public static let zoneName = "SheafnoteZone"
     public static let zoneID = CKRecordZone.ID(zoneName: zoneName, ownerName: CKCurrentUserDefaultName)
-    /// Binary fields larger than this go out as `CKAsset` (also always for these fields, whatever their size).
-    public static let assetThreshold = 100_000
-    static let alwaysAsset: Set<String> = ["SNPage.inkData", "SNAsset.data"]
 
     public static func recordID(for key: RecordKey) -> CKRecord.ID {
         CKRecord.ID(recordName: key.recordName, zoneID: zoneID)
@@ -50,7 +47,7 @@ public enum CKRecordBridge {
             case .date(let v): ck[name] = v as NSDate
             case .strings(let v): ck[name] = v as NSArray
             case .bytes(let data):
-                if data.count > assetThreshold || alwaysAsset.contains("\(record.recordType).\(name)") {
+                if CloudKitSchema.type(of: name, in: record.recordType) == .asset {
                     let url = try writeAsset(data, in: assetDirectory)
                     tempFiles.append(url)
                     ck[name] = CKAsset(fileURL: url)
