@@ -130,7 +130,14 @@ final class CKSyncEngineTransport: CloudTransport {
         }
         engine.state.add(pendingRecordZoneChanges: pending)
         defer { cleanUpAfterSend(pending, engine: engine) }
-        try await perform { try await engine.sendChanges() }
+        do {
+            try await perform { try await engine.sendChanges() }
+        } catch let error where !buffer.sent.isEmpty {
+            // CKSyncEngine throws one "Failed to send changes" error when any record in the batch fails. The
+            // per-record results already arrived as events, so conflicts and missing records are resolved per record
+            // and real failures surface with their own reason.
+            Self.log.error("Send finished with record failures: \(error.localizedDescription, privacy: .public)")
+        }
         try throwBufferedError()
         return outcomes(for: changes)
     }

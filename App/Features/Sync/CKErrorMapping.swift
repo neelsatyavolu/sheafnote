@@ -6,6 +6,11 @@ enum CKErrorMapping {
     static func failure(from error: any Error) -> SyncFailure {
         if let failure = error as? SyncFailure { return failure }
         guard let ck = error as? CKError else { return .other(error.localizedDescription) }
+        // A partial failure's own message is generic ("Failed to send changes"); report the first real cause.
+        if ck.code == .partialFailure,
+           let cause = ck.partialErrorsByItemID?.values.first(where: { ($0 as? CKError)?.code != .batchRequestFailed }) {
+            return failure(from: cause)
+        }
         switch ck.code {
         case .networkUnavailable, .networkFailure, .serverResponseLost:
             return .offline
