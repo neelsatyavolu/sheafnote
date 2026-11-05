@@ -6,7 +6,7 @@ for later submissions.
 
 ## 1. Screen recording
 
-Attached separately: recorded on a physical iPad running the latest iPadOS, starting at app launch.
+Attached separately: recorded on a physical iPhone running the latest iOS, starting at app launch from the Home Screen.
 
 ## 2. Purpose and audience
 
