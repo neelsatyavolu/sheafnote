@@ -1,155 +1,376 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-type="software" data-radius="soft" data-ground="sand" data-buttons="arrow" data-motion>
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>Sheafnote: handwritten notes for iPad and iPhone</title>
-  <meta name="description" content="Sheafnote is a free notes app for iPad and iPhone: handwriting with Apple Pencil, PDFs, searchable handwriting, flashcards and audio. No ads, no account, no tracking.">
-  <meta name="theme-color" content="#FBF6EC" media="(prefers-color-scheme: light)">
-  <meta name="theme-color" content="#1E1A16" media="(prefers-color-scheme: dark)">
-  <link rel="canonical" href="https://sheafnote.com/">
-  <link rel="icon" href="/favicon.png" type="image/png">
-  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-  <meta property="og:type" content="website">
-  <meta property="og:url" content="https://sheafnote.com/">
-  <meta property="og:title" content="Sheafnote">
-  <meta property="og:description" content="Handwritten notes, PDFs and study tools for iPad and iPhone. Free, with no ads and no account.">
-  <meta property="og:image" content="https://sheafnote.com/img/og.jpg">
-  <meta property="og:image:width" content="1200">
-  <meta property="og:image:height" content="630">
-  <meta name="twitter:card" content="summary_large_image">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800&family=Newsreader:ital,opsz,wght@1,6..72,500&display=swap">
-  <link rel="stylesheet" href="/styles.css">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Sheafnote: handwritten notes app for iPad and iPhone</title>
+<meta name="description" content="Sheafnote is a free, open-source notes app for Apple Pencil: notebooks, PDFs, handwriting search and flashcards, with no ads, no account and no tracking.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://sheafnote.com/">
+<meta property="og:title" content="Sheafnote: handwritten notes for iPad and iPhone">
+<meta property="og:description" content="Handwritten notes, PDFs and study tools for iPad and iPhone. Free, with no ads and no account.">
+<meta property="og:image" content="https://sheafnote.com/img/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://sheafnote.com/">
+<link rel="icon" href="/favicon.png" type="image/png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="theme-color" content="#FBF6EC" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#1E1A16" media="(prefers-color-scheme: dark)">
+<meta name="site-kind" content="software">
+<meta name="page-type" content="software">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;600&family=Newsreader:ital,opsz,wght@0,6..72,500;1,6..72,500&display=swap">
+<link rel="stylesheet" href="assets/system.css">
+<link rel="stylesheet" href="assets/ui/cards.css">
+<link rel="stylesheet" href="assets/motion/motion.css">
+<link rel="stylesheet" href="assets/backgrounds/backgrounds.css">
+<link rel="stylesheet" href="assets/layout/layout.css">
+<link rel="stylesheet" href="assets/icons/icon.css">
+<!-- The brand's own tokens (DESIGN.md: warm paper and ink, tangerine accent, rounded titles), kept in place of
+     a dealt palette by the owner's decision. -->
+<style>
+:root {
+  --p-bg: #FBF6EC; --p-surface: #F3ECDF; --p-ink: #2B2420; --p-muted: #6F645A;
+  --p-accent: #E24A23; --p-accent-ink: #FFFDF8; --p-action: #C93F1C; --p-action-ink: #FFFDF8;
+  --p-inv-bg: #2B2420; --p-inv-surface: #3A332B; --p-inv-ink: #F3ECE0; --p-inv-muted: #B3A79A;
+  --p-inv-accent: #FF7A55; --p-inv-accent-ink: #1E1A16; --p-inv-action: #FF7A55; --p-inv-action-ink: #1E1A16;
+  --ground-bg: #E9DCC6; --ground-surface: #F1E8D8; --ground-ink: #2B2420; --ground-muted: #5F554C; --ground-accent: #C93F1C;
+  --font-display: "Nunito", ui-rounded, system-ui, -apple-system, sans-serif;
+  --font-text: system-ui, -apple-system, "Segoe UI", sans-serif;
+  --display-weight: 600;
+  --display-tracking: -0.02em;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --p-bg: #1E1A16; --p-surface: #2A251F; --p-ink: #F3ECE0; --p-muted: #B3A79A;
+    --p-accent: #FF7A55; --p-accent-ink: #1E1A16; --p-action: #FF7A55; --p-action-ink: #1E1A16;
+    --p-inv-bg: #F3ECE0; --p-inv-surface: #E8DFD0; --p-inv-ink: #2B2420; --p-inv-muted: #6F645A;
+    --p-inv-accent: #C93F1C; --p-inv-accent-ink: #FFFDF8; --p-inv-action: #C93F1C; --p-inv-action-ink: #FFFDF8;
+    --ground-bg: #3A322A; --ground-surface: #2F2922; --ground-ink: #F3ECE0; --ground-muted: #B3A79A; --ground-accent: #FF7A55;
+    color-scheme: dark;
+  }
+}
+</style>
+<link rel="stylesheet" href="assets/ui/base.css">
+<link rel="stylesheet" href="assets/diagrams/diagram.css">
+<script>document.documentElement.classList.add('m-enter');setTimeout(()=>document.documentElement.classList.add('m-enter-done'),700)</script>
+<script src="assets/backgrounds/backgrounds.js"></script>
+<script>document.documentElement.classList.add('mo-js');setTimeout(()=>document.documentElement.classList.add('mo-safe'),2500)</script>
+<link rel="modulepreload" href="assets/moments/moments.js">
+<link rel="modulepreload" href="assets/moments/lib.js">
+<link rel="modulepreload" href="assets/moments/letters-assemble/moment.js">
+<!-- page CSS: inside the visuals only -->
+<style>
+  html .footer.closing.footer--statement { --action: var(--p-action); --action-ink: var(--p-action-ink); }
+  .nav__logo img, .footer .nav__logo img { width: 30px; height: 30px; border-radius: 8px; }
+
+  /* hero: the editor screenshot rises out of the lit frame */
+  .hero__window > .ly-piece.shot { border-radius: 18px; overflow: hidden; box-shadow: 0 24px 60px rgba(43, 36, 32, .22), 0 2px 6px rgba(43, 36, 32, .12); background: #FFFDF8; }
+  .hero__window > .ly-piece.shot img { display: block; width: 100%; height: auto; }
+
+  /* the app frame: Sheafnote's library drawn as live HTML */
+  .app.ui { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); margin-top: var(--s-7); background: var(--u-bg); border: 1px solid var(--u-border); border-radius: var(--u-r); box-shadow: var(--u-shadow); --u-bg: #FBF6EC; --u-ink: #2B2420; --u-muted: #7A6E64; --u-accent: #E24A23; color: var(--u-ink); }
+  .app > .app__pane { position: relative; min-width: 0; min-height: 0; overflow: hidden; }
+  .app > .app__pane + .app__pane { border-left: 1px solid var(--u-line); }
+  .app > .app__pane::after { content: ""; position: absolute; inset: auto 0 0 0; height: 64px; background: linear-gradient(transparent, var(--u-bg)); pointer-events: none; }
+  .lib-side { background: #F3EEE4; padding: 20px 16px; display: grid; gap: 4px; align-content: start; font-size: 15px; }
+  .lib-side__title { font: 600 16px/1 var(--font-text); text-align: center; padding: 6px 0 14px; }
+  .lib-side__row { display: flex; align-items: center; gap: 12px; padding: 10px 14px; border-radius: 12px; }
+  .lib-side__row svg { width: 20px; height: 20px; flex: none; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+  .lib-side__row.is-on { background: #E4DCCF; color: #C93F1C; }
+  .lib-side__label { font-size: 13px; color: var(--u-muted); padding: 18px 14px 6px; }
+  .lib-side__dot { width: 20px; height: 15px; border-radius: 3px; flex: none; }
+  .lib-main { padding: 28px 28px 0; }
+  .lib-main__title { font: 700 30px/1 var(--font-text); letter-spacing: -0.01em; margin-bottom: 24px; }
+  .lib-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 28px 24px; }
+  .lib-grid { align-items: start; }
+  .lib-item { display: grid; gap: 4px; justify-items: center; align-content: start; text-align: center; font-size: 14px; }
+  .lib-item small { font-size: 12px; color: var(--u-muted); }
+  .lib-folder { position: relative; isolation: isolate; width: 100%; aspect-ratio: 4 / 3; margin-top: 12px; border-radius: 10px; background: var(--c); display: grid; place-items: center; font: 700 22px/1 var(--font-text); color: rgba(43, 36, 32, .75); box-shadow: inset 0 -2px 0 rgba(0,0,0,.08); }
+  .lib-folder::before { content: ""; position: absolute; left: 0; top: -12px; width: 46%; height: 20px; border-radius: 8px 8px 0 0; background: var(--c); filter: brightness(.9); z-index: -1; }
+  .lib-cover { position: relative; width: 100%; aspect-ratio: 3 / 4; border-radius: 4px 8px 8px 4px; background: var(--c); display: grid; place-items: center; box-shadow: 0 6px 16px rgba(43, 36, 32, .14); overflow: hidden; }
+  .lib-cover::before { content: ""; position: absolute; inset: 0 auto 0 0; width: 8%; background: rgba(0, 0, 0, .16); }
+  .lib-cover--stripes { background: repeating-linear-gradient(135deg, var(--c) 0 10px, color-mix(in oklab, var(--c) 82%, #000) 10px 20px); }
+  .lib-cover--dots { background: radial-gradient(circle, #FFFDF8 18%, transparent 20%) 0 0 / 16px 16px, var(--c); }
+  .lib-cover--rings { background: repeating-radial-gradient(circle at 30% 40%, var(--c) 0 9px, color-mix(in oklab, var(--c) 80%, #000) 9px 11px); }
+  .lib-plate { position: relative; background: #FFFDF8; padding: 8px 10px; width: 68%; font: 600 14px/1.15 "Newsreader", "New York", Georgia, serif; color: #2B2420; box-shadow: 0 1px 2px rgba(0, 0, 0, .12); }
+  @media (min-width: 1024px) and (max-width: 1279px) { .app.ui { grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); } }
+  @media (max-width: 1023px) {
+    .app.ui { grid-template-columns: minmax(0, 1fr); }
+    .app > .app__pane--list { display: none; }
+    .app > .app__pane + .app__pane { border-left: 0; }
+  }
+  @media (max-width: 639px) {
+    .lib-main { padding: 20px 16px 0; }
+    .lib-main__title { font-size: 24px; margin-bottom: 16px; }
+    .lib-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px 12px; }
+    .lib-item { font-size: 12px; }
+    .lib-plate { font-size: 11px; padding: 5px 6px; }
+  }
+
+  /* feature cards: each screenshot sits on the lit panel, cut by its foot */
+  #features .panel { --p-h: 300px; }
+  #features .panel > .shot { position: absolute; left: 50%; top: 32px; width: min(78%, 440px); transform: translateX(-50%); border-radius: 12px; box-shadow: 0 14px 36px rgba(43, 36, 32, .2); }
+  @media (max-width: 639px) { #features .panel { --p-h: 180px; } #features .panel > .shot { top: 16px; width: 86%; } }
+
+  /* iPhone: three screens side by side */
+  #iphone .grid { align-items: stretch; }
+  #iphone .phones { overflow: hidden; }
+  #iphone .grid > .stack-4 { align-self: start; }
+  .phones { position: relative; overflow: hidden; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s-5); align-content: start; padding: var(--s-7) var(--s-7) 0; }
+  .phones img { display: block; width: 100%; height: auto; border-radius: 30px; border: 6px solid #1F1C19; box-shadow: 0 18px 40px rgba(43, 36, 32, .2); }
+  @media (max-width: 1023px) { .phones { padding: var(--s-6) var(--s-6) 0; max-height: 560px; } }
+  @media (max-width: 639px) { .phones { gap: var(--s-3); padding: var(--s-4) var(--s-4) 0; max-height: 420px; } .phones img { border-radius: 18px; border-width: 4px; } }
+  #more .grid { align-items: stretch; }
+  #more .rows { align-self: start; }
+  #more .settings { position: relative; overflow: hidden; min-height: 320px; }
+  #more .settings > .shot { position: absolute; left: 50%; top: var(--s-7); width: min(80%, 440px); transform: translateX(-50%); border-radius: 16px; box-shadow: 0 14px 36px rgba(43, 36, 32, .2); }
+  @media (max-width: 1023px) { #more .settings { min-height: 380px; } }
+  @media (max-width: 639px) { #more .settings { min-height: 560px; } #more .settings > .shot { left: var(--s-4); right: var(--s-4); top: var(--s-4); width: auto; height: calc(100% - var(--s-4)); transform: none; object-fit: cover; object-position: top; border-radius: 12px 12px 0 0; } }
+  .promise { margin-top: var(--s-8); }
+  .promise h3 { font: 500 var(--t-card)/1.3 var(--font-text); margin-bottom: var(--s-2); }
+</style>
 </head>
 <body>
-  <header class="top gutter">
-    <div class="wrap">
-      <a class="brand" href="/"><img src="/img/icon.png" alt="" width="34" height="34">Sheafnote</a>
-      <nav aria-label="Site">
-        <a class="hide-sm" href="#features">Features</a>
-        <a href="/privacy/">Privacy</a>
-        <a href="/support/">Support</a>
-        <a href="https://github.com/neelsatyavolu/sheafnote">GitHub</a>
-      </nav>
-    </div>
-  </header>
+<!-- type: software (an app: handwritten notes for iPad and iPhone)
+     deal: hero centred (film dealt first, re-dealt: no film exists), nav nav-centre, close close-type, footer footer-statement,
+           rhythm surface-pairs, buttons arrow, mark: the client's own app icon, grounds: lit sand (no shader effect)
+     moments: letters-assemble in #yours (the privacy promise, the one brand line)
+     palette and type: the brand's own (DESIGN.md), by the owner's decision -->
 
-  <section class="hero gutter">
-    <div class="wrap">
-      <div class="hero-copy">
-        <span class="kicker">Notes for iPad and iPhone</span>
-        <h1>Sheafnote</h1>
-        <p class="lede">Handwritten notebooks, PDFs and study tools in one calm app. Free, with no ads and no account.</p>
-        <div class="cta">
-          <span class="badge">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20l4.5-1 10-10a2.1 2.1 0 0 0-3-3l-10 10L4 20z"/><path d="M13.5 7.5l3 3"/></svg>
-            <span><small>Coming soon</small>to the App Store</span>
-          </span>
-          <a class="badge badge-outline" href="https://github.com/neelsatyavolu/sheafnote">
-            <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>
-            <span><small>Open source, MIT</small>View on GitHub</span>
-          </a>
-          <span class="note">In beta testing now.</span>
+<header class="nav nav--centre">
+  <div class="wrap nav__bar">
+    <a class="skip-link" href="#top">Skip to content</a>
+    <a class="nav__logo" href="#top"><img src="/img/icon.png" alt="" width="30" height="30">Sheafnote</a>
+    <nav class="nav__links" aria-label="Main">
+      <div class="nav__item"><a class="nav__link" href="#library">Library</a></div>
+      <div class="nav__item">
+        <a class="nav__link" href="#features">Features <svg class="chev" viewBox="0 0 12 12" aria-hidden="true"><path d="M3 4.5l3 3 3-3" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        <div class="nav__menu">
+          <div class="wrap grid">
+            <div class="menu-col span-3">
+              <p class="t-label">Write</p>
+              <a href="#features">Paper and pens<span>Six page styles, PencilKit ink</span></a>
+              <a href="#features">Handwriting search<span>Read on the device</span></a>
+            </div>
+            <div class="menu-col span-3">
+              <p class="t-label">Study and share</p>
+              <a href="#features">Flashcards<span>Spaced repetition from your pages</span></a>
+              <a href="#files">PDFs and backups<span>Import, annotate, export</span></a>
+            </div>
+            <a class="menu-card span-3 start-10" href="#iphone">
+              <div class="panel"><img class="frame__img" src="/img/iphone-library-light.jpg" alt="The Sheafnote library on iPhone" loading="lazy"></div>
+              <span class="t-card">On iPhone too</span>
+              <span class="t-small muted">The same notebooks, in one hand</span>
+            </a>
+          </div>
         </div>
       </div>
-      <div class="stage">
-        <div class="device ipad"><img src="/img/ipad-editor-light.jpg" alt="A Biology notebook page with handwritten notes on cellular respiration, a highlighted word, a sketched mitochondrion and a star sticker" width="1125" height="1500"></div>
-        <div class="device iphone"><img src="/img/iphone-editor-light.jpg" alt="The same notes open on iPhone, with the pen tools along the bottom" width="690" height="1500"></div>
+      <div class="nav__item"><a class="nav__link" href="#iphone">iPhone</a></div>
+      <div class="nav__item"><a class="nav__link" href="/support/">Support</a></div>
+    </nav>
+    <div class="nav__actions">
+      <a class="btn btn--primary" href="https://github.com/neelsatyavolu/sheafnote">Get the code</a>
+    </div>
+    <button class="nav__toggle" type="button" aria-expanded="false" aria-label="Menu">
+      <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M2 5h14M2 13h14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+    </button>
+  </div>
+</header>
+
+<main id="top">
+  <section class="hero hero--centred" data-enter aria-labelledby="hero-h">
+    <div class="wrap"><div class="hero-text">
+      <div class="hero__c">
+        <p class="pill"><span>In TestFlight beta</span><span class="muted">iPadOS and iOS 26</span></p>
+        <h1 id="hero-h">Handwritten notes on iPad and iPhone</h1>
+        <p class="hero__lead">Write with Apple Pencil on ruled, grid or dotted paper, mark up PDFs and study from your own pages. Free and MIT licensed, with no ads and no account.</p>
+        <div class="btn-row"><a class="btn btn--primary" href="https://github.com/neelsatyavolu/sheafnote">Get the code<svg class="m-arrow" viewBox="0 0 12 12" aria-hidden="true"><path class="m-arrow__stem" d="M1 6h8"/><path class="m-arrow__head" d="M4.5 2.5 8 6l-3.5 3.5"/></svg></a><a class="btn btn--secondary" href="#features">See the features</a></div>
+      </div>
+      <div class="hero__window">
+        <div class="ly-piece shot">
+          <img src="/img/ipad-editor-light.jpg" alt="A Biology notebook open in Sheafnote on iPad: handwritten notes on cellular respiration under the pen toolbar" width="1125" height="1500" fetchpriority="high" data-source="client" data-subject="Sheafnote editor on iPad">
+        </div>
+      </div>
+    </div></div>
+  </section>
+
+  <section class="section" id="library" aria-labelledby="library-h">
+    <div class="wrap">
+      <div class="grid">
+        <h2 id="library-h" class="span-5">A notes library with 20 covers.</h2>
+        <div class="span-6 start-7 stack-4">
+          <p class="muted">Folders nest inside folders, favorites sit one tap away, and Recently Deleted keeps what you remove for 30 days.</p>
+          <a class="link" href="/support/">Read the support page</a>
+        </div>
+      </div>
+      <div class="ui app fill" role="img" aria-label="The Sheafnote library on iPad: a sidebar with Documents, Favorites, Search, Recently Deleted and three folders, beside folders and notebook covers">
+        <div class="app__pane app__pane--list">
+          <div class="lib-side">
+            <div class="lib-side__title">Sheafnote</div>
+            <div class="lib-side__row is-on"><svg viewBox="0 0 24 24"><path d="M4 20V5h4v15M10 20V7h4v13M16 20l1.5-14 3.5.5L19.5 20"/></svg>Documents</div>
+            <div class="lib-side__row"><svg viewBox="0 0 24 24"><path d="m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/></svg>Favorites</div>
+            <div class="lib-side__row"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4.5 4.5"/></svg>Search</div>
+            <div class="lib-side__row"><svg viewBox="0 0 24 24"><path d="M4 6h16M9 6V4h6v2M6 6l1 14h10l1-14M10 10v7M14 10v7"/></svg>Recently Deleted</div>
+            <div class="lib-side__label">Folders</div>
+            <div class="lib-side__row"><span class="lib-side__dot" style="background:#3CC9A0"></span>Projects</div>
+            <div class="lib-side__row"><span class="lib-side__dot" style="background:#3D9BFF"></span>Recipes &amp; Meals</div>
+            <div class="lib-side__row"><span class="lib-side__dot" style="background:#FFC93C"></span>School</div>
+          </div>
+        </div>
+        <div class="app__pane app__pane--open">
+          <div class="lib-main">
+            <div class="lib-main__title">Documents</div>
+            <div class="lib-grid">
+              <div class="lib-item"><div class="lib-folder" style="--c:#FFC93C">2</div>School<small>2 items</small></div>
+              <div class="lib-item"><div class="lib-folder" style="--c:#3CC9A0">1</div>Projects<small>1 item</small></div>
+              <div class="lib-item"><div class="lib-folder" style="--c:#3D9BFF">1</div>Recipes &amp; Meals<small>1 item</small></div>
+              <div class="lib-item"><div class="lib-cover lib-cover--stripes" style="--c:#3CC9A0"><span class="lib-plate">Biology 201</span></div>Biology 201<small>Oct 19, 2026</small></div>
+              <div class="lib-item"><div class="lib-cover" style="--c:#F2542D"><span class="lib-plate">Journal</span></div>Journal<small>Oct 4, 2026</small></div>
+              <div class="lib-item"><div class="lib-cover" style="--c:#FFC93C"><span class="lib-plate">Trip to Japan</span></div>Trip to Japan<small>Oct 3, 2026</small></div>
+              <div class="lib-item"><div class="lib-cover lib-cover--dots" style="--c:#3CC9A0"><span class="lib-plate">Reading List</span></div>Reading List<small>Oct 2, 2026</small></div>
+              <div class="lib-item"><div class="lib-cover lib-cover--rings" style="--c:#3D9BFF"><span class="lib-plate">Piano Practice</span></div>Piano Practice<small>Oct 1, 2026</small></div>
+              <div class="lib-item"><div class="lib-cover" style="--c:#FF6FA8"><span class="lib-plate">Sketches</span></div>Sketches<small>Sep 30, 2026</small></div>
+              <div class="lib-item"><div class="lib-cover" style="--c:#2B2420"><span class="lib-plate">Budget</span></div>Budget<small>Sep 29, 2026</small></div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </section>
 
-  <main class="gutter" id="features">
+  <section class="section g2" id="features" aria-labelledby="features-h">
     <div class="wrap">
-      <section class="feature flip">
-        <div class="copy">
-          <h2>A shelf for every class and project</h2>
-          <p>Notebooks with real covers, colored folders, favorites and a Recently Deleted bin, so nothing is ever lost by accident.</p>
-          <ul><li>20 covers, from plain cloth to patterns</li><li>Folders inside folders</li><li>Sort by name, date created or edited</li></ul>
+      <div class="group">
+        <div class="section-head">
+          <h2 id="features-h">Pens, paper and search for your notes. <span class="muted">Every tool works offline.</span></h2>
         </div>
-        <div class="shot"><div class="device ipad"><img src="/img/ipad-library-light.jpg" alt="The library on iPad: folders for School, Projects and Recipes, and notebooks with colorful covers" width="1500" height="1125" loading="lazy"></div></div>
-      </section>
-
-      <section class="feature tall">
-        <div class="copy">
-          <h2>Writes like paper</h2>
-          <p>Pen, highlighter, eraser, shapes and lasso, built on Apple's PencilKit, so the ink feels the same as Apple Notes. Pick the paper for each page.</p>
-          <ul><li>Ruled, grid, dotted, Cornell, music and planner pages</li><li>Lasso to move, resize, recolor or turn ink into text</li><li>Double-tap Apple Pencil to switch to the eraser</li></ul>
+        <div class="grid">
+          <article class="card card--row card--open span-6 m-nolift">
+            <h3>Six paper styles for Apple Pencil</h3>
+            <p>Ruled, grid, dotted, Cornell, music and planner pages, with Apple's PencilKit pen, highlighter and lasso.</p>
+            <div class="panel"><img class="shot" src="/img/ipad-pages-light.jpg" alt="The page navigator showing three handwritten pages as thumbnails" width="1125" height="1500" loading="lazy" data-source="client" data-subject="Sheafnote page navigator"></div>
+          </article>
+          <article class="card card--row card--open span-6 m-nolift">
+            <h3>Search inside handwritten notes</h3>
+            <p>Writing is read on the device, so a search for a word finds the page you wrote it on.</p>
+            <div class="panel"><img class="shot" src="/img/ipad-search-light.jpg" alt="A search for mitochondria finding the handwritten word on page 1 of Biology 201" width="1500" height="1125" loading="lazy" data-source="client" data-subject="Sheafnote handwriting search"></div>
+          </article>
         </div>
-        <div class="shot"><div class="device ipad"><img src="/img/ipad-pages-light.jpg" alt="The page navigator showing three handwritten pages as thumbnails" width="1125" height="1500" loading="lazy"></div></div>
-      </section>
-
-      <section class="feature flip">
-        <div class="copy">
-          <h2>Search your handwriting</h2>
-          <p>Sheafnote reads your writing on the device and makes it searchable, along with PDF text and typed notes. Nothing is sent anywhere.</p>
-          <ul><li>Finds words in handwriting, PDFs and text boxes</li><li>Jump straight to the page</li><li>Bookmarks and an outline for long notebooks</li></ul>
-        </div>
-        <div class="shot"><div class="device ipad"><img src="/img/ipad-search-light.jpg" alt="Searching for “mitochondria” finds the handwritten word on page 1 of Biology 201" width="1500" height="1125" loading="lazy"></div></div>
-      </section>
-
-      <section class="feature tall">
-        <div class="copy">
-          <h2>Study from your own notes</h2>
-          <p>Turn any part of a page into a flashcard and review it with spaced repetition. Cover answers with study tape, or record a lecture alongside what you write.</p>
-          <ul><li>Flashcards with Again, Hard, Good and Easy</li><li>Tap-to-reveal study tape</li><li>Record audio, then tap any line to hear what was said as you wrote it</li></ul>
-        </div>
-        <div class="shot"><div class="device ipad"><img src="/img/ipad-study-back-light.jpg" alt="A flashcard: “Where does the Krebs cycle happen?” with the answer “In the mitochondria”" width="1125" height="1500" loading="lazy"></div></div>
-      </section>
-
-      <section class="feature flip">
-        <div class="copy">
-          <h2>Start any notebook in seconds</h2>
-          <p>Choose a cover, a paper style and color, and a size. PDFs and images can become notebooks too, then be annotated and exported again.</p>
-          <ul><li>A4, US Letter, A5 or square</li><li>White, yellow or dark paper</li><li>Export to PDF or images</li></ul>
-        </div>
-        <div class="shot"><div class="device ipad"><img src="/img/ipad-new-notebook-light.jpg" alt="The New Notebook sheet with cover choices, paper types and sizes" width="1500" height="1125" loading="lazy"></div></div>
-      </section>
-
-      <section class="feature single">
-        <div class="copy center">
-          <h2>And on iPhone</h2>
-          <p>The same library and notebooks, laid out for one hand, in light or dark.</p>
-        </div>
-        <div class="phones">
-          <figure><div class="device iphone"><img src="/img/iphone-library-light.jpg" alt="The library on iPhone" width="690" height="1500" loading="lazy"></div><figcaption>Library</figcaption></figure>
-          <figure><div class="device iphone"><img src="/img/iphone-editor-light.jpg" alt="A handwritten page on iPhone" width="690" height="1500" loading="lazy"></div><figcaption>Writing</figcaption></figure>
-          <figure><div class="device iphone"><img src="/img/iphone-library-dark.jpg" alt="The library on iPhone in dark mode" width="690" height="1500" loading="lazy"></div><figcaption>Dark mode</figcaption></figure>
-        </div>
-      </section>
-
-      <section class="feature single">
-        <div class="copy"><h2>Also in the box</h2></div>
-        <div class="more">
-          <div class="card"><h3>Whiteboards</h3><p>An endless canvas for diagrams and brainstorming.</p></div>
-          <div class="card"><h3>Typed documents</h3><p>Headings, lists and checklists for when typing is quicker.</p></div>
-          <div class="card"><h3>Present</h3><p>Show a notebook on a bigger screen, with a laser pointer.</p></div>
-          <div class="card"><h3>Stickers and washi tape</h3><p>Shapes, arrows, tabs and tape, or save your own.</p></div>
-          <div class="card"><h3>Zoom window</h3><p>Write large in a strip and it lands small on the page.</p></div>
-          <div class="card"><h3>App lock</h3><p>Lock the app or single notebooks with Face ID.</p></div>
-          <div class="card"><h3>Backups</h3><p>Export the whole library to one file you can keep.</p></div>
-          <div class="card"><h3>Side by side</h3><p>Open two notebooks in separate windows on iPad.</p></div>
-        </div>
-      </section>
-
-      <section class="feature single">
-        <div class="copy"><h2>Your notes stay yours</h2></div>
-        <div class="promise">
-          <div class="card"><h3>No account</h3><p>Open the app and start writing. There is nothing to sign up for.</p></div>
-          <div class="card"><h3>No ads, no tracking</h3><p>Sheafnote has no analytics and sends nothing about you anywhere.</p></div>
-          <div class="card"><h3>On your device</h3><p>Notebooks live on your iPad and iPhone. Handwriting is read on the device too.</p></div>
-        </div>
-      </section>
+      </div>
+      <div class="grid">
+        <article class="card card--row card--open span-6 m-nolift">
+          <h3>Flashcards made from your notes</h3>
+          <p>Review with Again, Hard, Good and Easy, or record a lecture and tap a line to hear it.</p>
+          <div class="panel"><img class="shot" src="/img/ipad-study-back-light.jpg" alt="A flashcard asking where the Krebs cycle happens, with the answer: in the mitochondria" width="1125" height="1500" loading="lazy" data-source="client" data-subject="Sheafnote flashcard review"></div>
+        </article>
+        <article class="card card--row card--open span-6 m-nolift">
+          <h3>New notebooks in A4, A5 or Letter</h3>
+          <p>Pick a cover, a paper style and a size, square included, on white, yellow or dark paper.</p>
+          <div class="panel"><img class="shot" src="/img/ipad-new-notebook-light.jpg" alt="The New Notebook sheet with cover choices, paper types and sizes" width="1500" height="1125" loading="lazy" data-source="client" data-subject="Sheafnote new notebook sheet"></div>
+        </article>
+      </div>
     </div>
-  </main>
+  </section>
 
-  <footer class="gutter">
+  <section class="section" id="yours" data-moment="letters-assemble" aria-labelledby="yours-h">
     <div class="wrap">
-      <span>© 2026 Sheafnote</span>
-      <nav aria-label="Footer"><a href="/privacy/">Privacy</a><a href="/support/">Support</a><a href="https://github.com/neelsatyavolu/sheafnote">GitHub</a></nav>
+      <h2 id="yours-h" class="mo-la__type">Your notes stay yours</h2>
+      <p class="mo-la__sub">Notebooks live on your iPad and iPhone, and sync only through your own iCloud.</p>
+      <div class="grid promise">
+        <div class="span-4"><h3>An app with no account</h3><p>Open the app and start writing. There is nothing to sign up for.</p></div>
+        <div class="span-4"><h3>Notes with no ads or analytics</h3><p>Sheafnote sends nothing about you anywhere.</p></div>
+        <div class="span-4"><h3>Handwritten notes read on the device</h3><p>Search runs on your iPad or iPhone, never on a server.</p></div>
+      </div>
     </div>
-  </footer>
+  </section>
+
+  <section class="section ground-surface" id="iphone" aria-labelledby="iphone-h">
+    <div class="wrap">
+      <div class="grid grid--top fill">
+        <div class="span-5 stack-4">
+          <h2 id="iphone-h">The same notebooks on iPhone.</h2>
+          <p>The library and the pen tools are laid out for one hand, in light or dark mode. Every device on your Apple Account stays in step.</p>
+          <a class="link" href="/privacy/">Read how sync works</a>
+        </div>
+        <div class="panel phones span-6 start-7">
+          <img src="/img/iphone-editor-light.jpg" alt="A handwritten page on iPhone with the pen tools along the bottom" width="690" height="1500" loading="lazy" data-source="client" data-subject="Sheafnote editor on iPhone">
+          <img src="/img/iphone-library-dark.jpg" alt="The library on iPhone in dark mode" width="690" height="1500" loading="lazy" data-source="client" data-subject="Sheafnote library in dark mode">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="files" aria-labelledby="files-h">
+    <div class="wrap">
+      <div class="grid">
+        <h2 id="files-h" class="span-5">PDFs in, PDFs and images out.</h2>
+        <div class="span-6 start-7 stack-4">
+          <p class="muted">Open a PDF or photos as a notebook and write over them. Export pages as PDF, PNG or JPEG, or back up the whole library to one file.</p>
+          <a class="link" href="https://github.com/neelsatyavolu/sheafnote/blob/main/docs/FORMAT.md">Read the backup format</a>
+        </div>
+      </div>
+      <div class="panel fill" style="margin-top: var(--s-7)">
+        <div class="dg" data-diagram data-dg-still><script type="application/json">{"layout":"bowtie","alt":"PDFs, photos and backups come into Sheafnote, which exports PDF and PNG or JPEG pages, writes a backup file and syncs through iCloud.","sources":[{"label":"PDF","icon":"pdf","sub":"From Files"},{"label":"Photos","icon":"image","sub":"As pages"},{"label":"Backup","icon":"zip","sub":".sheafnote file"}],"core":{"label":"Sheafnote","icon":"ui:notebook-pen"},"targets":[{"label":"PDF","icon":"pdf","sub":"With your ink"},{"label":"Images","icon":"image","sub":"PNG or JPEG"},{"label":"Backup","icon":"zip","sub":"Whole library"},{"label":"iCloud","icon":"si:icloud","sub":"Your devices"}]}</script></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="more" style="--hm: 2" aria-labelledby="more-h">
+    <div class="wrap">
+      <div class="section-head">
+        <h2 id="more-h">Also in Sheafnote.</h2>
+      </div>
+      <div class="grid grid--top fill">
+        <ul class="rows span-6">
+          <li><span class="rows__name">Whiteboards</span><p class="muted">An endless canvas for diagrams and brainstorming.</p></li>
+          <li><span class="rows__name">Typed documents</span><p class="muted">Headings, lists and checklists for when typing is quicker.</p></li>
+          <li><span class="rows__name">Present</span><p class="muted">Show a notebook on a bigger screen, with a laser pointer.</p></li>
+          <li><span class="rows__name">Stickers and washi tape</span><p class="muted">Shapes, arrows, tabs and tape, or save your own.</p></li>
+          <li><span class="rows__name">App lock</span><p class="muted">Lock the app or single notebooks with Face ID.</p></li>
+          <li><span class="rows__name">Side by side</span><p class="muted">Open two notebooks in separate windows on iPad.</p></li>
+        </ul>
+        <div class="panel settings span-6 start-7"><img class="shot" src="/img/ipad-settings-light.jpg" alt="Sheafnote settings: General, Pencil and Gestures, Drawing Aids, iCloud Sync, Import and Backup, Search, App Lock, Audio and About" width="612" height="640" loading="lazy" data-source="client" data-subject="Sheafnote settings on iPad"></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="footer closing footer--statement" id="contact" aria-labelledby="close-h">
+  <div class="wrap">
+    <div class="closing__cta close--type">
+      <div class="section-head">
+        <h2 id="close-h">Sheafnote is free and MIT licensed.</h2>
+        <p>The App Store release is coming. Until then, build it from the source with Xcode and XcodeGen.</p>
+      </div>
+      <a class="btn btn--primary btn--xl btn--wide" href="https://github.com/neelsatyavolu/sheafnote">Get the code<svg class="m-arrow" viewBox="0 0 12 12" aria-hidden="true"><path class="m-arrow__stem" d="M1 6h8"/><path class="m-arrow__head" d="M4.5 2.5 8 6l-3.5 3.5"/></svg></a>
+    </div>
+    <div class="closing__links">
+      <div class="grid">
+        <div class="span-4 stack-4">
+          <a class="nav__logo" href="#top"><img src="/img/icon.png" alt="" width="30" height="30">Sheafnote</a>
+          <p class="footer__lede">A notes app for Apple Pencil.</p>
+        </div>
+        <div class="span-2 footer__col"><h3>App</h3><ul><li><a href="#library">Library</a></li><li><a href="#features">Features</a></li><li><a href="#iphone">iPhone</a></li></ul></div>
+        <div class="span-2 footer__col"><h3>Files</h3><ul><li><a href="#files">PDFs and backups</a></li><li><a href="#more">Also included</a></li></ul></div>
+        <div class="span-2 footer__col"><h3>Help</h3><ul><li><a href="/support/">Support</a></li><li><a href="mailto:support@sheafnote.com">Email support</a></li></ul></div>
+        <div class="span-2 footer__col"><h3>Code</h3><ul><li><a href="https://github.com/neelsatyavolu/sheafnote">GitHub</a></li><li><a href="https://github.com/neelsatyavolu/sheafnote/blob/main/LICENSE">MIT license</a></li></ul></div>
+      </div>
+      <div class="footer__legal">
+        <span>&copy; 2026 Sheafnote &nbsp; <a href="/privacy/">Privacy</a></span>
+        <span>Product names and logos are trademarks of their owners</span>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script type="module" src="assets/system.js"></script>
+<script type="module" src="assets/motion/motion.js"></script>
+<script type="module" src="assets/layout/layout.js"></script>
+<script type="module" src="assets/diagrams/mount.js"></script>
 </body>
 </html>
